@@ -1,0 +1,30 @@
+{%- doc -%}
+  Renders the sparkle/highlights action button, shown before the search icon.
+
+  @example
+  {% render 'sparkle-action' %}
+{%- enddoc -%}
+
+<a
+  href="{{ routes.root_url }}"
+  class="header-actions__action header-actions__action--sparkle"
+  aria-label="Highlights"
+>
+  <img
+    src="{{ 'icon-sparkle-person.png' | asset_url }}"
+    class="header-actions__action--sparkle-image"
+    width="22"
+    height="22"
+    loading="lazy"
+    alt=""
+    aria-hidden="true"
+  >
+</a>
+
+{% stylesheet %}
+  .header-actions__action--sparkle-image {
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
+    object-fit: contain;
+  }
+{% endstylesheet %}

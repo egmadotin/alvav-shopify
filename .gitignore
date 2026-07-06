@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Shopify CLI local state
+.shopify/
+
+# Environment / secrets
+.env
+.env.*
+
+# Editor / tool local state
+.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
