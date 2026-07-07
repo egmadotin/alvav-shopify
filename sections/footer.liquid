@@ -6,6 +6,64 @@
   endif
 %}
 
+<style>
+  footer {
+    background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ 'footerbg.webp' | asset_url }}');
+    background-position: center calc(100% + 35px);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #1a261c;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+  }
+  
+  /* Social Icons Styling */
+  .social-icons__wrapper { display: flex; gap: 15px; margin-top: 25px; justify-content: flex-start; }
+  .social-icons__icon-wrapper { width: auto !important; height: auto !important; flex-shrink: 0; }
+  .social-icons__wrapper a { display: flex; justify-content: center; align-items: center; width: 42px; height: 42px; min-width: 42px; min-height: 42px; background-color: #fff; color: #1a261c !important; border-radius: 50%; text-decoration: none; }
+  .social-icons__wrapper a svg { width: 26px; height: 26px; fill: currentColor; }
+
+  /* Email Signup Styling */
+  footer .email-signup__input-group { background-color: #ffffff; border-radius: 50px !important; display: flex; align-items: center; padding: 6px; border: none !important; margin-top: 15px; }
+  footer .email-signup__input { background: transparent !important; border: none !important; color: #333 !important; flex: 1; padding-left: 20px; outline: none !important; box-shadow: none !important; font-size: 15px; }
+  footer .email-signup__input::placeholder { color: #666; }
+  footer .email-signup__button { background-color: #1a261c !important; color: #ffffff !important; border-radius: 50px !important; padding: 12px 35px !important; font-weight: 600; border: none !important; min-height: unset !important; height: auto !important; margin: 0; box-shadow: none !important; text-transform: none; font-size: 16px; }
+  footer .email-signup__button::after, footer .email-signup__button::before { display: none !important; }
+
+  /* Uniform Footer Typography */
+  footer .menu__heading, footer .menu__heading * , footer .custom-menu h3, footer .contact-us-col h3, footer h3 {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin-top: 0 !important;
+    margin-bottom: 20px !important;
+    line-height: 1.2 !important;
+    border: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
+  footer .menu__heading__toggle { display: none !important; }
+  
+  footer .menu__item a, footer .custom-menu a, footer .contact-us-col p, footer p {
+    font-size: 14px !important;
+    color: #ffffff !important;
+    opacity: 0.9 !important;
+    margin-bottom: 12px !important;
+    text-decoration: none !important;
+    display: block;
+    line-height: 1.5;
+  }
+  footer .contact-us-col p { display: flex !important; align-items: center; }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const footerInput = document.querySelector('footer .email-signup__input');
+    if (footerInput) footerInput.placeholder = "Enter your email...";
+    const footerBtn = document.querySelector('footer .email-signup__button');
+    if (footerBtn) footerBtn.innerHTML = "Submit";
+  });
+</script>
 <div
   class="section-background{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}"
 ></div>
@@ -145,6 +203,9 @@
     },
     {
       "type": "email-signup"
+    },
+    {
+      "type": "custom-liquid"
     }
   ],
   "enabled_on": {

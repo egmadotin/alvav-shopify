@@ -21,10 +21,17 @@
   >
 </a>
 
-{% stylesheet %}
-  .header-actions__action--sparkle-image {
-    width: var(--icon-size-md);
-    height: var(--icon-size-md);
-    object-fit: contain;
+<style>
+  .header-actions__action--sparkle {
+    margin-left: 20px;
+    display: inline-flex;
+    align-items: center;
   }
-{% endstylesheet %}
+  
+  .header-actions__action--sparkle-image {
+    width: 25px !important;
+    height: 25px !important;
+    object-fit: contain;
+    display: block;
+  }
+</style>

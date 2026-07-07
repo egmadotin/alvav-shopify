@@ -126,14 +126,15 @@
             {% endif %}
             ref="menuitem"
           >
-            {%- if link_is_gift and block_settings.gifts_menu_image != blank -%}
+            {%- if link_is_badged -%}
               <span class="menu-list__link-image-wrapper">
-                {% render 'image', image: block_settings.gifts_menu_image, class: 'menu-list__link-image', height: 22, alt_text_fallback: link.title, text_fallback: link.title %}
+                <img src="{{ 'NEW_ARRIVAL.png' | asset_url }}" alt="NEW ARRIVAL" class="menu-list__link-image" style="height: 35px; width: auto; object-fit: contain;">
+              </span>
+            {%- elsif link_is_gift -%}
+              <span class="menu-list__link-image-wrapper">
+                <img src="{{ 'gifts_icon.png' | asset_url }}" alt="Gifts" class="menu-list__link-image" style="height: 45px; width: auto; object-fit: contain;">
               </span>
             {%- else -%}
-              {%- if link_is_gift -%}
-                <span class="svg-wrapper menu-list__link-icon" aria-hidden="true">{{ 'icon-gift-bow.svg' | inline_asset_content }}</span>
-              {%- endif -%}
               <span class="menu-list__link-title">{{- link.title -}}</span>
             {%- endif -%}
           </a>
@@ -281,8 +282,8 @@
   }
 
   .menu-list {
-    --menu-horizontal-gap: var(--gap-xl);
-    --menu-vertical-gap: var(--gap-xl);
+    --menu-horizontal-gap: 15px;
+    --menu-vertical-gap: 15px;
 
     display: flex;
     height: 100%;
@@ -356,14 +357,23 @@
   }
 
   .menu-list__link--icon {
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    gap: 0.3em;
+    gap: 0;
+  }
+  
+  .menu-list__link--icon .menu-list__link-title {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 1.6rem;
+    font-style: italic;
+    line-height: 1;
+    padding-inline: 0;
+    margin-top: -5px;
   }
 
   .menu-list__link-icon {
-    width: var(--icon-size-sm);
-    height: var(--icon-size-sm);
+    width: 35px;
+    height: 35px;
   }
 
   .menu-list__link-icon svg {

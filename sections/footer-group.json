@@ -1,144 +1,85 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
+
 {
   "type": "footer",
   "name": "Footer",
   "sections": {
+    "footer_trust_banner": {
+      "type": "footer-trust-banner",
+      "settings": {}
+    },
     "footer_m9NzUG": {
       "type": "footer",
       "blocks": {
-        "group_H6VpwJ": {
+        "menu_categories": {
+          "type": "menu",
+          "settings": {
+            "heading": "Top Categories",
+            "menu": "main-menu",
+            "show_as_accordion": false
+          }
+        },
+        "menu_info": {
+          "type": "custom-liquid",
+          "settings": {
+            "custom_liquid": "<style>.custom-menu ul { list-style: none; padding: 0; margin: 0; } .custom-menu li { margin-bottom: 10px; } .custom-menu a { text-decoration: none; color: inherit; font-size: 14px; } .custom-menu a:hover { text-decoration: underline; } .custom-menu h3 { font-size: 16px; margin-top: 0; margin-bottom: 15px; font-weight: 500; }</style><div class=\"custom-menu\"><h3>Further info</h3><ul><li><a href=\"/pages/about-us\">About Us</a></li><li><a href=\"/policies/refund-policy\">Return and Refund Policy</a></li><li><a href=\"/policies/shipping-policy\">Shipping Policy</a></li><li><a href=\"/policies/privacy-policy\">Privacy Policy</a></li><li><a href=\"/policies/terms-of-service\">Terms of service</a></li><li><a href=\"/pages/customer-testimonials\">Customer Testimonials</a></li><li><a href=\"/pages/contact\">Contact Us</a></li><li><a href=\"/pages/track-order\">Track your Order</a></li></ul></div>"
+          }
+        },
+        "contact_us": {
+          "type": "custom-liquid",
+          "settings": {
+            "custom_liquid": "<style>.contact-us-col p { display:flex; align-items:center; gap:10px; margin: 0 0 10px 0; font-size:14px;} .contact-us-col img { width: 15px; flex-shrink:0;} .contact-us-col h3 { margin-top:0; font-size:16px; margin-bottom:15px;} .social-icons__wrapper { display: flex; gap: 10px; } .social-icons__wrapper a { display: flex; justify-content: center; align-items: center; width: 32px; height: 32px; background-color: #fff; color: #555e4e; border-radius: 50%; } .social-icons__wrapper a svg { width: 18px; height: 18px; }</style><div class=\"contact-us-col\"><h3>Contact us</h3><p><img src=\"{{ 'order-track-icon.png' | asset_url }}\"> Track Order</p><p><img src=\"{{ 'whatsapp-footer-icon.png' | asset_url }}\"> WhatsApp Support</p><p><img src=\"{{ 'mail-icon.png' | asset_url }}\"> support@vibecrafts.com</p></div>"
+          }
+        },
+        "newsletter_group": {
           "type": "group",
           "settings": {
-            "content_direction": "column",
-            "vertical_on_mobile": true,
-            "horizontal_alignment": "flex-start",
-            "vertical_alignment": "center",
-            "align_baseline": false,
-            "horizontal_alignment_flex_direction_column": "flex-start",
-            "vertical_alignment_flex_direction_column": "center",
-            "gap": 6,
-            "width": "fill",
-            "custom_width": 100,
-            "width_mobile": "fill",
-            "custom_width_mobile": 100,
-            "height": "fit",
-            "custom_height": 100,
-            "background_media": "none",
-            "video_position": "cover",
-            "background_image_position": "cover",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "toggle_overlay": false,
-            "overlay_color": "#00000026",
-            "overlay_style": "solid",
-            "gradient_direction": "to top",
-            "open_in_new_tab": false,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
+            "content_direction": "column"
           },
           "blocks": {
-            "text_LWt8Pz": {
+            "newsletter_heading": {
               "type": "text",
               "settings": {
-                "text": "<h2>Join our email list</h2>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "h4",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
+                "text": "<h3>Sign up for email update</h3>",
+                "type_preset": "h3"
+              }
             },
-            "text_f9CFLH": {
+            "newsletter_text": {
               "type": "text",
               "settings": {
-                "text": "<p>Get exclusive deals and early access to new products.</p>",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
+                "text": "<p>Keep up-to-date with our latest product launches, special offers and new arrivals.</p>",
+                "type_preset": "rte"
+              }
+            },
+            "newsletter_form": {
+              "type": "email-signup",
+              "settings": {
+                "button_type_preset": "button"
+              }
+            },
+            "social_links": {
+              "type": "social-links",
+              "settings": {
+                "facebook_url": "https://www.facebook.com/vibecrafts",
+                "instagram_url": "https://www.instagram.com/vibecrafts",
+                "youtube_url": "https://www.youtube.com/vibecrafts",
+                "pinterest_url": "https://www.pinterest.com/vibecrafts"
+              }
             }
           },
-          "block_order": [
-            "text_LWt8Pz",
-            "text_f9CFLH"
-          ]
-        },
-        "email_signup_crihX7": {
-          "type": "email-signup",
-          "settings": {
-            "width": "fill",
-            "custom_width": 100,
-            "heading_preset": "h3",
-            "border_style": "all",
-            "input_style": "custom",
-            "border_width": 1,
-            "border_radius": 100,
-            "input_background_color": "{{ settings.color_palette.background }}",
-            "input_text_color": "{{ settings.color_palette.color1 }}",
-            "input_border_color": "{{ settings.color_palette.color2 }}",
-            "input_type_preset": "paragraph",
-            "style_class": "button-unstyled",
-            "display_type": "arrow",
-            "label": "Sign up",
-            "integrated_button": true,
-            "button_type_preset": "paragraph",
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+          "block_order": ["newsletter_heading", "newsletter_text", "newsletter_form", "social_links"]
         }
       },
       "block_order": [
-        "group_H6VpwJ",
-        "email_signup_crihX7"
+        "menu_categories",
+        "menu_info",
+        "contact_us",
+        "newsletter_group"
       ],
       "name": "t:names.footer",
       "settings": {
         "section_width": "page-width",
         "gap": 20,
-        "background_color": "{{ settings.color_palette.background }}",
+        "background_color": "#1a261c",
         "padding-block-start": 30,
         "padding-block-end": 30
       }
@@ -149,50 +90,36 @@
         "footer_copyright_jweRK8": {
           "type": "footer-copyright",
           "settings": {
-            "show_powered_by": true,
+            "show_powered_by": false,
             "font_size": "0.75rem",
             "case": "none"
-          },
-          "blocks": {}
+          }
         },
-        "footer_policy_list_VCdnpa": {
-          "type": "footer-policy-list",
+        "custom_payment_icons": {
+          "type": "custom-liquid",
           "settings": {
-            "font_size": "0.75rem",
-            "case": "none"
-          },
-          "blocks": {}
-        },
-        "social_links_Ew63Kq": {
-          "type": "social-links",
-          "settings": {
-            "facebook_url": "https://www.facebook.com/",
-            "instagram_url": "https://www.instagram.com/",
-            "youtube_url": "https://www.youtube.com/",
-            "tiktok_url": "https://www.tiktok.com/",
-            "twitter_url": "https://x.com/"
-          },
-          "blocks": {}
+            "custom_liquid": "<style>.custom-payment-icons { display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.7); flex-wrap: wrap; } .custom-payment-icons span { margin-right: 8px; } .custom-payment-icons img { height: 32px; width: auto; object-fit: contain; background: #fff; padding: 4px 8px; border-radius: 6px; }</style><div class=\"custom-payment-icons\"><span>We accept</span> <img src=\"{{ 'paytm.webp' | asset_url }}\" alt=\"Paytm\"> <img src=\"{{ 'phone-pay.webp' | asset_url }}\" alt=\"PhonePe\"> <img src=\"{{ 'upi.webp' | asset_url }}\" alt=\"UPI\"> <img src=\"{{ 'gpay.webp' | asset_url }}\" alt=\"GPay\"> <img src=\"{{ 'rupay.webp' | asset_url }}\" alt=\"RuPay\"> <img src=\"{{ 'visa.webp' | asset_url }}\" alt=\"VISA\"></div>"
+          }
         }
       },
       "block_order": [
         "footer_copyright_jweRK8",
-        "footer_policy_list_VCdnpa",
-        "social_links_Ew63Kq"
+        "custom_payment_icons"
       ],
       "name": "t:names.utilities",
       "settings": {
         "section_width": "page-width",
         "gap": 24,
-        "divider_thickness": 1,
+        "divider_thickness": 0,
         "divider_color": "{{ settings.color_palette.color2 }}",
-        "background_color": "{{ settings.color_palette.background }}",
+        "background_color": "#1a261c",
         "padding-block-start": 20,
         "padding-block-end": 48
       }
     }
   },
   "order": [
+    "footer_trust_banner",
     "footer_m9NzUG",
     "footer_utilities_jLGE8U"
   ]
