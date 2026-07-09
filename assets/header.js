@@ -102,7 +102,7 @@ class HeaderComponent extends Component {
       const { isIntersecting } = entry;
 
       if (alwaysSticky) {
-        this.dataset.stickyState = isIntersecting ? 'inactive' : 'active';
+        // Do not update stickyState here to prevent height-change flicker loops
         if (this.dataset.themeColor) changeMetaThemeColor(this.dataset.themeColor);
       } else {
         this.#offscreen = !isIntersecting || this.dataset.stickyState === 'active';
@@ -194,6 +194,13 @@ class HeaderComponent extends Component {
         this.dataset.scrollDirection = 'down';
       }
 
+      // Handle active sticky state by scroll position to avoid height reflow loops
+      if (scrollTop > 20) {
+        this.dataset.stickyState = 'active';
+      } else {
+        this.dataset.stickyState = 'inactive';
+      }
+
       this.#lastScrollTop = scrollTop;
       return;
     }
@@ -233,6 +240,7 @@ class HeaderComponent extends Component {
       if (stickyMode === 'scroll-up' || stickyMode === 'always') {
         this.#scrollContainer = getScrollEventTarget();
         this.#scrollContainer.addEventListener('scroll', this.#handleWindowScroll);
+        this.#updateScrollState();
       }
 
       scrollContainerMediaQuery.addEventListener('change', this.#handleBreakpointChange);

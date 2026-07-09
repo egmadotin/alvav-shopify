@@ -1,0 +1,95 @@
+{% stylesheet %}
+  /* Marquee Styling */
+  .featured-in-marquee-section {
+    background-color: #ffffff;
+    padding: 30px 0 40px 0;
+    text-align: center;
+    overflow: hidden;
+  }
+  .featured-in-marquee-section h3 {
+    margin: 0 0 35px 0 !important;
+    font-size: 28px !important;
+    font-weight: 500 !important;
+    color: #333 !important;
+    text-transform: none !important;
+  }
+  .featured-marquee-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    display: flex;
+  }
+  .featured-marquee-container::before, .featured-marquee-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    z-index: 2;
+  }
+  .featured-marquee-container::before {
+    left: 0;
+    background: linear-gradient(to right, white, transparent);
+  }
+  .featured-marquee-container::after {
+    right: 0;
+    background: linear-gradient(to left, white, transparent);
+  }
+  .featured-marquee-track {
+    display: flex;
+    animation: featured-marquee-anim 20s linear infinite;
+    gap: 80px;
+    align-items: center;
+    padding-right: 80px; /* Crucial for seamless loop */
+    flex-shrink: 0;
+  }
+  .featured-marquee-track img {
+    height: 65px;
+    object-fit: contain;
+    width: auto;
+    max-width: 200px;
+    transition: all 0.3s ease;
+  }
+  .featured-marquee-track img:hover {
+    transform: scale(1.05);
+  }
+  @keyframes featured-marquee-anim {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+  }
+{% endstylesheet %}
+
+<div class="featured-in-marquee-section" data-section-id="{{ section.id }}">
+  <h3>Featured in</h3>
+  <div class="featured-marquee-container">
+    <div class="featured-marquee-track">
+      <img src="{{ 'theprint.png' | asset_url }}" alt="ThePrint">
+      <img src="{{ 'business-standard.png' | asset_url }}" alt="Business Standard">
+      <img src="{{ 'ani.svg' | asset_url }}" alt="ANI">
+      <img src="{{ 'dailyhunt.webp' | asset_url }}" alt="Dailyhunt">
+      <img src="{{ 'zee5.webp' | asset_url }}" alt="Zee5">
+      <img src="{{ 'tracxn.png' | asset_url }}" alt="Tracxn">
+    </div>
+    <div class="featured-marquee-track">
+      <img src="{{ 'theprint.png' | asset_url }}" alt="ThePrint">
+      <img src="{{ 'business-standard.png' | asset_url }}" alt="Business Standard">
+      <img src="{{ 'ani.svg' | asset_url }}" alt="ANI">
+      <img src="{{ 'dailyhunt.webp' | asset_url }}" alt="Dailyhunt">
+      <img src="{{ 'zee5.webp' | asset_url }}" alt="Zee5">
+      <img src="{{ 'tracxn.png' | asset_url }}" alt="Tracxn">
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured In Marquee",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Featured In Marquee"
+    }
+  ]
+}
+{% endschema %}

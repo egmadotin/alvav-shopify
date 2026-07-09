@@ -1,0 +1,275 @@
+{% stylesheet %}
+  .reels-section {
+    padding: 60px 0;
+    background-color: #ffffff;
+    overflow: hidden;
+  }
+  .reels-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .reels-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 20px;
+    padding-bottom: 15px;
+  }
+  .reels-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reel-card {
+    aspect-ratio: 9 / 16;
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #eaeaea;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    flex: 0 0 calc(20% - 16px);
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+  .reel-video, .reel-placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .reel-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 100%);
+    pointer-events: none;
+  }
+  .reel-shop-tag {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #ffffff;
+    color: #000;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .reel-shop-tag svg {
+    width: 12px; height: 12px; fill: currentColor;
+  }
+  .reel-bottom-info {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    color: #fff;
+    z-index: 2;
+  }
+  .reel-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .reel-stats {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0.9;
+  }
+  .reel-stats span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .reel-stats svg {
+    width: 14px; height: 14px; fill: currentColor;
+  }
+
+  /* Reels indicator dots */
+  .reels-dots-container {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .reels-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .reels-dot.active {
+    width: 24px;
+    border-radius: 4px;
+    background-color: #000000;
+  }
+
+  @media (max-width: 1200px) {
+    .reel-card { flex: 0 0 calc(25% - 15px); }
+  }
+  @media (max-width: 900px) {
+    .reel-card { flex: 0 0 calc(33.333% - 14px); }
+  }
+  @media (max-width: 768px) {
+    .reels-section { padding: 30px 0; }
+    .reels-wrapper { padding: 0 16px; }
+    .reels-container { gap: 12px; }
+    .reel-card { flex: 0 0 calc(42vw - 10px); }
+  }
+{% endstylesheet %}
+
+<div class="reels-section">
+  <div class="reels-wrapper">
+    <div class="reels-container">
+      {% for block in section.blocks %}
+        <div class="reel-card" {{ block.shopify_attributes }}>
+          {% if block.settings.video_url != blank %}
+            <video class="reel-video" autoplay loop muted playsinline>
+              <source src="{{ block.settings.video_url }}" type="video/mp4">
+            </video>
+          {% else %}
+            {% capture placeholder_name %}lifestyle-{% cycle '1', '2', '1', '2', '1' %}{% endcapture %}
+            {{ placeholder_name | placeholder_svg_tag: 'reel-placeholder' }}
+          {% endif %}
+          
+          <div class="reel-overlay"></div>
+          
+          <div class="reel-shop-tag">
+            <svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.41l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.41zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"/></svg>
+            Shop
+          </div>
+          
+          <div class="reel-bottom-info">
+            <div class="reel-title">{{ block.settings.title | default: 'Product Title' }}</div>
+            <div class="reel-stats">
+              <span>
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                {{ block.settings.likes | default: '2.5K' }}
+              </span>
+              <span>
+                <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                {{ block.settings.views | default: '99K' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+
+  {% if section.blocks.size > 0 %}
+    <div class="reels-dots-container">
+      {% for block in section.blocks %}
+        <span class="reels-dot{% if forloop.first %} active{% endif %}" data-index="{{ forloop.index0 }}"></span>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  (function() {
+    function initReels() {
+      const container = document.querySelector('.reels-container');
+      const dots = document.querySelectorAll('.reels-dot');
+      if (!container || dots.length === 0) return;
+      
+      container.addEventListener('scroll', function() {
+        const scrollLeft = container.scrollLeft;
+        const cards = container.querySelectorAll('.reel-card');
+        let activeIndex = 0;
+        let minDiff = Infinity;
+        
+        cards.forEach((card, index) => {
+          const cardOffset = card.offsetLeft - container.offsetLeft;
+          const diff = Math.abs(cardOffset - scrollLeft);
+          if (diff < minDiff) {
+            minDiff = diff;
+            activeIndex = index;
+          }
+        });
+        
+        dots.forEach((dot, index) => {
+          if (index === activeIndex) {
+            dot.classList.add('active');
+          } else {
+            dot.classList.remove('active');
+          }
+        });
+      });
+      
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', function() {
+          const cards = container.querySelectorAll('.reel-card');
+          if (cards[index]) {
+            cards[index].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+          }
+        });
+      });
+    }
+
+    initReels();
+    document.addEventListener('shopify:section:load', initReels);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Shoppable Reels",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "reel",
+      "name": "Reel Video",
+      "settings": [
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Direct Video URL (.mp4)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Product Title",
+          "default": "Nesting Coffee Table"
+        },
+        {
+          "type": "text",
+          "id": "likes",
+          "label": "Likes Count",
+          "default": "2.5K"
+        },
+        {
+          "type": "text",
+          "id": "views",
+          "label": "Views Count",
+          "default": "99K"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shoppable Reels",
+      "blocks": [
+        { "type": "reel" },
+        { "type": "reel" },
+        { "type": "reel" },
+        { "type": "reel" },
+        { "type": "reel" }
+      ]
+    }
+  ]
+}
+{% endschema %}

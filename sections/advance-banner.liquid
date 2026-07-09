@@ -1,0 +1,56 @@
+{% stylesheet %}
+  .advance-banner-section {
+    padding: 0;
+    background-color: #ffffff;
+  }
+  .advance-banner-section .page-width {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+  .advance-banner-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+  @media (max-width: 990px) {
+    .advance-banner-section .page-width { padding: 0 20px; }
+  }
+{% endstylesheet %}
+
+<div class="advance-banner-section">
+  <div class="page-width">
+    {% assign link_url = section.settings.link | default: '#' %}
+    <a href="{{ link_url }}" class="advance-banner-link" style="display: block; text-decoration: none;">
+      {% if section.settings.image != blank %}
+        {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'advance-banner-image', loading: 'lazy' }}
+      {% else %}
+        <img src="{{ 'pay_10_advance_1.webp' | asset_url }}" alt="Advance Pay Banner" class="advance-banner-image">
+      {% endif %}
+    </a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Advance Pay Banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Banner Image"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Banner Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Advance Pay Banner"
+    }
+  ]
+}
+{% endschema %}

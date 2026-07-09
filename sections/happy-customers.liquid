@@ -1,0 +1,287 @@
+{% stylesheet %}
+  .happy-customers-section {
+    padding: 40px 0;
+  }
+  .happy-customers-section .page-width {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 30px;
+  }
+  .happy-customers__header {
+    margin-bottom: 25px;
+  }
+  .happy-customers__header h2 {
+    font-size: 26px;
+    font-weight: 600;
+    color: #111;
+    margin: 0;
+  }
+  .happy-customers__track-wrapper {
+    position: relative;
+    width: 100%;
+  }
+  .happy-customers__track {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 20px; /* Space for scrollbar */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Custom Scrollbar Styling */
+  .happy-customers__track::-webkit-scrollbar {
+    height: 10px;
+  }
+  .happy-customers__track::-webkit-scrollbar-track {
+    background: #ffffff;
+    border-radius: 5px;
+  }
+  .happy-customers__track::-webkit-scrollbar-thumb {
+    background: #a9a9a9;
+    border-radius: 5px;
+  }
+  .happy-customers__track::-webkit-scrollbar-thumb:hover {
+    background: #888;
+  }
+
+  .happy-customer-card {
+    background: #ffffff;
+    flex: 0 0 400px;
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    box-sizing: border-box;
+  }
+  .hc-card__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 5px;
+  }
+  .hc-card__name-stars {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .hc-card__name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+    margin: 0;
+  }
+  .hc-card__stars {
+    color: #333; /* dark stars */
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+  .hc-card__review-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 2px;
+    background-color: #f4f4f4;
+  }
+  .hc-card__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+    margin: 15px 0 8px 0;
+  }
+  .hc-card__text {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.5;
+    margin: 0 0 25px 0;
+    flex-grow: 1;
+  }
+  .hc-card__divider {
+    height: 1px;
+    background-color: #eaeaea;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .hc-card__product-link {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+  }
+  .hc-card__product-link:hover .hc-card__product-name {
+    text-decoration: underline;
+  }
+  .hc-card__product-img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+    background-color: #f9f9f9;
+  }
+  .hc-card__product-name {
+    font-size: 13px;
+    color: #333;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    .happy-customer-card {
+      flex: 0 0 300px;
+      padding: 20px;
+    }
+  }
+{% endstylesheet %}
+
+<div class="happy-customers-section" style="background-color: {{ section.settings.bg_color }};">
+  <div class="page-width">
+    {% if section.settings.title != blank %}
+      <div class="happy-customers__header">
+        <h2>{{ section.settings.title }}</h2>
+      </div>
+    {% endif %}
+
+    <div class="happy-customers__track-wrapper">
+      <div class="happy-customers__track">
+        {% for block in section.blocks %}
+          <div class="happy-customer-card" {{ block.shopify_attributes }}>
+            
+            <div class="hc-card__top">
+              <div class="hc-card__name-stars">
+                <p class="hc-card__name">{{ block.settings.customer_name }}</p>
+                <div class="hc-card__stars">
+                  {%- for i in (1..5) -%}
+                    {%- if i <= block.settings.rating -%}
+                      ★
+                    {%- else -%}
+                      ☆
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              </div>
+              {% if block.settings.review_image %}
+                {{ block.settings.review_image | image_url: width: 120 | image_tag: class: 'hc-card__review-img', loading: 'lazy' }}
+              {% else %}
+                <img src="https://picsum.photos/120?random={{ forloop.index }}" class="hc-card__review-img" alt="Customer Photo">
+              {% endif %}
+            </div>
+
+            {% if block.settings.review_title != blank %}
+              <p class="hc-card__title">{{ block.settings.review_title }}</p>
+            {% endif %}
+
+            {% if block.settings.review_text != blank %}
+              <p class="hc-card__text">{{ block.settings.review_text }}</p>
+            {% endif %}
+
+            <div class="hc-card__divider"></div>
+
+            {% if block.settings.product_link != blank %}
+              <a href="{{ block.settings.product_link }}" class="hc-card__product-link">
+            {% else %}
+              <div class="hc-card__product-link" style="cursor: default;">
+            {% endif %}
+            
+              {% if block.settings.product_image %}
+                {{ block.settings.product_image | image_url: width: 90 | image_tag: class: 'hc-card__product-img', loading: 'lazy' }}
+              {% else %}
+                <img src="https://picsum.photos/90?random={{ forloop.index | plus: 10 }}" class="hc-card__product-img" alt="Product Image">
+              {% endif %}
+              <p class="hc-card__product-name">{{ block.settings.product_name }}</p>
+
+            {% if block.settings.product_link != blank %}
+              </a>
+            {% else %}
+              </div>
+            {% endif %}
+
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Happy Customers",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Happy Customers"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#dfdbd4"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "text",
+          "id": "customer_name",
+          "label": "Customer Name",
+          "default": "Vir Kapoor"
+        },
+        {
+          "type": "image_picker",
+          "id": "review_image",
+          "label": "Review Photo"
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Star Rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "text",
+          "id": "review_title",
+          "label": "Review Title",
+          "default": "perfect console and i love this"
+        },
+        {
+          "type": "textarea",
+          "id": "review_text",
+          "label": "Review Text",
+          "default": "Happy with the purchase. Packaging was good and Value for money."
+        },
+        {
+          "type": "image_picker",
+          "id": "product_image",
+          "label": "Product Photo"
+        },
+        {
+          "type": "text",
+          "id": "product_name",
+          "label": "Product Name",
+          "default": "Classic and Royal Elephant with Golden Tusks Floating Canvas Wall Painting Set of Three"
+        },
+        {
+          "type": "url",
+          "id": "product_link",
+          "label": "Product Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Happy Customers",
+      "blocks": [
+        { "type": "review" },
+        { "type": "review" },
+        { "type": "review" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,190 @@
+{% stylesheet %}
+  .pp-section {
+    padding: 60px 0 20px 0;
+    background-color: #ffffff;
+  }
+  .pp-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .pp-header {
+    margin-bottom: 20px;
+  }
+  .pp-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 5px 0;
+  }
+  .pp-subtitle {
+    font-size: 15px;
+    color: #555;
+    margin: 0;
+  }
+  
+  .pp-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+    padding-top: 30px; /* much smaller gap below header */
+  }
+  
+  .pp-card {
+    background-color: #66715c; /* Dark green/olive */
+    border-radius: 12px;
+    padding: 20px 15px;
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+    height: 190px;
+    margin-top: 60px; /* space for image overlap */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .pp-card:hover {
+    transform: translateY(-5px); /* small subtle lift */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  }
+  
+  .pp-card-image {
+    position: absolute;
+    bottom: 60px; /* slightly higher so when it scales it overlaps text gracefully */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140%; 
+    max-width: 190px; 
+    height: auto;
+    max-height: 220px; 
+    object-fit: contain;
+    transition: transform 0.4s ease;
+    z-index: 2;
+    transform-origin: bottom center;
+  }
+  
+  .pp-card:hover .pp-card-image {
+    transform: translateX(-50%) scale(1.18); 
+  }
+  
+  .pp-info {
+    position: relative;
+    z-index: 1;
+  }
+  .pp-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+  }
+  .pp-card-price {
+    font-size: 11px;
+    opacity: 0.9;
+  }
+  
+  @media (max-width: 1200px) {
+    .pp-grid { grid-template-columns: repeat(3, 1fr); gap: 30px 20px; }
+  }
+  @media (max-width: 600px) {
+    .pp-grid { grid-template-columns: repeat(2, 1fr); gap: 30px 15px; }
+  }
+{% endstylesheet %}
+
+<div class="pp-section">
+  <div class="pp-container">
+    <div class="pp-header">
+      <h2 class="pp-title">{{ section.settings.title }}</h2>
+      <p class="pp-subtitle">{{ section.settings.subtitle }}</p>
+    </div>
+    
+    <div class="pp-grid">
+      {% for block in section.blocks limit: 6 %}
+        <a href="{{ block.settings.link | default: '#' }}" class="pp-card" {{ block.shopify_attributes }}>
+          {% if block.settings.image != blank %}
+            {{ block.settings.image | image_url: width: 300 | image_tag: class: 'pp-card-image', loading: 'lazy' }}
+          {% else %}
+            {% capture fallback_image %}
+              {% case forloop.index %}
+                {% when 1 %}{{ 'Untitled_design__4_-removebg-preview.png' | asset_url }}
+                {% when 2 %}{{ '6_654a8e62-921b-4104-b0df-2487d9fa593d.png' | asset_url }}
+                {% when 3 %}{{ '5_f2b3695f-18df-402f-968c-fc54cf973af8.png' | asset_url }}
+                {% when 4 %}{{ '4_4b41bd92-1d35-491b-b34e-8c2ae29243dd.png' | asset_url }}
+                {% when 5 %}{{ '1_1aee1166-7e5a-4e91-a072-7b3a01c18e22.png' | asset_url }}
+                {% when 6 %}{{ '2_16411180-6024-4824-8336-fa6ee8c7851f.png' | asset_url }}
+              {% endcase %}
+            {% endcapture %}
+            <img src="{{ fallback_image | strip }}" class="pp-card-image" alt="{{ block.settings.title }}">
+          {% endif %}
+          
+          <div class="pp-info">
+            <h3 class="pp-card-title">{{ block.settings.title }}</h3>
+            <div class="pp-card-price">{{ block.settings.price_text }}</div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Popular Picks",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Popular Picks"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Explore our most loved products"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Cutout Image (Transparent PNG)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Coffee Tables"
+        },
+        {
+          "type": "text",
+          "id": "price_text",
+          "label": "Price Text",
+          "default": "Starting At ₹ 10,679"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Popular Picks",
+      "blocks": [
+        { "type": "category", "settings": { "title": "Coffee Tables", "price_text": "Starting At ₹ 10,679" } },
+        { "type": "category", "settings": { "title": "Table Lamps", "price_text": "Starting At ₹ 2,699" } },
+        { "type": "category", "settings": { "title": "Wooden Mirrors", "price_text": "Starting At ₹ 2,669" } },
+        { "type": "category", "settings": { "title": "Side Table", "price_text": "Starting At ₹ 3,559" } },
+        { "type": "category", "settings": { "title": "Floor Lamps", "price_text": "Starting At ₹ 4,449" } },
+        { "type": "category", "settings": { "title": "Office Chairs", "price_text": "Starting At ₹ 12,999" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

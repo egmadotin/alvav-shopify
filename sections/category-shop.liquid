@@ -1,0 +1,125 @@
+{% stylesheet %}
+  .category-shop-section {
+    padding: 60px 20px;
+    background-color: #f0f4eb;
+  }
+  .category-shop-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .category-shop-title {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: #333;
+  }
+  .category-shop-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .category-shop-card {
+    display: block;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+  }
+  .category-shop-card:hover {
+    transform: translateY(-4px);
+  }
+  .category-shop-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+  @media (max-width: 990px) {
+    .category-shop-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 480px) {
+    .category-shop-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+  }
+{% endstylesheet %}
+
+<div class="category-shop-section">
+  <div class="category-shop-container">
+    <h2 class="category-shop-title">{{ section.settings.title }}</h2>
+    
+    <div class="category-shop-grid">
+      {% for block in section.blocks %}
+        {% assign link_url = block.settings.link | default: '#' %}
+        <a href="{{ link_url }}" class="category-shop-card" {{ block.shopify_attributes }}>
+          {% if block.settings.image != blank %}
+            {{ block.settings.image | image_url: width: 600 | image_tag: class: 'category-shop-image', loading: 'lazy' }}
+          {% else %}
+            {% assign fallback = '' %}
+            {% if forloop.index == 1 %}{% assign fallback = 'Shop_by_category.jpg' %}{% endif %}
+            {% if forloop.index == 2 %}{% assign fallback = '1_4fbeec0a-6c25-467e-83af-998e6b8f8f0b.jpg' %}{% endif %}
+            {% if forloop.index == 3 %}{% assign fallback = '2_f71ffd6d-4371-4779-b271-eaaaed90ed3c.jpg' %}{% endif %}
+            {% if forloop.index == 4 %}{% assign fallback = '3_00a116bf-c051-48a0-b790-5daa4b16ce10.jpg' %}{% endif %}
+            {% if forloop.index == 5 %}{% assign fallback = '5_bb2a796b-6247-48c7-a960-3e0e602de74f.jpg' %}{% endif %}
+            {% if forloop.index == 6 %}{% assign fallback = '6_b6526340-0df1-41fc-944e-9bf9d6e00355.jpg' %}{% endif %}
+            {% if forloop.index == 7 %}{% assign fallback = '7_7fe0c549-2d6e-4bc1-957d-9b168edd318f.jpg' %}{% endif %}
+            {% if forloop.index == 8 %}{% assign fallback = '8_76b7232d-c564-423f-9b2e-953da86f750d.jpg' %}{% endif %}
+            
+            {% if fallback != '' %}
+              <img src="{{ fallback | asset_url }}" alt="Category" class="category-shop-image">
+            {% endif %}
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Category Shop",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Shop by category"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category_item",
+      "name": "Category Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Shop",
+      "blocks": [
+        { "type": "category_item" },
+        { "type": "category_item" },
+        { "type": "category_item" },
+        { "type": "category_item" },
+        { "type": "category_item" },
+        { "type": "category_item" },
+        { "type": "category_item" },
+        { "type": "category_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,146 @@
+{% stylesheet %}
+  .seo-text-section {
+    background-color: #ffffff;
+    padding: 40px 0;
+    font-family: var(--font-body--family), sans-serif;
+  }
+  .seo-text-section .page-width {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 30px;
+  }
+  .seo-text__container {
+    position: relative;
+    overflow: hidden;
+    transition: max-height 0.8s ease;
+  }
+  .seo-text__container.collapsed {
+    max-height: 130px; /* Adjust based on 2-3 lines of text */
+  }
+  .seo-text__container.expanded {
+    max-height: 5000px; /* High enough to fit all content */
+  }
+  .seo-text__fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .seo-text__container.collapsed .seo-text__fade {
+    opacity: 1;
+  }
+  .seo-text__content h2 {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: #111;
+    margin-top: 0;
+  }
+  .seo-text__content h3 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #111;
+  }
+  .seo-text__content h4 {
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    color: #111;
+  }
+  .seo-text__content p {
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    color: #444;
+  }
+  .seo-text__content ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+  }
+  .seo-text__content ul li {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 5px;
+  }
+  .seo-text__content a {
+    color: #222;
+    font-weight: 700;
+    text-decoration: underline;
+  }
+  .seo-text__toggle {
+    background-color: #f6efe6;
+    border: none;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+  }
+  .seo-text__toggle:hover {
+    background-color: #ebdccc;
+  }
+{% endstylesheet %}
+
+<div class="seo-text-section" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    <div class="seo-text__container collapsed" id="seoTextContainer-{{ section.id }}">
+      <div class="seo-text__content">
+        {{ section.settings.seo_content }}
+      </div>
+      <div class="seo-text__fade"></div>
+    </div>
+    
+    <button class="seo-text__toggle" id="seoTextToggle-{{ section.id }}">Read All</button>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var toggleBtn = document.getElementById('seoTextToggle-{{ section.id }}');
+    var container = document.getElementById('seoTextContainer-{{ section.id }}');
+    
+    if (toggleBtn && container) {
+      toggleBtn.addEventListener('click', function() {
+        if (container.classList.contains('collapsed')) {
+          container.classList.remove('collapsed');
+          container.classList.add('expanded');
+          toggleBtn.textContent = 'Read Less';
+        } else {
+          container.classList.remove('expanded');
+          container.classList.add('collapsed');
+          toggleBtn.textContent = 'Read All';
+        }
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "SEO Expandable Text",
+  "settings": [
+    {
+      "type": "html",
+      "id": "seo_content",
+      "label": "SEO HTML Content"
+    }
+  ],
+  "presets": [
+    {
+      "name": "SEO Expandable Text"
+    }
+  ]
+}
+{% endschema %}

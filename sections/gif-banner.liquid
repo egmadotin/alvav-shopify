@@ -1,0 +1,66 @@
+{% stylesheet %}
+  .gif-banner-section {
+    padding: 20px 0;
+    background: linear-gradient(to bottom, #e8eddf, #f0f4eb, #fcfcfa, #ffffff);
+  }
+  .gif-banner-section .page-width {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+  .gif-banner-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+  .gif-banner-mobile {
+    display: none;
+    width: 100%;
+    height: auto;
+  }
+  @media (max-width: 768px) {
+    .gif-banner-section { padding: 0; background: none; }
+    .gif-banner-section .page-width { padding: 0; }
+    .gif-banner-image { display: none; }
+    .gif-banner-mobile { display: block; }
+  }
+{% endstylesheet %}
+
+<div class="gif-banner-section">
+  <div class="page-width">
+    {% assign link_url = section.settings.link | default: '#' %}
+    <a href="{{ link_url }}" class="gif-banner-link" style="display: block; text-decoration: none;">
+      {% if section.settings.image != blank %}
+        {{ section.settings.image | image_url: width: 2000 | image_tag: class: 'gif-banner-image', loading: 'lazy' }}
+      {% else %}
+        <img src="{{ 'promo_banner.gif' | asset_url }}" alt="Promo Banner" class="gif-banner-image">
+      {% endif %}
+      <!-- Mobile-only lamp banner -->
+      <img src="{{ 'lamp.webp' | asset_url }}" alt="Lamp Banner" class="gif-banner-mobile">
+    </a>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "GIF Banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Banner Image (GIF)"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Banner Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "GIF Banner"
+    }
+  ]
+}
+{% endschema %}

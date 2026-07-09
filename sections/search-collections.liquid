@@ -1,0 +1,222 @@
+{% stylesheet %}
+  .search-collections {
+    padding: 60px 20px;
+    text-align: center;
+  }
+  .sc-search-container {
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    position: relative;
+  }
+  .sc-search-container form {
+    margin: 0;
+  }
+  .sc-search-input {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 8px;
+    border: 1px solid #eaeaea;
+    font-size: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    outline: none;
+    transition: box-shadow 0.3s ease;
+    background-color: #fff;
+    color: #333;
+  }
+  .sc-search-input:focus {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-color: #ccc;
+  }
+  .sc-search-btn {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #999;
+    padding: 5px;
+  }
+  .sc-search-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+  .sc-pills-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .sc-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #ffffff;
+    padding: 4px 16px 4px 4px;
+    border-radius: 50px;
+    text-decoration: none;
+    color: #333;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .sc-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  }
+  .sc-pill img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #f4f4f4;
+  }
+{% endstylesheet %}
+
+<div class="search-collections" style="background-color: {{ section.settings.bg_color }};">
+  
+  <div class="sc-search-container">
+    <form action="{{ routes.search_url }}" method="get" role="search">
+      <input type="hidden" name="type" value="product">
+      <input 
+        type="search" 
+        name="q" 
+        value="{{ search.terms | escape }}" 
+        class="sc-search-input" 
+        id="sc-search-input-{{ section.id }}" 
+        placeholder="Search..."
+        autocomplete="off"
+      >
+      <button type="submit" class="sc-search-btn">
+        <svg viewBox="0 0 24 24"><path d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.39zM11 18a7 7 0 1 1 7-7 7 7 0 0 1-7 7z"/></svg>
+      </button>
+    </form>
+  </div>
+
+  <div class="sc-pills-container">
+    {% for block in section.blocks %}
+      {%- assign collection = collections[block.settings.collection] -%}
+      {%- assign link_url = collection.url | default: '/collections/all' -%}
+      {%- assign title = block.settings.title | default: collection.title | default: 'Collection' -%}
+      
+      <a href="{{ link_url }}" class="sc-pill" {{ block.shopify_attributes }}>
+        {% if block.settings.image != blank %}
+          {{ block.settings.image | image_url: width: 64 | image_tag: loading: 'lazy' }}
+        {% elsif collection != blank and collection.image != blank %}
+          {{ collection.image | image_url: width: 64 | image_tag: loading: 'lazy' }}
+        {% else %}
+          <img src="https://picsum.photos/64?random={{ forloop.index | plus: 20 }}" alt="{{ title }}">
+        {% endif %}
+        <span>{{ title }}</span>
+      </a>
+    {% endfor %}
+  </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const input = document.getElementById('sc-search-input-{{ section.id }}');
+  const textsString = {{ section.settings.typewriter_texts | json }};
+  const texts = textsString ? textsString.split(',').map(t => t.trim()).filter(t => t.length > 0) : [];
+  
+  if(input && texts.length > 0) {
+    let textIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function typeWriter() {
+      const currentText = texts[textIndex];
+      
+      if (isDeleting) {
+        charIndex--;
+      } else {
+        charIndex++;
+      }
+
+      input.setAttribute('placeholder', currentText.substring(0, charIndex));
+
+      let typeSpeed = isDeleting ? 30 : 80;
+
+      if (!isDeleting && charIndex === currentText.length) {
+        typeSpeed = 1500; // Pause at end of word
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        textIndex = (textIndex + 1) % texts.length;
+        typeSpeed = 300; // Pause before typing new word
+      }
+
+      setTimeout(typeWriter, typeSpeed);
+    }
+
+    // Start effect
+    setTimeout(typeWriter, 1000);
+  }
+});
+</script>
+
+{% schema %}
+{
+  "name": "Search & Collections",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#f4eee8"
+    },
+    {
+      "type": "textarea",
+      "id": "typewriter_texts",
+      "label": "Search Placeholder Texts (Comma separated)",
+      "default": "New Arrivals, Wall Paintings, Home Temples, Tables & Chairs, Decorative Mirrors, Floor Lamps",
+      "info": "These words will appear as a typewriter effect in the search bar placeholder."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_pill",
+      "name": "Collection Pill",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Link to Collection",
+          "info": "This will automatically pull the collection title and image."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Custom Title (Optional)",
+          "info": "Overrides the collection title."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom Image (Optional)",
+          "info": "Overrides the collection image."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Search & Collections",
+      "blocks": [
+        { "type": "collection_pill" },
+        { "type": "collection_pill" },
+        { "type": "collection_pill" },
+        { "type": "collection_pill" },
+        { "type": "collection_pill" },
+        { "type": "collection_pill" }
+      ]
+    }
+  ]
+}
+{% endschema %}

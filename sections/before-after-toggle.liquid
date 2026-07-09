@@ -1,0 +1,235 @@
+{% stylesheet %}
+  .bat-section {
+    padding: 60px 0;
+    background-color: #ffffff;
+  }
+  .bat-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .bat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  .bat-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bat-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    transition: opacity 0.3s ease;
+  }
+  .bat-icon-left {
+    opacity: 1;
+  }
+  .bat-icon-right {
+    opacity: 0.3;
+  }
+  .bat-toggle {
+    width: 48px;
+    height: 24px;
+    background-color: #cbd5e0;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .bat-toggle-knob {
+    width: 20px;
+    height: 20px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .bat-toggle.active {
+    background-color: #3f5345;
+  }
+  .bat-toggle.active .bat-toggle-knob {
+    transform: translateX(24px);
+  }
+  
+  .bat-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .bat-view-all {
+    font-size: 14px;
+    color: #4a5568;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .bat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .bat-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 1; /* square cards */
+  }
+  .bat-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.5s ease;
+  }
+  .bat-image-organized {
+    opacity: 0;
+  }
+  
+  /* State class */
+  .bat-section.is-organized .bat-image-scattered {
+    opacity: 0;
+  }
+  .bat-section.is-organized .bat-image-organized {
+    opacity: 1;
+  }
+  .bat-section.is-organized .bat-icon-left {
+    opacity: 0.3;
+  }
+  .bat-section.is-organized .bat-icon-right {
+    opacity: 1;
+  }
+
+  @media (max-width: 990px) {
+    .bat-grid { grid-template-columns: repeat(2, 1fr); }
+    .bat-header { flex-wrap: wrap; }
+    .bat-title { position: static; transform: none; order: 1; width: 100%; text-align: center; margin-bottom: 20px; }
+    .bat-controls { order: 2; }
+    .bat-view-all { order: 3; }
+  }
+{% endstylesheet %}
+
+<div class="bat-section" id="bat-section-{{ section.id }}">
+  <div class="bat-container">
+    <div class="bat-header">
+      <div class="bat-controls">
+        <img src="{{ 'scattered_icon.webp' | asset_url }}" alt="Scattered" class="bat-icon bat-icon-left">
+        <div class="bat-toggle" id="bat-toggle-{{ section.id }}">
+          <div class="bat-toggle-knob"></div>
+        </div>
+        <img src="{{ 'organized_icon.webp' | asset_url }}" alt="Organized" class="bat-icon bat-icon-right">
+      </div>
+      
+      <h2 class="bat-title">{{ section.settings.title }}</h2>
+      
+      <a href="{{ section.settings.link | default: '#' }}" class="bat-view-all">View all</a>
+    </div>
+    
+    <div class="bat-grid">
+      {% for block in section.blocks limit: 4 %}
+        <div class="bat-card" {{ block.shopify_attributes }}>
+          {% if block.settings.scattered_image != blank %}
+            {{ block.settings.scattered_image | image_url: width: 600 | image_tag: class: 'bat-image bat-image-scattered', loading: 'lazy' }}
+          {% else %}
+            {% capture fallback_s %}
+              {% case forloop.index %}
+                {% when 1 %}{{ 'scattered_1.png' | asset_url }}
+                {% when 2 %}{{ 'scattered_2.jpg' | asset_url }}
+                {% when 3 %}{{ 'scattered_3.jpg' | asset_url }}
+                {% when 4 %}{{ 'scattered_4.jpg' | asset_url }}
+              {% endcase %}
+            {% endcapture %}
+            <img src="{{ fallback_s | strip }}" alt="Scattered" class="bat-image bat-image-scattered">
+          {% endif %}
+          
+          {% if block.settings.organized_image != blank %}
+            {{ block.settings.organized_image | image_url: width: 600 | image_tag: class: 'bat-image bat-image-organized', loading: 'lazy' }}
+          {% else %}
+            {% capture fallback_o %}
+              {% case forloop.index %}
+                {% when 1 %}{{ 'organised_1.png' | asset_url }}
+                {% when 2 %}{{ 'organised_2.jpg' | asset_url }}
+                {% when 3 %}{{ 'organised_3.webp' | asset_url }}
+                {% when 4 %}{{ 'organised_4.webp' | asset_url }}
+              {% endcase %}
+            {% endcapture %}
+            <img src="{{ fallback_o | strip }}" alt="Organized" class="bat-image bat-image-organized">
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var toggle = document.getElementById('bat-toggle-{{ section.id }}');
+    var section = document.getElementById('bat-section-{{ section.id }}');
+    
+    if(toggle && section) {
+      toggle.addEventListener('click', function() {
+        toggle.classList.toggle('active');
+        section.classList.toggle('is-organized');
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Before After Toggle",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Shoe Rack"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "View All Link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "toggle_card",
+      "name": "Toggle Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "scattered_image",
+          "label": "Scattered Image (Off State)"
+        },
+        {
+          "type": "image_picker",
+          "id": "organized_image",
+          "label": "Organized Image (On State)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Before After Toggle",
+      "blocks": [
+        { "type": "toggle_card" },
+        { "type": "toggle_card" },
+        { "type": "toggle_card" },
+        { "type": "toggle_card" }
+      ]
+    }
+  ]
+}
+{% endschema %}

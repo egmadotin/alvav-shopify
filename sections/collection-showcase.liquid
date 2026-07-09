@@ -1,0 +1,404 @@
+{% stylesheet %}
+  .cs-section {
+    padding: 60px 0;
+    background-color: #f2f4ec; /* pale green/beige background */
+  }
+  .cs-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+  .cs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 25px;
+  }
+  .cs-title-wrap {
+    max-width: 80%;
+  }
+  .cs-title {
+    font-size: 28px;
+    color: #3b503e; /* dark green */
+    font-weight: 700;
+    margin: 0 0 8px 0;
+  }
+  .cs-subtitle {
+    font-size: 15px;
+    color: #555;
+    margin: 0;
+  }
+  .cs-view-all {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #333;
+    border-radius: 30px;
+    padding: 6px 16px 6px 6px;
+    text-decoration: none;
+    color: #111;
+    font-size: 14px;
+    font-weight: 500;
+    background: transparent;
+    transition: background 0.3s;
+  }
+  .cs-view-all:hover {
+    background: rgba(0,0,0,0.05);
+  }
+  .cs-avatars {
+    display: flex;
+    margin-right: 8px;
+  }
+  .cs-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid #f2f4ec;
+    margin-left: -8px;
+    background: #ccc;
+    object-fit: cover;
+  }
+  .cs-avatar:first-child { margin-left: 0; }
+  
+  .cs-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 20px;
+    padding: 0 0 10px 0;
+  }
+  .cs-grid::-webkit-scrollbar { display: none; }
+  
+  /* Spacers only shown on mobile full-bleed scroll */
+  .cs-grid::before,
+  .cs-grid::after {
+    display: none;
+  }
+  
+  .cs-card {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    position: relative;
+    flex: 0 0 calc(25% - 15px);
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+  .cs-card-image-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+  }
+  .cs-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background: #e9e9e9;
+  }
+  .cs-badge-discount {
+    position: absolute;
+    top: 0; left: 0;
+    background: #5b6553;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    border-bottom-right-radius: 4px;
+  }
+  .cs-badge-rating {
+    position: absolute;
+    bottom: 8px; right: 8px;
+    background: rgba(255,255,255,0.9);
+    color: #333;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .cs-badge-rating svg {
+    width: 10px; height: 10px; fill: #333;
+  }
+  
+  .cs-card-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  .cs-card-title {
+    font-size: 14px;
+    color: #222;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .cs-price-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .cs-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111;
+  }
+  .cs-compare-price {
+    font-size: 12px;
+    text-decoration: line-through;
+    color: #999;
+  }
+  .cs-emi-row {
+    font-size: 11px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .cs-emi-badge {
+    background: #476049;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  @media (max-width: 1200px) {
+    .cs-container { padding: 0 40px; }
+    .cs-card { flex: 0 0 calc(33.333% - 14px); }
+  }
+  @media (max-width: 990px) {
+    .cs-container { padding: 0 20px; }
+    .cs-header { flex-direction: row; align-items: center; gap: 15px; }
+    .cs-title-wrap { max-width: 100%; }
+    .cs-card { flex: 0 0 calc(50% - 10px); }
+  }
+  @media (max-width: 768px) {
+    .cs-section {
+      padding: 30px 0;
+      background-color: #ffffff !important;
+    }
+    .cs-container { padding: 0 16px; }
+    .cs-header {
+      padding: 0 0 14px 0;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cs-title { font-size: 22px; margin: 0; }
+    .cs-subtitle { display: none; }
+    .cs-title-wrap { max-width: 55%; }
+    .cs-view-all {
+      white-space: nowrap;
+      font-size: 12px;
+      padding: 5px 12px 5px 5px;
+      flex-shrink: 0;
+    }
+    .cs-avatars { margin-right: 6px; }
+    .cs-avatar { width: 20px; height: 20px; }
+    .cs-grid {
+      gap: 12px;
+      padding: 0 0 8px 0;
+    }
+    .cs-grid::before,
+    .cs-grid::after {
+      display: none;
+    }
+    .cs-card {
+      flex: 0 0 calc(50vw - 22px);
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .cs-card-info { padding: 10px; }
+    .cs-card-title { font-size: 13px; }
+    .cs-price { font-size: 15px; }
+    .cs-compare-price { font-size: 11px; }
+    .cs-emi-row { font-size: 10px; flex-wrap: wrap; gap: 4px; }
+    .cs-emi-badge {
+      background: #3b6e3f;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-size: 9px;
+    }
+    .cs-badge-discount {
+      font-size: 11px;
+      padding: 4px 8px;
+    }
+  }
+{% endstylesheet %}
+
+<div class="cs-section" style="background: {{ section.settings.bg_gradient | default: section.settings.bg_color }};">
+  <div class="cs-container">
+    <div class="cs-header">
+      <div class="cs-title-wrap">
+        <h2 class="cs-title">{{ section.settings.title }}</h2>
+        <p class="cs-subtitle">{{ section.settings.subtitle }}</p>
+      </div>
+      <a href="{{ section.settings.view_all_link | default: '#' }}" class="cs-view-all">
+        <div class="cs-avatars">
+          <img src="https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png?format=webp&v=1530129081" class="cs-avatar" alt="User">
+          <img src="https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-lifestyle-1_large.png?format=webp&v=1530129313" class="cs-avatar" alt="User">
+          <img src="https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-lifestyle-2_large.png?format=webp&v=1530129313" class="cs-avatar" alt="User">
+        </div>
+        View all
+      </a>
+    </div>
+    
+    <div class="cs-grid">
+      {% for block in section.blocks %}
+        <a href="{{ block.settings.link | default: '#' }}" class="cs-card" {{ block.shopify_attributes }}>
+          <div class="cs-card-image-wrap">
+            {% if block.settings.discount_badge != blank %}
+              <div class="cs-badge-discount">{{ block.settings.discount_badge }}</div>
+            {% endif %}
+            
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 600 | image_tag: class: 'cs-card-image', loading: 'lazy' }}
+            {% else %}
+              {% capture placeholder_name %}product-{% cycle '1', '2', '3', '4' %}{% endcapture %}
+              {{ placeholder_name | placeholder_svg_tag: 'cs-card-image' }}
+            {% endif %}
+            
+            <div class="cs-badge-rating">
+              {{ block.settings.rating | default: '4.8' }}
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              | {{ block.settings.reviews | default: '47' }}
+            </div>
+          </div>
+          
+          <div class="cs-card-info">
+            <div class="cs-card-title">{{ block.settings.title | default: 'Product Title Here' }}</div>
+            <div class="cs-price-row">
+              <span class="cs-price">{{ block.settings.price | default: '₹2,699' }}</span>
+              <span class="cs-compare-price">{{ block.settings.compare_price | default: '₹6,999' }}</span>
+            </div>
+            <div class="cs-emi-row">
+              or {{ block.settings.emi_text | default: '₹675/Month' }}
+              <span class="cs-emi-badge">Buy on EMI ></span>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection Showcase",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#f2f4ec"
+    },
+    {
+      "type": "text",
+      "id": "bg_gradient",
+      "label": "Background Gradient (CSS)"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "The Luxe Art Collection"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Home Decor is the most important segment in setting the complete ambiance of your home."
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "View All Link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Product Image"
+        },
+        {
+          "type": "text",
+          "id": "discount_badge",
+          "label": "Discount Badge",
+          "default": "61% OFF"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Product Title",
+          "default": "Seven Horses Running at Sunrise Premium Canvas"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Sale Price",
+          "default": "₹2,699"
+        },
+        {
+          "type": "text",
+          "id": "compare_price",
+          "label": "Original Price",
+          "default": "₹6,999"
+        },
+        {
+          "type": "text",
+          "id": "rating",
+          "label": "Rating",
+          "default": "4.8"
+        },
+        {
+          "type": "text",
+          "id": "reviews",
+          "label": "Review Count",
+          "default": "47"
+        },
+        {
+          "type": "text",
+          "id": "emi_text",
+          "label": "EMI Text",
+          "default": "₹675/Month"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Product Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Showcase",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" }
+      ]
+    }
+  ]
+}
+{% endschema %}

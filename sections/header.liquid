@@ -454,6 +454,36 @@
         drawer_search: drawer_search,
         sparkle: sparkle
       %}
+      {%- if row == 'top' -%}
+        <a
+          href="{{ routes.account_url }}"
+          class="mobile-profile-icon header-actions__action"
+          aria-label="{{ 'accessibility.log_in' | t }}"
+          style="display: none;"
+        >
+          <img
+            src="{{ 'icon-sparkle-person.png' | asset_url }}"
+            width="22"
+            height="22"
+            alt=""
+            aria-hidden="true"
+            class="mobile-profile-icon__img"
+          >
+        </a>
+        <form action="{{ routes.search_url }}" method="get" role="search" class="sticky-mobile-search" style="display: none;">
+          <span class="svg-wrapper search-icon">
+            {{ 'icon-search.svg' | inline_asset_content }}
+          </span>
+          <input
+            type="search"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder="Home decor"
+            class="mobile-search-input"
+            aria-label="Search"
+          >
+        </form>
+      {%- endif -%}
     {% endcapture %}
 
     {% assign content = content | strip %}
@@ -471,6 +501,123 @@
       </div>
     {% endif %}
   {% endfor %}
+
+  {%- comment -%} Mobile Search Bar and Category Cutouts (Visible on mobile only) {%- endcomment -%}
+  <div class="mobile-only-header-elements">
+    <form action="{{ routes.search_url }}" method="get" role="search" class="mobile-search-bar-form">
+      <div class="mobile-search-bar-wrapper">
+        <span class="svg-wrapper search-icon">
+          {{ 'icon-search.svg' | inline_asset_content }}
+        </span>
+        <input
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="Search..."
+          class="mobile-search-input"
+          aria-label="Search"
+        >
+      </div>
+    </form>
+
+    <script>
+      (function() {
+        function initTypewriter() {
+          const searchInputs = document.querySelectorAll('.mobile-search-input');
+          if (searchInputs.length === 0) return;
+
+          const placeholders = [
+            'Search Paintings...',
+            'Search Decor...',
+            'Search Tables...',
+            'Search Mirrors...',
+            'Search Lamps...',
+            'Search Clocks...'
+          ];
+
+          let phraseIndex = 0;
+          let charIndex = 0;
+          let isDeleting = false;
+          let speed = 100;
+
+          function type() {
+            const phrase = placeholders[phraseIndex];
+            let text = isDeleting ? phrase.substring(0, charIndex - 1) : phrase.substring(0, charIndex + 1);
+            charIndex = isDeleting ? charIndex - 1 : charIndex + 1;
+            
+            searchInputs.forEach(input => {
+              input.setAttribute('placeholder', text);
+            });
+
+            if (!isDeleting && charIndex === phrase.length) {
+              speed = 2000;
+              isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+              isDeleting = false;
+              phraseIndex = (phraseIndex + 1) % placeholders.length;
+              speed = 500;
+            } else {
+              speed = isDeleting ? 40 : 80;
+            }
+
+            setTimeout(type, speed);
+          }
+          setTimeout(type, 500);
+        }
+
+        if (document.readyState !== 'loading') {
+          initTypewriter();
+        } else {
+          document.addEventListener('DOMContentLoaded', initTypewriter);
+        }
+      })();
+    </script>
+
+    <div class="mobile-category-cutouts">
+      <div class="mobile-category-cutouts__scroll">
+        {% assign category_menu = section.settings.mobile_category_menu %}
+        {% for link in linklists[category_menu].links %}
+          {% liquid
+            assign cutout_img = ''
+            if link.type == 'collection_link' and link.object.image != blank
+              assign cutout_img = link.object.image | image_url: width: 120
+            else
+              # Fallback logic based on link title
+              assign title_downcase = link.title | downcase
+              if title_downcase contains 'chair'
+                assign cutout_img = 'Untitled_design_4_43b63d64-5d5d-4898-bee0-711adda56d5f.png' | asset_url
+              elsif title_downcase contains 'table'
+                assign cutout_img = '1_db26270d-b256-42d7-b2ab-21fbefb38a43.png' | asset_url
+              elsif title_downcase contains 'paint'
+                assign cutout_img = 'Untitled_design_1_d1578740-a39d-4b5c-87d0-50e36d098b1b.png' | asset_url
+              elsif title_downcase contains 'mirror'
+                assign cutout_img = 'Untitled_design_9_8ac74b38-fcdf-4a68-a807-e265a8bfa4c1.png' | asset_url
+              elsif title_downcase contains 'lamp'
+                assign cutout_img = 'Untitled_design_23.png' | asset_url
+              elsif title_downcase contains 'temple' or title_downcase contains 'pooja'
+                assign cutout_img = 'Untitled_design_5_5780c9e4-c66c-4a7a-a699-17dbed81c102.png' | asset_url
+              elsif title_downcase contains 'trolley' or title_downcase contains 'bar'
+                assign cutout_img = '3_08f4251a-6935-4c4c-8d0d-b912de73c835.png' | asset_url
+              elsif title_downcase contains 'cabinet'
+                assign cutout_img = 'Untitled_design_8_31e44ca2-3598-40af-8d81-3e6888307af5.png' | asset_url
+              else
+                # Default cutout image fallback if none matches
+                assign cutout_img = 'Untitled_design_4_43b63d64-5d5d-4898-bee0-711adda56d5f.png' | asset_url
+              endif
+            endif
+          %}
+          <a href="{{ link.url }}" class="mobile-category-cutouts__item">
+            <div class="mobile-category-cutouts__image-wrapper">
+              {% if cutout_img != blank %}
+                <img src="{{ cutout_img }}" alt="{{ link.title | escape }}" loading="lazy" width="60" height="60">
+              {% endif %}
+            </div>
+            <span class="mobile-category-cutouts__title">{{ link.title }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 
   {% if navigation_bar != blank %}
     <div class="header__row header__navigation-bar-row">
@@ -510,11 +657,133 @@
     }
   }
 
+  /* Mobile-only header elements styling */
+  .mobile-only-header-elements {
+    display: none;
+  }
+
+  @media screen and (max-width: 768px) {
+    .mobile-only-header-elements {
+      display: block;
+      background-color: var(--color-background-top-row, #2C3A24);
+      padding-bottom: var(--padding-xs);
+    }
+
+    .mobile-search-bar-form {
+      display: block;
+      margin-inline: var(--padding-md);
+      margin-block: var(--padding-xs);
+    }
+
+    .mobile-search-bar-wrapper {
+      display: flex;
+      align-items: center;
+      background-color: #ffffff;
+      border-radius: 30px;
+      padding-block: 8px;
+      padding-inline: var(--padding-lg);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.05);
+
+      .search-icon {
+        width: 18px;
+        height: 18px;
+        color: #777777;
+        margin-right: var(--margin-xs);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+
+    .mobile-search-input {
+      border: none !important;
+      outline: none !important;
+      background: transparent !important;
+      width: 100% !important;
+      font-size: 14px !important;
+      font-family: var(--font-body--family) !important;
+      color: #333333 !important;
+      padding: 0 !important;
+      margin-left: 8px !important;
+      height: auto !important;
+      box-shadow: none !important;
+    }
+
+    .mobile-category-cutouts {
+      width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none; /* Hide scrollbar for Firefox */
+      -ms-overflow-style: none;  /* Hide scrollbar for IE/Edge */
+    }
+
+    .mobile-category-cutouts::-webkit-scrollbar {
+      display: none; /* Hide scrollbar for Chrome/Safari/Opera */
+    }
+
+    .mobile-category-cutouts__scroll {
+      display: flex;
+      gap: 16px;
+      padding-inline: var(--padding-md);
+      padding-block: var(--padding-xs) 4px;
+      width: max-content;
+    }
+
+    .mobile-category-cutouts__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      width: 60px;
+      text-align: center;
+      transition: transform 0.2s ease;
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+
+    .mobile-category-cutouts__image-wrapper {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 6px;
+
+      img {
+        width: 80%;
+        height: 80%;
+        object-fit: contain;
+      }
+    }
+
+    .mobile-category-cutouts__title {
+      font-size: 11px;
+      color: var(--color-foreground-top-row, #F4ECD8);
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      width: 100%;
+      font-family: var(--font-body--family);
+    }
+  }
+
   #header-component :is(.header-menu, .dropdown-localization) {
     display: none;
   }
 
-  @media screen and (min-width: 750px) {
+  @media screen and (min-width: 769px) {
     #header-component[data-menu-style='menu'] :is(.header-menu, .dropdown-localization) {
       display: flex;
     }
@@ -524,7 +793,7 @@
     display: contents;
   }
 
-  @media screen and (min-width: 750px) {
+  @media screen and (min-width: 769px) {
     #header-component[data-menu-style='menu'] .header__navigation-bar-row {
       display: none;
     }
@@ -633,6 +902,89 @@
   #header-component {
     --submenu-height: 0px;
     --full-open-header-height: 0px;
+  }
+
+  /* Mobile profile icon: hidden on desktop, visible only on mobile */
+  .mobile-profile-icon {
+    display: none !important;
+    color: currentColor;
+    text-decoration: none;
+  }
+
+  .mobile-profile-icon__img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    display: block;
+  }
+
+  @media screen and (max-width: 768px) {
+    .mobile-profile-icon {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  /* Sticky Mobile Search styling */
+  .sticky-mobile-search {
+    display: none !important;
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+
+  @media screen and (max-width: 768px) {
+    #header-component[data-sticky-state='active'] {
+      .header__columns {
+        grid-template-areas: 'leftA search search search rightB' !important;
+        padding-inline-end: var(--padding-md) !important;
+        padding-block: 8px !important;
+      }
+
+      .header-logo,
+      .mobile-profile-icon {
+        display: none !important;
+      }
+
+      .sticky-mobile-search {
+        display: flex !important;
+        grid-area: search;
+        align-items: center;
+        background-color: #ffffff;
+        border-radius: 30px;
+        padding-block: 8px;
+        padding-inline: var(--padding-md);
+        width: calc(100% - var(--padding-md));
+        margin-inline: var(--padding-xs);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+
+        .search-icon {
+          width: 14px;
+          height: 14px;
+          color: #777777;
+          margin-right: var(--margin-xs);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          svg {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        .mobile-search-input {
+          font-size: 13px !important;
+          margin-left: 6px !important;
+        }
+      }
+
+      /* Hide mobile row below header on scroll */
+      .mobile-only-header-elements {
+        display: none !important;
+      }
+    }
   }
 
   #header-group:has(#header-component[sticky]) {
@@ -764,7 +1116,7 @@
     border-bottom: var(--border-bottom-width) solid var(--border-bottom-color, var(--color-border));
   }
 
-  @media screen and (max-width: 749px) {
+  @media screen and (max-width: 768px) {
     .header__row--top:not(.divider--page-width),
     .header__row--top.divider--page-width .header__columns {
       border-bottom-width: var(--border-bottom-width-mobile);
@@ -779,7 +1131,7 @@
   }
 
   .header__row.divider--page-width:not(.section--page-width) .header__columns {
-    @media screen and (min-width: 750px) {
+    @media screen and (min-width: 769px) {
       padding-inline-start: 0;
       padding-inline-end: 0;
       margin-inline-start: var(--page-margin);
@@ -791,8 +1143,8 @@
     display: flex;
     align-items: center;
 
-    /* on mobile, header__column nodes are ignored to create a new grid-template-area based on all visible content */
-    @media screen and (max-width: 749px) {
+    /* on mobile/tablet, header__column nodes are ignored to create a new grid-template-area based on all visible content */
+    @media screen and (max-width: 768px) {
       display: contents;
     }
   }
@@ -855,6 +1207,12 @@
     grid-gap: var(--gap-md);
     grid-template-columns: var(--header-template-columns);
 
+    @media screen and (min-width: 769px) {
+      max-width: var(--page-content-width);
+      margin-inline: auto;
+      width: 100%;
+    }
+
     /* If menu is in center column */
     &:has(.header__column--center header-menu) {
       --header-center: auto;
@@ -864,7 +1222,7 @@
 
     /* If there is no center column, make the column the menu is in grow eagerly */
     &:where(:not(:has(.header__column--center))) {
-      @media screen and (min-width: 750px) {
+      @media screen and (min-width: 769px) {
         --header-template-columns: var(--header-left) var(--header-right);
 
         grid-template-areas: 'left right';
@@ -883,7 +1241,7 @@
       }
     }
 
-    @media screen and (max-width: 749px) {
+    @media screen and (max-width: 768px) {
       --header-template-columns: var(--header-mobile-bookend) var(--header-mobile-bookend) 1fr
         var(--header-mobile-bookend) var(--header-mobile-bookend);
 
@@ -898,16 +1256,17 @@
         grid-area: center;
       }
 
-      &:not(:has(header-actions)) .search-action {
-        grid-area: leftB;
-      }
-
-      &:not(:has(shopify-account)) .search-action {
-        grid-area: rightA;
-      }
-
+      /* Hide search on mobile — replaced by profile icon */
       .search-action {
-        grid-area: leftB;
+        display: none !important;
+      }
+
+      /* Profile icon takes rightA slot */
+      .mobile-profile-icon {
+        grid-area: rightA;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       header-actions {
@@ -933,16 +1292,17 @@
       grid-area: center;
     }
 
-    &:not(:has(header-actions)) .search-action {
-      grid-area: leftB;
-    }
-
-    &:not(:has(shopify-account)) .search-action {
-      grid-area: rightA;
-    }
-
+    /* Hide search on mobile — replaced by profile icon */
     .search-action {
-      grid-area: leftB;
+      display: none !important;
+    }
+
+    /* Profile icon takes rightA slot */
+    .mobile-profile-icon {
+      grid-area: rightA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     header-actions {
@@ -1767,6 +2127,12 @@
       "label": "t:settings.text_color_transparent",
       "placeholder": "t:settings.default",
       "visible_if": "{{ section.settings.enable_transparent_header_collection }}"
+    },
+    {
+      "type": "link_list",
+      "id": "mobile_category_menu",
+      "label": "Mobile Category Menu",
+      "default": "main-menu"
     }
   ],
   "presets": []

@@ -115,22 +115,14 @@
 %}
 
 {% capture media_slot_1 %}
-  {%- if media_1 == 'image' and media_1_mobile == 'image' -%}
-    {%- comment -%} Both desktop and mobile are images. Assume similar images, and this is art direction: use picture element. {%- endcomment -%}
+  {%- if media_1 == 'image' -%}
     <picture
       data-testid="hero-picture-1"
       class="hero__media"
     >
       <source
-        media="(max-width: 749px)"
-        srcset="
-          {%-  for mobile_width in mobile_widths_array -%}
-            {{ section.settings.image_1_mobile | image_url: width: mobile_width }} {{ mobile_width }}w{% unless forloop.last %},{% endunless %}
-          {%- endfor -%}
-        "
-        sizes="{{ sizes_mobile }}"
-        width="{{ section.settings.image_1_mobile.width }}"
-        height="{{ section.settings.image_1_mobile.height }}"
+        media="(max-width: 768px)"
+        srcset="{% if section.settings.image_1_mobile != blank %}{{ section.settings.image_1_mobile | image_url: width: 800 }}{% else %}{{ 'hero_mobile_banner_10_1.png' | asset_url }}{% endif %}"
       >
       {{
         section.settings.image_1
@@ -146,22 +138,6 @@
           data-testid: 'hero-desktop-image-1'
       }}
     </picture>
-  {%- elsif media_1 == 'image' -%}
-    <div class="{{ media_wrapper_desktop_class }}">
-      {{
-        section.settings.image_1
-        | image_url: width: 3840
-        | image_tag:
-          width: section.settings.image_1.width,
-          widths: widths,
-          height: section.settings.image_1.height,
-          alt: section.settings.image_1.alt,
-          class: 'hero__media',
-          sizes: sizes,
-          fetchpriority: fetch_priority,
-          data-testid: 'hero-desktop-image-1'
-      }}
-    </div>
   {%- endif -%}
 
   {%- if media_1 == 'video' -%}
@@ -558,6 +534,11 @@
   .hero {
     position: relative;
     min-height: calc(var(--hero-min-height) - var(--hero-height-offset));
+
+    @media screen and (max-width: 768px) {
+      padding-top: 5px !important;
+      background-color: #2C3A24 !important;
+    }
   }
 
   .hero[data-shopify-visual-preview] {
@@ -600,6 +581,11 @@
     display: grid;
     grid-column: 1 / -1;
     grid-template-columns: repeat(var(--hero-media-count, 1), 1fr);
+
+    @media screen and (max-width: 768px) {
+      top: 5px !important;
+      height: calc(100% - 5px) !important;
+    }
   }
 
   .hero--auto .hero__media {
@@ -631,6 +617,10 @@
     overflow: hidden;
     position: relative;
     z-index: var(--layer-base);
+
+    @media screen and (max-width: 768px) {
+      object-position: center 10% !important;
+    }
   }
 
   /* Mobile/Desktop media visibility */

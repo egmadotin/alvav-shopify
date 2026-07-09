@@ -18,3 +18,6 @@ Thumbs.db
 # Logs
 *.log
 
+# Backup data and files
+vibecrafts.com/
+vibecrafts.com_*.json

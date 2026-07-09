@@ -1,0 +1,534 @@
+{% stylesheet %}
+  .lmt-section {
+    padding: 60px 0;
+    background-color: #ffffff;
+    transition: background-color 0.8s ease, color 0.8s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .lmt-section[data-time="night"] {
+    background-color: #061224; /* Dark blue night color */
+    color: #ffffff;
+  }
+  .lmt-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2; /* Sit above the night overlay */
+  }
+  .lmt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  
+  /* Toggle Styles */
+  .lmt-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .lmt-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  /* Default: Left icons are active, Right are inactive */
+  .lmt-icon-left {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  .lmt-icon-right {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  .lmt-toggle {
+    width: 48px;
+    height: 24px;
+    background-color: #cbd5e0;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .lmt-toggle-knob {
+    width: 20px;
+    height: 20px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  /* Left Toggle specific (Power) */
+  #lmt-toggle-power.active {
+    background-color: #3f5345;
+  }
+  #lmt-toggle-power.active .lmt-toggle-knob {
+    transform: translateX(24px);
+  }
+  
+  /* Right Toggle specific (Time) */
+  #lmt-toggle-time.active {
+    background-color: #3f5345;
+  }
+  #lmt-toggle-time.active .lmt-toggle-knob {
+    transform: translateX(24px);
+  }
+  
+  .lmt-title-wrap {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lmt-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    color: #333;
+    transition: color 0.8s ease;
+  }
+  .lmt-section[data-time="night"] .lmt-title {
+    color: #ffffff;
+  }
+  .lmt-moon-icon {
+    position: absolute;
+    top: 50%;
+    margin-top: -22px;
+    left: 100%;
+    margin-left: 15px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #0c1527; /* Dark side color */
+    box-shadow: inset 18px 0px 0px 0px #fcf0cd, 0 0 20px rgba(252, 240, 205, 0.2);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    overflow: hidden;
+  }
+
+  .lmt-section[data-time="night"] .lmt-moon-icon {
+    opacity: 1;
+    transform: scale(1);
+    animation: moonFloat 4s ease-in-out infinite 0.5s;
+  }
+  @keyframes moonFloat {
+    0%, 100% { transform: scale(1) translateY(0); }
+    50% { transform: scale(1) translateY(-8px); }
+  }
+  
+  .lmt-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .lmt-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 1; /* square cards */
+  }
+  .lmt-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  
+  /* State Machine */
+  .lmt-section[data-power="off"][data-time="day"] .lmt-day-off { opacity: 1; z-index: 2; }
+  .lmt-section[data-power="on"][data-time="day"] .lmt-day-on { opacity: 1; z-index: 2; }
+  .lmt-section[data-power="off"][data-time="night"] .lmt-night-off { opacity: 1; z-index: 2; }
+  .lmt-section[data-power="on"][data-time="night"] .lmt-night-on { opacity: 1; z-index: 2; }
+  
+  /* Icon States */
+  .lmt-icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  /* Day Mode - Power Icons (Images) */
+  .lmt-section[data-time="day"] .lmt-power-left { filter: none; opacity: 1; transform: scale(1.15); }
+  .lmt-section[data-time="day"] .lmt-power-right { filter: none; opacity: 0.3; transform: scale(1); }
+  .lmt-section[data-time="day"][data-power="on"] .lmt-power-left { filter: none; opacity: 0.3; transform: scale(1); }
+  .lmt-section[data-time="day"][data-power="on"] .lmt-power-right { filter: none; opacity: 1; transform: scale(1.15); }
+  
+  /* Night Mode - Power Icons (Images) */
+  .lmt-section[data-time="night"] .lmt-power-left { filter: invert(1) brightness(2); opacity: 1; transform: scale(1.15); }
+  .lmt-section[data-time="night"] .lmt-power-right { filter: invert(1) brightness(2); opacity: 0.4; transform: scale(1); }
+  .lmt-section[data-time="night"][data-power="on"] .lmt-power-left { filter: invert(1) brightness(2); opacity: 0.4; transform: scale(1); }
+  .lmt-section[data-time="night"][data-power="on"] .lmt-power-right { filter: invert(1) brightness(2); opacity: 1; transform: scale(1.15); }
+  
+  /* Day Mode */
+  .lmt-section[data-time="day"] .lmt-time-left { color: #000000; opacity: 1; transform: scale(1.15); }
+  .lmt-section[data-time="day"] .lmt-time-left circle { fill: currentColor; }
+  .lmt-section[data-time="day"] .lmt-time-right { color: #a0aec0; opacity: 0.7; transform: scale(1); }
+  
+  /* Night Mode */
+  .lmt-section[data-time="night"] .lmt-time-left { color: #718096; opacity: 0.7; transform: scale(1); }
+  .lmt-section[data-time="night"] .lmt-time-left circle { fill: transparent; }
+  .lmt-section[data-time="night"] .lmt-time-right { color: #ffffff; opacity: 1; transform: scale(1.15); }
+  
+  /* Night Mode Background Animation */
+  .lm-night-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    z-index: 0;
+  }
+  .lmt-section[data-time="night"] .lm-night-overlay {
+    opacity: 1;
+  }
+  .lm-night-sky {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(ellipse at bottom, #121a28 0%, #061224 100%);
+    opacity: 0.7;
+  }
+  .lm-stars {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  }
+  .lm-star {
+    position: absolute;
+    background: #ffffff;
+    border-radius: 50%;
+    animation: twinkle 3s infinite ease-in-out;
+  }
+  .lm-star-1 { top: 15%; left: 10%; width: 2px; height: 2px; animation-delay: 0s; }
+  .lm-star-2 { top: 30%; left: 25%; width: 3px; height: 3px; animation-delay: 0.5s; }
+  .lm-star-3 { top: 10%; left: 40%; width: 2px; height: 2px; animation-delay: 1.2s; }
+  .lm-star-4 { top: 25%; left: 55%; width: 4px; height: 4px; animation-delay: 0.3s; }
+  .lm-star-5 { top: 40%; left: 15%; width: 2px; height: 2px; animation-delay: 1.5s; }
+  .lm-star-6 { top: 18%; left: 70%; width: 3px; height: 3px; animation-delay: 0.8s; }
+  .lm-star-7 { top: 35%; left: 85%; width: 2px; height: 2px; animation-delay: 0.2s; }
+  .lm-star-8 { top: 5%; left: 90%; width: 3px; height: 3px; animation-delay: 1.1s; }
+  .lm-star-9 { top: 45%; left: 65%; width: 2px; height: 2px; animation-delay: 0.7s; }
+  .lm-star-10 { top: 20%; left: 95%; width: 4px; height: 4px; animation-delay: 1.8s; }
+  .lm-star-11 { top: 50%; left: 35%; width: 2px; height: 2px; animation-delay: 0.4s; }
+  .lm-star-12 { top: 12%; left: 80%; width: 2px; height: 2px; animation-delay: 0.9s; }
+  .lm-star-13 { top: 8%; left: 30%; width: 3px; height: 3px; animation-delay: 0.1s; }
+  .lm-star-14 { top: 22%; left: 45%; width: 2px; height: 2px; animation-delay: 1.4s; }
+  .lm-star-15 { top: 38%; left: 5%; width: 3px; height: 3px; animation-delay: 0.6s; }
+  .lm-star-16 { top: 11%; left: 65%; width: 2px; height: 2px; animation-delay: 1.3s; }
+  .lm-star-17 { top: 48%; left: 82%; width: 2px; height: 2px; animation-delay: 0.3s; }
+  .lm-star-18 { top: 32%; left: 12%; width: 4px; height: 4px; animation-delay: 1.6s; }
+  .lm-star-19 { top: 16%; left: 88%; width: 2px; height: 2px; animation-delay: 0.9s; }
+  .lm-star-20 { top: 42%; left: 38%; width: 3px; height: 3px; animation-delay: 1.0s; }
+  .lm-star-21 { top: 28%; left: 75%; width: 2px; height: 2px; animation-delay: 0.5s; }
+  .lm-star-22 { top: 5%; left: 52%; width: 2px; height: 2px; animation-delay: 1.7s; }
+  .lm-star-23 { top: 52%; left: 22%; width: 3px; height: 3px; animation-delay: 0.2s; }
+  .lm-star-24 { top: 19%; left: 3%; width: 2px; height: 2px; animation-delay: 1.2s; }
+  .lm-star-25 { top: 36%; left: 58%; width: 4px; height: 4px; animation-delay: 0.8s; }
+  .lm-star-26 { top: 25%; left: 92%; width: 2px; height: 2px; animation-delay: 1.5s; }
+  .lm-star-27 { top: 46%; left: 18%; width: 3px; height: 3px; animation-delay: 0.4s; }
+  .lm-star-28 { top: 14%; left: 28%; width: 2px; height: 2px; animation-delay: 1.1s; }
+  .lm-star-29 { top: 39%; left: 72%; width: 2px; height: 2px; animation-delay: 0.6s; }
+  .lm-star-30 { top: 7%; left: 15%; width: 3px; height: 3px; animation-delay: 1.9s; }
+  @keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 5px #fff; } }
+
+  .lm-shooting-star {
+    position: absolute;
+    width: 2px; height: 2px; background: #fff; border-radius: 50%;
+    animation: shooting 5s infinite linear;
+    opacity: 0;
+  }
+  .lm-shooting-star::before {
+    content: ''; position: absolute; top: 50%; transform: translateY(-50%); width: 60px; height: 1px;
+    background: linear-gradient(90deg, #fff, transparent);
+  }
+  .lm-shooting-star-1 { top: 10%; left: -10%; animation-delay: 2s; }
+  .lm-shooting-star-2 { top: 35%; left: -10%; animation-delay: 6s; }
+  @keyframes shooting {
+    0% { transform: translateX(0) translateY(0) rotate(15deg); opacity: 1; }
+    15% { transform: translateX(120vw) translateY(30vh) rotate(15deg); opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  .lm-clouds { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+  .lm-cloud {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 100px;
+    filter: blur(8px);
+    animation: drift linear infinite;
+  }
+  .lm-cloud::before, .lm-cloud::after {
+    content: '';
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+  }
+  .lm-cloud::before {
+    width: 45%; height: 160%; top: -60%; left: 15%;
+  }
+  .lm-cloud::after {
+    width: 35%; height: 130%; top: -30%; right: 20%;
+  }
+  .lm-cloud-1 { top: 5%; left: -30vw; width: 250px; height: 60px; animation-duration: 45s; animation-delay: 0s; }
+  .lm-cloud-2 { top: 20%; left: -40vw; width: 350px; height: 80px; animation-duration: 60s; animation-delay: -15s; }
+  .lm-cloud-3 { top: 35%; left: -25vw; width: 200px; height: 50px; animation-duration: 50s; animation-delay: -30s; }
+  .lm-cloud-4 { top: 55%; left: -35vw; width: 300px; height: 70px; animation-duration: 55s; animation-delay: -5s; }
+  .lm-cloud-5 { top: 75%; left: -20vw; width: 280px; height: 90px; animation-duration: 48s; animation-delay: -25s; }
+  .lm-cloud-6 { top: 12%; left: -45vw; width: 220px; height: 55px; animation-duration: 65s; animation-delay: -10s; }
+  .lm-cloud-7 { top: 45%; left: -30vw; width: 320px; height: 75px; animation-duration: 52s; animation-delay: -40s; }
+  .lm-cloud-8 { top: 65%; left: -50vw; width: 260px; height: 65px; animation-duration: 58s; animation-delay: -20s; }
+  @keyframes drift { 0% { transform: translateX(0); } 100% { transform: translateX(150vw); } }
+
+  .lm-asteroid {
+    position: absolute;
+    width: 3px; height: 3px; background: #fff; border-radius: 50%;
+    animation: asteroid-shooting 2.5s infinite linear;
+    opacity: 0;
+  }
+  .lm-asteroid::before {
+    content: ''; position: absolute; top: 50%; transform: translateY(-50%); width: 120px; height: 2px;
+    background: linear-gradient(90deg, #ffeedd, transparent);
+  }
+  .lm-asteroid-1 { top: 20%; left: -20%; animation-delay: 1s; }
+  .lm-asteroid-2 { top: 60%; left: -20%; animation-delay: 3.5s; }
+  .lm-asteroid-3 { top: 5%; left: -20%; animation-delay: 5s; }
+  @keyframes asteroid-shooting {
+    0% { transform: translateX(0) translateY(0) rotate(10deg); opacity: 1; }
+    8% { transform: translateX(120vw) translateY(20vh) rotate(10deg); opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  .lm-asteroid-slow {
+    position: absolute;
+    width: 4px; height: 4px; background: #fff; border-radius: 50%;
+    animation: asteroid-slow-shooting 12s infinite linear;
+    opacity: 0;
+  }
+  .lm-asteroid-slow::before {
+    content: ''; position: absolute; top: 50%; transform: translateY(-50%); width: 150px; height: 2px;
+    background: linear-gradient(90deg, #ffd1a3, transparent);
+  }
+  .lm-asteroid-slow-1 { top: 50%; left: -20vw; animation-delay: 2s; }
+  .lm-asteroid-slow-2 { top: 70%; left: -20vw; animation-delay: 7s; }
+  @keyframes asteroid-slow-shooting {
+    0% { transform: translateX(0) translateY(0) rotate(-38deg); opacity: 1; }
+    35% { transform: translateX(80vw) translateY(-70vh) rotate(-38deg); opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  @media (max-width: 990px) {
+    .lmt-grid { grid-template-columns: repeat(2, 1fr); }
+    .lmt-header { flex-wrap: wrap; justify-content: space-between; gap: 20px; }
+    .lmt-title-wrap { position: static; transform: none; order: -1; width: 100%; text-align: center; }
+    .lmt-moon-icon { position: relative; left: auto; margin-left: 12px; }
+  }
+{% endstylesheet %}
+
+<div class="lmt-section" id="lmt-section-{{ section.id }}" data-power="off" data-time="day">
+  <!-- Night Background Overlay -->
+  <div class="lm-night-overlay" aria-hidden="true">
+    <div class="lm-night-sky"></div>
+    <div class="lm-clouds">
+      <span class="lm-cloud lm-cloud-1"></span>
+      <span class="lm-cloud lm-cloud-2"></span>
+      <span class="lm-cloud lm-cloud-3"></span>
+      <span class="lm-cloud lm-cloud-4"></span>
+      <span class="lm-cloud lm-cloud-5"></span>
+      <span class="lm-cloud lm-cloud-6"></span>
+      <span class="lm-cloud lm-cloud-7"></span>
+      <span class="lm-cloud lm-cloud-8"></span>
+    </div>
+    <div class="lm-stars">
+      <span class="lm-star lm-star-1"></span>
+      <span class="lm-star lm-star-2"></span>
+      <span class="lm-star lm-star-3"></span>
+      <span class="lm-star lm-star-4"></span>
+      <span class="lm-star lm-star-5"></span>
+      <span class="lm-star lm-star-6"></span>
+      <span class="lm-star lm-star-7"></span>
+      <span class="lm-star lm-star-8"></span>
+      <span class="lm-star lm-star-9"></span>
+      <span class="lm-star lm-star-10"></span>
+      <span class="lm-star lm-star-11"></span>
+      <span class="lm-star lm-star-12"></span>
+      <span class="lm-star lm-star-13"></span>
+      <span class="lm-star lm-star-14"></span>
+      <span class="lm-star lm-star-15"></span>
+      <span class="lm-star lm-star-16"></span>
+      <span class="lm-star lm-star-17"></span>
+      <span class="lm-star lm-star-18"></span>
+      <span class="lm-star lm-star-19"></span>
+      <span class="lm-star lm-star-20"></span>
+      <span class="lm-star lm-star-21"></span>
+      <span class="lm-star lm-star-22"></span>
+      <span class="lm-star lm-star-23"></span>
+      <span class="lm-star lm-star-24"></span>
+      <span class="lm-star lm-star-25"></span>
+      <span class="lm-star lm-star-26"></span>
+      <span class="lm-star lm-star-27"></span>
+      <span class="lm-star lm-star-28"></span>
+      <span class="lm-star lm-star-29"></span>
+      <span class="lm-star lm-star-30"></span>
+    </div>
+    <span class="lm-shooting-star lm-shooting-star-1"></span>
+    <span class="lm-shooting-star lm-shooting-star-2"></span>
+    <span class="lm-asteroid lm-asteroid-1"></span>
+    <span class="lm-asteroid lm-asteroid-2"></span>
+    <span class="lm-asteroid lm-asteroid-3"></span>
+    <span class="lm-asteroid-slow lm-asteroid-slow-1"></span>
+    <span class="lm-asteroid-slow lm-asteroid-slow-2"></span>
+  </div>
+
+  <div class="lmt-container">
+    <div class="lmt-header">
+      
+      <!-- Power Toggle (Left) -->
+      <div class="lmt-controls">
+        <img src="{{ 'icon_lamp_off.webp' | asset_url }}" alt="Lamp Off" class="lmt-icon lmt-icon-left lmt-power-left">
+        <div class="lmt-toggle" id="lmt-toggle-power">
+          <div class="lmt-toggle-knob"></div>
+        </div>
+        <img src="{{ 'icon_lamp_on.webp' | asset_url }}" alt="Lamp On" class="lmt-icon lmt-icon-right lmt-power-right">
+      </div>
+      
+      <div class="lmt-title-wrap">
+        <h2 class="lmt-title">{{ section.settings.title }}</h2>
+        <span class="lmt-moon-icon"></span>
+      </div>
+      
+      <!-- Time Toggle (Right) -->
+      <div class="lmt-controls">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lmt-icon lmt-icon-left lmt-time-left">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <div class="lmt-toggle" id="lmt-toggle-time">
+          <div class="lmt-toggle-knob"></div>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lmt-icon lmt-icon-right lmt-time-right">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </div>
+      
+    </div>
+    
+    <div class="lmt-grid">
+      {% for block in section.blocks limit: 4 %}
+        <div class="lmt-card" {{ block.shopify_attributes }}>
+          
+          {% capture fallback_do %}day_off_{{ forloop.index }}.jpg{% endcapture %}
+          {% capture fallback_don %}day_on_{{ forloop.index }}.jpg{% endcapture %}
+          {% capture fallback_no %}night_off_{{ forloop.index }}.jpg{% endcapture %}
+          
+          {% if forloop.index == 4 %}
+            {% capture fallback_non %}night_on_4.png{% endcapture %}
+          {% else %}
+            {% capture fallback_non %}night_on_{{ forloop.index }}.jpg{% endcapture %}
+          {% endif %}
+          
+          {% if block.settings.day_off != blank %}
+            {{ block.settings.day_off | image_url: width: 600 | image_tag: class: 'lmt-img lmt-day-off', loading: 'lazy' }}
+          {% else %}
+            <img src="{{ fallback_do | asset_url }}" class="lmt-img lmt-day-off" alt="Day Off">
+          {% endif %}
+          
+          {% if block.settings.day_on != blank %}
+            {{ block.settings.day_on | image_url: width: 600 | image_tag: class: 'lmt-img lmt-day-on', loading: 'lazy' }}
+          {% else %}
+            <img src="{{ fallback_don | asset_url }}" class="lmt-img lmt-day-on" alt="Day On">
+          {% endif %}
+          
+          {% if block.settings.night_off != blank %}
+            {{ block.settings.night_off | image_url: width: 600 | image_tag: class: 'lmt-img lmt-night-off', loading: 'lazy' }}
+          {% else %}
+            <img src="{{ fallback_no | asset_url }}" class="lmt-img lmt-night-off" alt="Night Off">
+          {% endif %}
+          
+          {% if block.settings.night_on != blank %}
+            {{ block.settings.night_on | image_url: width: 600 | image_tag: class: 'lmt-img lmt-night-on', loading: 'lazy' }}
+          {% else %}
+            <img src="{{ fallback_non | asset_url }}" class="lmt-img lmt-night-on" alt="Night On">
+          {% endif %}
+          
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var togglePower = document.getElementById('lmt-toggle-power');
+    var toggleTime = document.getElementById('lmt-toggle-time');
+    var section = document.getElementById('lmt-section-{{ section.id }}');
+    
+    if(togglePower && toggleTime && section) {
+      togglePower.addEventListener('click', function() {
+        var isActive = togglePower.classList.toggle('active');
+        section.setAttribute('data-power', isActive ? 'on' : 'off');
+      });
+      
+      toggleTime.addEventListener('click', function() {
+        var isActive = toggleTime.classList.toggle('active');
+        section.setAttribute('data-time', isActive ? 'night' : 'day');
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Lamp Multi Toggle",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Premium Lamps"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "lamp_card",
+      "name": "Lamp Card",
+      "settings": [
+        { "type": "image_picker", "id": "day_off", "label": "Day - Light Off" },
+        { "type": "image_picker", "id": "day_on", "label": "Day - Light On" },
+        { "type": "image_picker", "id": "night_off", "label": "Night - Light Off" },
+        { "type": "image_picker", "id": "night_on", "label": "Night - Light On" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lamp Multi Toggle",
+      "blocks": [
+        { "type": "lamp_card" },
+        { "type": "lamp_card" },
+        { "type": "lamp_card" },
+        { "type": "lamp_card" }
+      ]
+    }
+  ]
+}
+{% endschema %}

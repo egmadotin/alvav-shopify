@@ -1,0 +1,317 @@
+{% stylesheet %}
+  .dod-wrapper {
+    padding: 60px 20px;
+    background-color: #ffffff;
+  }
+  .dod-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background-color: #3b503e; /* Dark green */
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+    position: relative;
+  }
+  .dod-banner {
+    flex: 0 0 280px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+  }
+  .dod-banner-img {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
+  .dod-timer-box {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+  }
+  .dod-timer-title {
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .dod-timer {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .dod-time-unit {
+    background: #fff;
+    color: #000;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 6px 8px;
+    border-radius: 6px;
+    min-width: 36px;
+    text-align: center;
+  }
+  .dod-products-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .dod-products {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    width: 100%;
+  }
+  .dod-products::-webkit-scrollbar {
+    display: none;
+  }
+  .dod-card {
+    flex: 0 0 calc(31% - 10px);
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+  .dod-card-image {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+    background: #f4f4f4;
+  }
+  .dod-card-info {
+    padding: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .dod-card-title {
+    font-size: 13px;
+    color: #333;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .dod-price-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .dod-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+  }
+  .dod-compare-price {
+    font-size: 12px;
+    text-decoration: line-through;
+    color: #999;
+  }
+  .dod-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #8b9679;
+    color: #fff;
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-top: auto;
+    align-self: flex-start;
+  }
+  .dod-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.8);
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+  }
+  .dod-arrow:hover { background: #fff; }
+  .dod-arrow svg { width: 16px; height: 16px; fill: #333; }
+  .dod-arrow-left { left: -18px; }
+  .dod-arrow-right { right: -18px; }
+  @media (max-width: 990px) {
+    .dod-container { flex-direction: column; }
+    .dod-banner { flex: 0 0 200px; }
+    .dod-card { flex: 0 0 calc(50% - 7px); }
+    .dod-arrow { display: none; }
+  }
+  @media (max-width: 600px) {
+    .dod-card { flex: 0 0 calc(80% - 10px); }
+  }
+{% endstylesheet %}
+
+<div class="dod-wrapper">
+  <div class="dod-container">
+    <div class="dod-banner">
+      <img src="{{ 'Deal.gif' | asset_url }}" class="dod-banner-img" alt="Deal of the Day">
+      <div class="dod-timer-box">
+        <div class="dod-timer-title">Ends in:</div>
+        <div class="dod-timer" data-target-date="{{ section.settings.end_date }}">
+          <div class="dod-time-unit" data-hours>00h</div> :
+          <div class="dod-time-unit" data-minutes>00m</div> :
+          <div class="dod-time-unit" data-seconds>00s</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="dod-products-wrapper">
+      <button class="dod-arrow dod-arrow-left" id="dodPrev">
+        <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+      </button>
+      
+      <div class="dod-products" id="dodSlider">
+        {% for block in section.blocks %}
+          <a href="{{ block.settings.link | default: '#' }}" class="dod-card" {{ block.shopify_attributes }}>
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 400 | image_tag: class: 'dod-card-image', loading: 'lazy' }}
+            {% else %}
+              {% capture placeholder_name %}product-{% cycle '1', '2', '3', '4' %}{% endcapture %}
+              {{ placeholder_name | placeholder_svg_tag: 'dod-card-image' }}
+            {% endif %}
+            
+            <div class="dod-card-info">
+              <div class="dod-card-title">{{ block.settings.title | default: 'Product Title' }}</div>
+              <div class="dod-price-row">
+                <span class="dod-price">{{ block.settings.price | default: '₹5,099' }}</span>
+                <span class="dod-compare-price">{{ block.settings.compare_price | default: '₹13,499' }}</span>
+              </div>
+              <div class="dod-badge">
+                <svg viewBox="0 0 24 24" width="10" height="10" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                Limited Time Offer
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+      
+      <button class="dod-arrow dod-arrow-right" id="dodNext">
+        <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Timer logic
+    const timerEl = document.querySelector('.dod-timer');
+    const endDateStr = timerEl.getAttribute('data-target-date');
+    const endDate = new Date(endDateStr).getTime();
+    
+    if(endDate) {
+      setInterval(function() {
+        const now = new Date().getTime();
+        const distance = endDate - now;
+        if(distance < 0) {
+          document.querySelector('[data-hours]').innerText = "00h";
+          document.querySelector('[data-minutes]').innerText = "00m";
+          document.querySelector('[data-seconds]').innerText = "00s";
+          return;
+        }
+        
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        document.querySelector('[data-hours]').innerText = (hours < 10 ? "0" + hours : hours) + "h";
+        document.querySelector('[data-minutes]').innerText = (minutes < 10 ? "0" + minutes : minutes) + "m";
+        document.querySelector('[data-seconds]').innerText = (seconds < 10 ? "0" + seconds : seconds) + "s";
+      }, 1000);
+    }
+    
+    // Carousel logic
+    const slider = document.getElementById('dodSlider');
+    const prev = document.getElementById('dodPrev');
+    const next = document.getElementById('dodNext');
+    if(slider && prev && next) {
+      prev.addEventListener('click', () => { slider.scrollBy({ left: -300, behavior: 'smooth' }); });
+      next.addEventListener('click', () => { slider.scrollBy({ left: 300, behavior: 'smooth' }); });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Deal of the Day",
+  "settings": [
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "Timer End Date",
+      "info": "Format: YYYY-MM-DD HH:MM:SS (e.g. 2026-12-31 23:59:59)",
+      "default": "2026-12-31 23:59:59"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Deal Product",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Product Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Luxury Blue Tufted Ottoman"
+        },
+        {
+          "type": "text",
+          "id": "price",
+          "label": "Sale Price",
+          "default": "₹11,699"
+        },
+        {
+          "type": "text",
+          "id": "compare_price",
+          "label": "Original Price",
+          "default": "₹26,999"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Product Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Deal of the Day",
+      "blocks": [
+        { "type": "product", "settings": { "title": "Yin Yang Style Decorative Wooden Vanity Mirror", "price": "₹5,099", "compare_price": "₹13,499" } },
+        { "type": "product", "settings": { "title": "Islamic verse from the Quran Set of Five", "price": "₹1,599", "compare_price": "₹4,099" } },
+        { "type": "product", "settings": { "title": "Luxury Blue Tufted Ottoman", "price": "₹11,699", "compare_price": "₹26,999" } },
+        { "type": "product", "settings": { "title": "Edgy Shell Style Accent Chair", "price": "₹11,699", "compare_price": "₹25,999" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

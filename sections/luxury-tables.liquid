@@ -1,0 +1,146 @@
+{% stylesheet %}
+  .luxury-tables-section {
+    padding: 60px 0;
+    background: linear-gradient(to bottom, #fefefd, #f4f7f0, #e8eedf, #f4eee8);
+  }
+  .luxury-tables-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 20px;
+  }
+  .luxury-tables-title {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: #333;
+  }
+  .luxury-tables-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 30px;
+    padding-bottom: 10px;
+  }
+  .luxury-tables-grid::-webkit-scrollbar { display: none; }
+  
+  /* Spacers only shown on mobile full-bleed scroll */
+  .luxury-tables-grid::before,
+  .luxury-tables-grid::after {
+    display: none;
+  }
+
+  .luxury-table-card {
+    display: block;
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+    flex: 0 0 calc(33.333% - 20px);
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+  .luxury-table-card:hover {
+    transform: translateY(-4px);
+  }
+  .luxury-table-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+  @media (max-width: 990px) {
+    .luxury-tables-container { padding: 0 20px; }
+    .luxury-table-card { flex: 0 0 calc(50% - 15px); }
+  }
+  @media (max-width: 768px) {
+    .luxury-tables-section { padding: 30px 0; }
+    .luxury-tables-container { padding: 0 16px; text-align: left; }
+    .luxury-tables-title { padding: 0; font-size: 24px; margin-bottom: 20px; }
+    .luxury-tables-grid {
+      gap: 12px;
+    }
+    .luxury-tables-grid::before,
+    .luxury-tables-grid::after {
+      display: none;
+    }
+    .luxury-table-card {
+      flex: 0 0 calc(70vw);
+    }
+  }
+{% endstylesheet %}
+
+<div class="luxury-tables-section">
+  <div class="luxury-tables-container">
+    <h2 class="luxury-tables-title">{{ section.settings.title }}</h2>
+    
+    <div class="luxury-tables-grid">
+      {% for block in section.blocks %}
+        {% assign link_url = block.settings.collection.url | default: '#' %}
+        <a href="{{ link_url }}" class="luxury-table-card" {{ block.shopify_attributes }}>
+          {% if block.settings.image != blank %}
+            {{ block.settings.image | image_url: width: 800 | image_tag: class: 'luxury-table-image', loading: 'lazy' }}
+          {% else %}
+            {% assign fallback_image = '' %}
+            {% if forloop.index == 1 %}{% assign fallback_image = 'center_tables.webp' %}{% endif %}
+            {% if forloop.index == 2 %}{% assign fallback_image = 'side_tables.webp' %}{% endif %}
+            {% if forloop.index == 3 %}{% assign fallback_image = 'console_table.webp' %}{% endif %}
+            
+            {% if fallback_image != '' %}
+              <img src="{{ fallback_image | asset_url }}" alt="{{ block.settings.title }}" class="luxury-table-image">
+            {% endif %}
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Luxury Tables",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Luxury Tables"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "table_category",
+      "name": "Table Category",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Custom Image"
+        },
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Link to Collection"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title (for image alt)",
+          "default": "Luxury Table"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Luxury Tables",
+      "blocks": [
+        { "type": "table_category" },
+        { "type": "table_category" },
+        { "type": "table_category" }
+      ]
+    }
+  ]
+}
+{% endschema %}

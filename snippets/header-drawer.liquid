@@ -1,40 +1,15 @@
 {%- doc -%}
-  Renders a header drawer menu triggered by the top details element.
+  Renders a custom split-pane header drawer menu with category selector and sub-items.
 
-  @param {object} linklist - The linklist to render
+  @param {object} linklist - The linklist to render (not used directly, but kept for compatibility)
   @param {string} [class] - Additional classes to add to the drawer
   @param {string} [data_header_drawer_type] - The type of header drawer to render
   @param {object} [block] - The block that can be used to provide settings
   @param {object} [section] - The section that can be used to provide settings
-
-  @example
-  {% render 'header-drawer', linklist: section.settings.menu, class: 'header-drawer--mobile' %}
 {%- enddoc -%}
-
 {% liquid
   assign block_settings = block.settings
-  assign max_featured_items = 4
   assign image_border_radius = block_settings.image_border_radius
-
-  if block_settings.menu_style == 'featured_collections'
-    assign ratio = block_settings.featured_collections_aspect_ratio
-  elsif block_settings.menu_style == 'featured_products'
-    assign ratio = block_settings.featured_products_aspect_ratio
-  endif
-
-  ##
-  # We only eager load heavy elements of the page when rendering this template
-  # through the Section Rendering API.
-  #
-  # This keeps the initial render lightweight, minimizing the impact on TTFB.
-  # The second render then refreshes the page with additional content.
-  #
-  # At the moment, we check if the Section Rendering API is being used by
-  # checking if section.index is blank.
-  assign eager_loading = false
-  if section.index == blank
-    assign eager_loading = true
-  endif
 
   if block_settings.background_color != blank or block_settings.text_color != blank
     render 'contrast-override', background_color: block_settings.background_color, text_color: block_settings.text_color, section_id: block.id
@@ -72,697 +47,246 @@
     </summary>
     <div
       ref="menuDrawer"
-      class="
-        menu-drawer
-        {% if block_settings.background_color != blank or block_settings.text_color != blank %}
-          color-custom-{{ block.id }}
-        {% endif %}
-      "
+      class="menu-drawer"
     >
-      <button
-        class="button close-button menu-drawer__close-button focus-inset"
-        type="button"
-        aria-label="{{ 'actions.close' | t }}"
-        on:click="/close"
-      >
-        <span class="svg-wrapper header-drawer-icon header-drawer-icon--close">
-          {{- 'icon-close.svg' | inline_asset_content -}}
-        </span>
-      </button>
-      <nav
-        class="menu-drawer__navigation"
-        style="
-          {%- render 'menu-font-styles', settings: block_settings, menu_type: 'drawer' %}
-          {%- render 'submenu-font-styles', settings: block_settings %}
-        "
-        aria-label="{{ 'accessibility.header_navigation_label' | t }}"
-      >
-        <ul
-          class="menu-drawer__menu has-submenu"
-          role="list"
-        >
-          {%- comment -%}
-            Handle menus with fewer than 3 levels of links
-          {%- endcomment -%}
-          {% if linklist.levels < 3 %}
-            {% assign first_accordion_open = false %}
-            {% assign animation_index = 0 %}
-            {%- for link in linklist.links -%}
-              {% assign animation_index = animation_index | plus: 1 %}
-              <li
-                style="--menu-drawer-animation-index: {{ animation_index }};"
-                class="{%- if block_settings.drawer_accordion -%}menu-drawer__list-item--deep{%- else -%}menu-drawer__list-item--flat{%- endif -%}{% if block_settings.drawer_dividers %} menu-drawer__list-item--divider{% endif %}"
-              >
-                {% if block_settings.drawer_accordion and link.links != blank %}
-                  {%- comment -%}
-                    Accordion for links with children, in menus with fewer than 3 levels of links
-                  {%- endcomment -%}
-                  {% liquid
-                    assign should_open_first = false
-                    if first_accordion_open == false and block_settings.drawer_accordion_expand_first
-                      assign first_accordion_open = true
-                      assign should_open_first = true
-                    endif
-                  %}
-                  {% capture accordion_children %}
-                    <details
-                      id="Details-menu-drawer-{{ link.handle }}"
-                    >
-                      <summary
-                        id="HeaderDrawer-{{ link.handle }}"
-                        class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset"
-                      >
-                        <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
-                        <span class="svg-wrapper icon-plus">
-                          {{- 'icon-plus.svg' | inline_asset_content -}}
-                        </span>
-                      </summary>
+      <div class="custom-category-drawer">
+        <!-- Drawer Header -->
+        <div class="custom-category-drawer__header">
+          <h3>Categories</h3>
+          <button
+            class="button close-button menu-drawer__close-button focus-inset custom-category-drawer__close"
+            type="button"
+            aria-label="{{ 'actions.close' | t }}"
+            on:click="/close"
+          >
+            <span class="svg-wrapper header-drawer-icon header-drawer-icon--close">
+              {{- 'icon-close.svg' | inline_asset_content -}}
+            </span>
+          </button>
+        </div>
+
+        <!-- Drawer Body (Split Pane) -->
+        <div class="custom-category-drawer__body">
+          <!-- Left Sidebar -->
+          <div class="custom-category-drawer__sidebar">
+            {% assign category_menu = section.settings.mobile_category_menu %}
+            {% for link in linklists[category_menu].links %}
+              {% liquid
+                assign title_downcase = link.title | downcase
+                if title_downcase contains 'new arrival'
+                  continue
+                endif
+
+                assign circ_img = ''
+                if title_downcase contains 'gift'
+                  assign circ_img = 'https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/2_5dfccd60-a6eb-49d6-883d-f20f2fe455dc.jpg?v=1770124596'
+                elsif link.type == 'collection_link' and link.object.image != blank
+                  assign circ_img = link.object.image | image_url: width: 120
+                else
+                  # Fallback logic based on link title
+                  if title_downcase contains 'art'
+                    assign circ_img = '1_0ff9c6a9-ddb2-48e6-bbc9-c5bc0e68a5ab.jpg' | asset_url
+                  elsif title_downcase contains 'paint'
+                    assign circ_img = '2_49615805-7adb-4c25-9833-51a65b49347a.jpg' | asset_url
+                  elsif title_downcase contains 'table'
+                    assign circ_img = '3_c0242665-2f3e-4b70-a056-a79231e32fb2.jpg' | asset_url
+                  elsif title_downcase contains 'mirror'
+                    assign circ_img = '4_248431c4-a134-44e8-8031-5c4a72b583f2.jpg' | asset_url
+                  elsif title_downcase contains 'chair'
+                    assign circ_img = '6_7914fc17-4c1c-4889-a0ea-49de050c7f84.jpg' | asset_url
+                  elsif title_downcase contains 'pooja' or title_downcase contains 'temple'
+                    assign circ_img = '8_084c306c-5303-4906-8b14-bb97810d286c.jpg' | asset_url
+                  elsif title_downcase contains 'clock'
+                    assign circ_img = '9_e515fe2d-fc05-414e-b746-efac4db9eaa8.jpg' | asset_url
+                  elsif title_downcase contains 'lamp'
+                    assign circ_img = '10_2ea135e4-95fc-4565-908c-aa6f8e7e2ed7.jpg' | asset_url
+                  else
+                    # Default fallback circular image if none matches
+                    assign circ_img = '1_0ff9c6a9-ddb2-48e6-bbc9-c5bc0e68a5ab.jpg' | asset_url
+                  endif
+                endif
+              %}
+              <div class="custom-category-drawer__sidebar-item" data-target-category="category-{{ link.title | handleize }}">
+                <div class="custom-category-drawer__sidebar-image-wrapper">
+                  <img src="{{ circ_img }}" alt="{{ link.title | escape }}" loading="lazy" width="50" height="50">
+                </div>
+                <span class="custom-category-drawer__sidebar-title">{{ link.title }}</span>
+              </div>
+            {% endfor %}
+            <!-- Manually append Festive at the end of sidebar -->
+            <div class="custom-category-drawer__sidebar-item" data-target-category="category-festive">
+              <div class="custom-category-drawer__sidebar-image-wrapper">
+                <img src="https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/6_50db728a-27d3-4af4-93b4-c28c3272af66.jpg?v=1770210679" alt="Festive" loading="lazy" width="50" height="50">
+              </div>
+              <span class="custom-category-drawer__sidebar-title">Festive</span>
+            </div>
+          </div>
+
+          <!-- Right Content Panel -->
+          <div class="custom-category-drawer__content">
+            {% assign category_menu = section.settings.mobile_category_menu %}
+            {% for link in linklists[category_menu].links %}
+              {% liquid
+                assign group_title_downcase = link.title | downcase
+                if group_title_downcase contains 'new arrival'
+                  continue
+                endif
+              %}
+              <div class="custom-category-drawer__group" id="category-{{ link.title | handleize }}">
+                <!-- Category Header Banner -->
+                <a href="{{ link.url }}" class="custom-category-drawer__banner">
+                  <span>{{ link.title }}</span>
+                  <span class="arrow">&rarr;</span>
+                </a>
+
+                <!-- Submenu Items Grid -->
+                <div class="custom-category-drawer__grid">
+                  {% if link.links != blank %}
+                    {% for sublink in link.links %}
                       {% liquid
-                        assign render_link_image = false
-                        if block_settings.menu_style == 'collection_images'
-                          assign catalog_links = link.links | where: 'type', 'catalog_link'
-                          assign collection_list_links = link.links | where: 'type', 'collections_link'
-                          assign collection_links = link.links | where: 'type', 'collection_link'
-                          if catalog_links.size > 0 or collection_list_links.size > 0 or collection_links.size > 0
-                            assign render_link_image = true
-                          endif
+                        assign sublink_img = ''
+                        if sublink.type == 'collection_link' and sublink.object.image != blank
+                          assign sublink_img = sublink.object.image | image_url: width: 200
+                        elsif sublink.type == 'collection_link' and sublink.object.products.first.featured_image != blank
+                          assign sublink_img = sublink.object.products.first.featured_image | image_url: width: 200
+                        elsif sublink.type == 'product_link' and sublink.object.featured_image != blank
+                          assign sublink_img = sublink.object.featured_image | image_url: width: 200
+                        else
+                          # Dynamic fallback pattern or placeholder
+                          assign sublink_img = '1_0ff9c6a9-ddb2-48e6-bbc9-c5bc0e68a5ab.jpg' | asset_url
                         endif
                       %}
-                      <ul
-                        class="menu-drawer__menu menu-drawer__menu--childlist menu-drawer__animated-element details-content{% if render_link_image %} menu-drawer__menu--grid{% endif %}"
-                        role="list"
-                        tabindex="-1"
-                      >
-                        {%- for childlink in link.links -%}
-                          <li
-                            class="menu-drawer__list-item"
-                            style="--menu-drawer-animation-index: {{ forloop.index }};"
-                          >
-                            <a
-                              id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}"
-                              href="{{ childlink.url }}"
-                              class="menu-drawer__menu-item menu-drawer__menu-item--child focus-inset{% if childlink.current %} menu-drawer__menu-item--active{% endif %}"
-                              {% if childlink.current %}
-                                aria-current="page"
-                              {% endif %}
-                            >
-                              {% if render_link_image %}
-                                {% render 'link-featured-image',
-                                  link: childlink,
-                                  class: 'menu-drawer__link-image',
-                                  sizes: 'auto, 400px'
-                                %}
-                              {% endif %}
-                              <span class="menu-drawer__menu-item-text wrap-text">{{ childlink.title | escape }}</span>
-                            </a>
-                          </li>
-                        {%- endfor -%}
-                      </ul>
-                    </details>
-                  {% endcapture %}
-                  {% render 'accordion-custom-component',
-                    children: accordion_children,
-                    open_by_default_on_mobile: should_open_first
-                  %}
-                {% elsif block_settings.drawer_accordion == false and link.links != blank %}
-                  {%- comment -%}
-                    Flat menus for links with children, in menus with fewer than 3 levels of links
-                  {%- endcomment -%}
-                  <a
-                    id="HeaderDrawer-{{ link.handle }}"
-                    href="{{ link.url }}"
-                    class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset"
-                    {% if link.current %}
-                      aria-current="page"
-                    {% endif %}
-                  >
-                    <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
-                  </a>
-                  {% liquid
-                    assign render_link_image = false
-                    if block_settings.menu_style == 'collection_images'
-                      assign catalog_links = link.links | where: 'type', 'catalog_link'
-                      assign collection_list_links = link.links | where: 'type', 'collections_link'
-                      assign collection_links = link.links | where: 'type', 'collection_link'
-                      if catalog_links.size > 0 or collection_list_links.size > 0 or collection_links.size > 0
-                        assign render_link_image = true
-                      endif
-                    endif
-                  %}
-                  <ul
-                    class="menu-drawer__menu menu-drawer__menu--childlist{% if render_link_image %} menu-drawer__menu--grid{% endif %}"
-                    role="list"
-                    tabindex="-1"
-                  >
-                    {%- for childlink in link.links -%}
-                      <li
-                        class="menu-drawer__list-item"
-                        style="--menu-drawer-animation-index: {{ animation_index }};"
-                      >
-                        <a
-                          href="{{ childlink.url }}"
-                          class="menu-drawer__menu-item menu-drawer__menu-item--child menu-drawer__animated-element focus-inset{% if childlink.current %} menu-drawer__menu-item--active{% endif %}"
-                          {% if childlink.current %}
-                            aria-current="page"
-                          {% endif %}
-                        >
-                          {% if render_link_image %}
-                            {% render 'link-featured-image',
-                              link: childlink,
-                              class: 'menu-drawer__link-image',
-                              sizes: 'auto, 400px'
-                            %}
-                          {% endif %}
-                          <span class="menu-drawer__menu-item-text wrap-text">{{ childlink.title | escape }}</span>
-                        </a>
-                      </li>
-                    {%- endfor -%}
-                  </ul>
-                {% else %}
-                  {%- comment -%}
-                    Simple links for links with no children (regardless of accordion setting), in menus with fewer than 3 levels of links
-                  {%- endcomment -%}
-                  <a
-                    id="HeaderDrawer-{{ link.handle }}"
-                    href="{{ link.url }}"
-                    class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset"
-                    {% if link.current %}
-                      aria-current="page"
-                    {% endif %}
-                  >
-                    <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
-                  </a>
-                {% endif %}
-              </li>
-            {%- endfor -%}
-          {% else %}
-            {%- comment -%}
-              Handle menus with 3 levels of links
-            {%- endcomment -%}
-            {% assign animation_index = 0 %}
-            {%- for link in linklist.links -%}
-              {% assign animation_index = animation_index | plus: 1 %}
-              <li
-                class="menu-drawer__list-item"
-                style="--menu-drawer-animation-index: {{ animation_index }};"
-              >
-                {%- if link.links != blank -%}
-                  {%- comment -%}
-                    Regardless of the Accordion setting, in menus with 3 levels of links, we use a details element to handle the top level of the menu for links that have children.
-                  {%- endcomment -%}
-                  <details
-                    id="Details-menu-drawer-menu-item-{{ forloop.index }}"
-                    class="menu-drawer__menu-container{% if block_settings.drawer_dividers %} menu-drawer__menu-container--divider{% endif %}"
-                  >
-                    <summary
-                      id="HeaderDrawer-{{ link.handle }}"
-                      class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset{% if link.child_active %} menu-drawer__menu-item--active{% endif %}"
-                      on:click="header-drawer/open/submenu"
-                    >
-                      <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
-                      <span class="svg-wrapper icon-caret icon-caret--forward">
-                        {{- 'icon-caret.svg' | inline_asset_content -}}
-                      </span>
-                    </summary>
-                    <div
-                      id="link-{{ link.handle | escape }}"
-                      class="menu-drawer__submenu has-submenu"
-                      tabindex="-1"
-                      style="--menu-drawer-animation-index: {{ animation_index }};"
-                    >
-                      <div class="menu-drawer__inner-submenu">
-                        <div class="menu-drawer__nav-buttons">
-                          <button
-                            class="button menu-drawer__back-button focus-inset"
-                            on:click="header-drawer/back"
-                            aria-label="{{ 'actions.back_to' | t: title: link.title }}"
-                          >
-                            <span class="svg-wrapper icon-caret icon-caret--backward">
-                              {{- 'icon-caret.svg' | inline_asset_content -}}
-                            </span>
-                            <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
-                          </button>
-                          <button
-                            class="button button-unstyled close-button menu-drawer__close-button focus-inset"
-                            type="button"
-                            aria-label="{{ 'actions.close' | t }}"
-                            on:click="header-drawer/close"
-                          >
-                            <span class="svg-wrapper header-drawer-icon header-drawer-icon--close">
-                              {{- 'icon-close.svg' | inline_asset_content -}}
-                            </span>
-                          </button>
+                      <a href="{{ sublink.url }}" class="custom-category-drawer__grid-item">
+                        <div class="custom-category-drawer__grid-image-wrapper">
+                          <img src="{{ sublink_img }}" alt="{{ sublink.title | escape }}" loading="lazy" width="80" height="80">
                         </div>
+                        <span class="custom-category-drawer__grid-title">{{ sublink.title }}</span>
+                      </a>
+                    {% endfor %}
+                  {% else %}
+                    {%- comment -%} Fallback automatic menu loading based on category title handle {%- endcomment -%}
+                    {% liquid
+                      assign menu_handle = link.title | handleize
+                      assign fallback_menu = linklists[menu_handle]
+                    %}
+                    {% if fallback_menu != blank %}
+                      {% for sublink in fallback_menu.links %}
                         {% liquid
-                          assign render_link_image = false
-                          if block_settings.menu_style == 'collection_images'
-                            assign catalog_links = link.links | where: 'type', 'catalog_link'
-                            assign collection_list_links = link.links | where: 'type', 'collections_link'
-                            assign collection_links = link.links | where: 'type', 'collection_link'
-                            if catalog_links.size > 0 or collection_list_links.size > 0 or collection_links.size > 0
-                              assign render_link_image = true
-                            endif
+                          assign sublink_img = ''
+                          if sublink.type == 'collection_link' and sublink.object.image != blank
+                            assign sublink_img = sublink.object.image | image_url: width: 200
+                          elsif sublink.type == 'collection_link' and sublink.object.products.first.featured_image != blank
+                            assign sublink_img = sublink.object.products.first.featured_image | image_url: width: 200
+                          elsif sublink.type == 'product_link' and sublink.object.featured_image != blank
+                            assign sublink_img = sublink.object.featured_image | image_url: width: 200
+                          else
+                            # Dynamic fallback pattern or placeholder
+                            assign sublink_img = '1_0ff9c6a9-ddb2-48e6-bbc9-c5bc0e68a5ab.jpg' | asset_url
                           endif
                         %}
-                        <ul
-                          class="menu-drawer__menu menu-drawer__menu--childlist{% if render_link_image and link.levels == 1 %} menu-drawer__menu--grid{% endif %}"
-                          role="list"
-                          tabindex="-1"
-                        >
-                          {% assign first_accordion_open = false -%}
-                          {%- for childlink in link.links -%}
-                            <li
-                              class="
-                                menu-drawer__list-item
-                                {% if childlink.links != blank -%}
-                                  {% if block_settings.drawer_accordion -%} menu-drawer__list-item--deep{% else -%} menu-drawer__list-item--flat{%- endif -%}
-                                {%- endif -%}
-                                {% if block_settings.drawer_dividers %} menu-drawer__list-item--divider{% endif %}
-                              "
-                            >
-                              {%- if childlink.links == blank -%}
-                                {%- comment -%}
-                                  Simple links for links with no children (regardless of accordion setting), in menus with 3 levels of links
-                                  This link is currently using --parent class style but --child would match the pattern on desktop
-                                {%- endcomment -%}
-                                <a
-                                  id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}"
-                                  href="{{ childlink.url }}"
-                                  class="menu-drawer__menu-item menu-drawer__menu-item--parent focus-inset{% if childlink.current %} menu-drawer__menu-item--active{% endif %}"
-                                  {% if childlink.current %}
-                                    aria-current="page"
-                                  {% endif %}
-                                >
-                                  {% if render_link_image and link.levels == 1 %}
-                                    {% render 'link-featured-image',
-                                      link: childlink,
-                                      class: 'menu-drawer__link-image',
-                                      sizes: 'auto, 400px'
-                                    %}
-                                  {% endif %}
-                                  <span class="menu-drawer__menu-item-text wrap-text">
-                                    {{- childlink.title | escape -}}
-                                  </span>
-                                </a>
-                              {%- else -%}
-                                {% liquid
-                                  assign should_open_first_nested = false
-                                  if first_accordion_open == false and block_settings.drawer_accordion and block_settings.drawer_accordion_expand_first
-                                    assign first_accordion_open = true
-                                    assign should_open_first_nested = true
-                                  endif
-                                %}
-                                {% if block_settings.drawer_accordion %}
-                                  {%- comment -%}
-                                    Accordion for links with children, in menus with 3 levels of links
-                                  {%- endcomment -%}
-                                  {% capture accordion_children_nested %}
-                                    <details
-                                      id="Details-menu-drawer-{{ link.handle }}-{{ childlink.handle }}"
-                                    >
-                                      <summary
-                                        id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}"
-                                        class="menu-drawer__menu-item menu-drawer__menu-item--parent focus-inset"
-                                      >
-                                        <span class="menu-drawer__menu-item-text wrap-text">
-                                          {{- childlink.title | escape -}}
-                                        </span>
-                                        <span class="svg-wrapper icon-plus">
-                                          {{- 'icon-plus.svg' | inline_asset_content -}}
-                                        </span>
-                                      </summary>
-                                      {% liquid
-                                        assign render_link_image = false
-                                        if block_settings.menu_style == 'collection_images'
-                                          assign catalog_links = childlink.links | where: 'type', 'catalog_link'
-                                          assign collection_list_links = childlink.links | where: 'type', 'collections_link'
-                                          assign collection_links = childlink.links | where: 'type', 'collection_link'
-                                          if catalog_links.size > 0 or collection_list_links.size > 0 or collection_links.size > 0
-                                            assign render_link_image = true
-                                          endif
-                                        endif
-                                      %}
-                                      <ul
-                                        class="menu-drawer__menu menu-drawer__menu--grandchildlist details-content{% if render_link_image %} menu-drawer__menu--grid{% endif %}"
-                                        role="list"
-                                        tabindex="-1"
-                                      >
-                                        {%- for grandchildlink in childlink.links -%}
-                                          <li
-                                            class="menu-drawer__list-item"
-                                            style="--menu-drawer-animation-index: {{ forloop.index }};"
-                                          >
-                                            <a
-                                              id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
-                                              href="{{ grandchildlink.url }}"
-                                              class="menu-drawer__menu-item menu-drawer__menu-item--child focus-inset{% if grandchildlink.current %} menu-drawer__menu-item--active{% endif %}"
-                                              {% if grandchildlink.current %}
-                                                aria-current="page"
-                                              {% endif %}
-                                            >
-                                              {% if render_link_image %}
-                                                {% render 'link-featured-image',
-                                                  link: grandchildlink,
-                                                  class: 'menu-drawer__link-image',
-                                                  sizes: 'auto, 400px'
-                                                %}
-                                              {% endif %}
-                                              <span class="menu-drawer__menu-item-text wrap-text">
-                                                {{- grandchildlink.title | escape -}}
-                                              </span>
-                                            </a>
-                                          </li>
-                                        {%- endfor -%}
-                                      </ul>
-                                    </details>
-                                  {% endcapture %}
-                                  {% render 'accordion-custom-component',
-                                    children: accordion_children_nested,
-                                    open_by_default_on_mobile: should_open_first_nested
-                                  %}
-                                {% else %}
-                                  {%- comment -%}
-                                    Flat menus for links with children, in menus with 3 levels of links
-                                  {%- endcomment -%}
-                                  <a
-                                    id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}"
-                                    href="{{ childlink.url }}"
-                                    class="menu-drawer__menu-item menu-drawer__menu-item--parent focus-inset{% if childlink.current %} menu-drawer__menu-item--active{% endif %}"
-                                    {% if childlink.current %}
-                                      aria-current="page"
-                                    {% endif %}
-                                  >
-                                    <span class="menu-drawer__menu-item-text wrap-text">
-                                      {{- childlink.title | escape -}}
-                                    </span>
-                                  </a>
-                                  {% liquid
-                                    assign render_link_image = false
-                                    if block_settings.menu_style == 'collection_images'
-                                      assign catalog_links = childlink.links | where: 'type', 'catalog_link'
-                                      assign collection_list_links = childlink.links | where: 'type', 'collections_link'
-                                      assign collection_links = childlink.links | where: 'type', 'collection_link'
-                                      if catalog_links.size > 0 or collection_list_links.size > 0 or collection_links.size > 0
-                                        assign render_link_image = true
-                                      endif
-                                    endif
-                                  %}
-                                  <ul
-                                    class="menu-drawer__menu menu-drawer__menu--grandchildlist details-content{% if render_link_image %} menu-drawer__menu--grid{% endif %}"
-                                    role="list"
-                                    tabindex="-1"
-                                  >
-                                    {%- for grandchildlink in childlink.links -%}
-                                      <li
-                                        class="menu-drawer__list-item"
-                                        style="--menu-drawer-animation-index: {{ forloop.index }};"
-                                      >
-                                        <a
-                                          id="HeaderDrawer-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
-                                          href="{{ grandchildlink.url }}"
-                                          class="menu-drawer__menu-item menu-drawer__menu-item--child focus-inset{% if grandchildlink.current %} menu-drawer__menu-item--active{% endif %}"
-                                          {% if grandchildlink.current %}
-                                            aria-current="page"
-                                          {% endif %}
-                                        >
-                                          {% if render_link_image %}
-                                            {% render 'link-featured-image',
-                                              link: grandchildlink,
-                                              class: 'menu-drawer__link-image',
-                                              sizes: 'auto, 400px'
-                                            %}
-                                          {% endif %}
-                                          <span class="menu-drawer__menu-item-text wrap-text">
-                                            {{- grandchildlink.title | escape -}}
-                                          </span>
-                                        </a>
-                                      </li>
-                                    {%- endfor -%}
-                                  </ul>
-                                {%- endif -%}
-                              {%- endif -%}
-                            </li>
-                          {%- endfor -%}
-                        </ul>
-                        {% liquid
-                          if eager_loading
-                            if block_settings.menu_style == 'featured_collections'
-                              assign featured_collections = link.links | where: 'type', 'collection_link'
-                            endif
-
-                            if block_settings.menu_style == 'featured_products'
-                              assign collection_linklist = link.links | where: 'type', 'collection_link' | first
-                              assign featured_products_collection = collection_linklist.object
-                            endif
-                          else
-                            assign featured_collections = null | sort
-                            assign featured_products_collection = null | sort
-                          endif
-                        -%}
-
-                        {% if featured_collections.size > 0 or featured_products_collection.products_count > 0 %}
-                          <div
-                            class="menu-drawer__featured-content menu-drawer__featured-content--childlist"
-                            style="--menu-drawer-animation-index: {{ linklist.links.size | plus: 1 }};"
-                          >
-                            <ul class="menu-drawer__featured-content-list list-unstyled">
-                              {% if featured_collections.size > 0 %}
-                                {%- for collection in featured_collections limit: max_featured_items -%}
-                                  <li class="menu-drawer__featured-content-list-item menu-drawer__featured-content-list-item--collection">
-                                    {% render 'resource-card',
-                                      resource: collection.object,
-                                      resource_type: 'collection',
-                                      style: 'overlay',
-                                      image_aspect_ratio: ratio,
-                                      image_sizes: 'auto, 400px'
-                                    %}
-                                  </li>
-                                {%- endfor -%}
-                              {% else %}
-                                {% paginate featured_products_collection.products by max_featured_items %}
-                                  {%- for product in featured_products_collection.products limit: max_featured_items -%}
-                                    <li class="menu-drawer__featured-content-list-item menu-drawer__featured-content-list-item--product">
-                                      {% render 'resource-card',
-                                        resource: product,
-                                        resource_type: 'product',
-                                        image_aspect_ratio: ratio,
-                                        image_sizes: 'auto, 400px',
-                                        product_view_context: 'dialog'
-                                      %}
-                                    </li>
-                                  {%- endfor -%}
-                                {% endpaginate %}
-                              {% endif %}
-                            </ul>
+                        <a href="{{ sublink.url }}" class="custom-category-drawer__grid-item">
+                          <div class="custom-category-drawer__grid-image-wrapper">
+                            <img src="{{ sublink_img }}" alt="{{ sublink.title | escape }}" loading="lazy" width="80" height="80">
                           </div>
-                        {% endif %}
-                      </div>
-                    </div>
-                  </details>
-                {%- else -%}
-                  {%- comment -%}
-                    Simple links for links with no children (regardless of accordion setting), in menus with 3 levels of links
-                  {%- endcomment -%}
-                  <a
-                    id="HeaderDrawer-{{ link.handle }}"
-                    href="{{ link.url }}"
-                    class="menu-drawer__menu-item menu-drawer__menu-item--mainlist menu-drawer__animated-element focus-inset"
-                    {% if link.current %}
-                      aria-current="page"
+                          <span class="custom-category-drawer__grid-title">{{ sublink.title }}</span>
+                        </a>
+                      {% endfor %}
+                    {% else %}
+                      {% liquid
+                        assign link_title_downcase = link.title | downcase
+                        assign mock_str = ""
+                        if link_title_downcase contains 'painting'
+                          assign mock_str = "2 Pieces Paintings|2-pieces-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/2_Pieces_Wall_Painting.jpg?v=1703745886,3 Pieces Paintings|3-pieces-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/3_Pieces_Wall_Painting.jpg?v=1703745894,3d Wall Painting For Home|3d-wall-painting|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-premium-wall-painting-of-exotic-looking-flowers-with-natural-3d-leaves-PTVCH_2221_1.jpg?v=1709534513,4 Pieces Paintings|4-pieces-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/4_piece_Wall_Painting.jpg?v=1629205160,5 Pieces Paintings|5-pieces-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Five_Pieces_Wall_Painting.jpg?v=1703745982,Abstract Art & Paintings|abstract-painting|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Abstract_art_Wall_Painting.jpg?v=1754047079,Acrylic Glass Painting|acrylic-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/green-and-red-leaf-shape-acrylic-floating-wall-painting-set-of-2-ACVC2Pcs1_58001_1_4cacc78b-ca91-41c6-861b-83679ec2220e.webp?v=1754131485,Animal Paintings|animal-birds-pets|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-golden-retriever-puppies-premium-canvas-wall-painting-PTVCH_2301_White_2.jpg?v=1754048413"
+                        elsif link_title_downcase contains 'decor' or link_title_downcase contains 'art'
+                          assign mock_str = "3D Wall Art|3d-wall-art|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/statement-3d-wall-hanging-with-red-and-cream-wave-motif-3D2694_4_ea494309-9773-498d-8360-1c3e05d6baf5.jpg?v=1755782615,All Artwork|all-artwork|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Premium_Quality_Wooden_Wall_Hanging_Mandala_Pattern_of_OM_WHVC1Pcs1_50001_02.jpg?v=1703746156,Artistic|artistic-frames|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/ColorfulButterflyFloatingCanvasWallPaintingFrame_FFVC1Pcs1_55005_04.jpg?v=1703746367,Artistic Wall Frames|artistic-wall-frames|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Artistic_Wall_Frames_Wall_Painting.jpg?v=1629203960,Ceramic Plates Wall Decor|ceramic-plates-wall-decor|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/WPVC_4PCS1_30802_1.webp?v=1700203161"
+                        elsif link_title_downcase contains 'table'
+                          assign mock_str = "2x4 Work Desk|2x4-computer-table|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/2x4_Computer_Table.jpg?v=1763027593,2x5 Work Desk|2x5-computer-table|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/2x5_Computer_Table.png?v=1763029517,Center Table Design For Hall|center-table-design-for-hall|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-round-metal-gold-round-coffee-table-in-shiny-rose-gold-edge-MTVC1Pcs_713_1_1.webp?v=1700204650,Center Table For Drawing Room|center-table-designs-for-drawing-room|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-premium-metallic-nest.png?v=1709534559,Coffee Table|coffee-table|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-trio-golden-nesting-tables-set-of-3-MTVC3Pcs_721_1.jpg?v=1755777933"
+                        elsif link_title_downcase contains 'mirror'
+                          assign mock_str = "3D Mirrors|3d-mirrors|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/3d_Mirror.jpg?v=1768457163,Bathroom Mirrors|bathroom-mirrors|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-modern-designed-led-round-shape-bathroom-wall-mirror-WMVC_813_1.jpg?v=1754054101,Decorative Mirrors|decorative-mirrors|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-arched-motif-window-frame-wooden-mirror-WMVC_832_1.webp?v=1708671009,Full Length Mirror|full-length-mirror|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-minimalist-design-ful.png?v=1709535134"
+                        elsif link_title_downcase contains 'chair'
+                          assign mock_str = "Accent Chairs|accent-chair|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-brick-red-comfy-round.png?v=1755779519,Best selling ottoman & chair|top-selling-ottoman-chair|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/shell-motif-luxury-design-orange-velvet-accent-chair-AC740_11.jpg?v=1757414027,Chairs|chairs|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-royal-blue-color-velvet-iron-dining-chair-AC657_1.webp?v=1742556553"
+                        elsif link_title_downcase contains 'clock'
+                          assign mock_str = "Acrylic Wall Clock|acrylic-wall-clock|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Acrylic_Wall_Clock.jpg?v=1767610585,Antique Wall Clocks|antique-wall-clocks|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/GeometricShapeWoodenWallClock_WW.png?v=1709534352"
+                        elsif link_title_downcase contains 'lamp' or link_title_downcase contains 'light'
+                          assign mock_str = "All Lighting|all-lighting|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-world-map-backlit-wooden-wall-decor-with-led-night-light-walnut-finish-WHVC2Pcs1_50058_1.jpg?v=1703746180,Bedroom Ceiling Lights|bedroom-ceiling-lights|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Warm-Light-Chandelier-Modern-Lamp-For-Home-Decoration-Living-Room-1-CL623.webp?v=1703746933"
+                        elsif link_title_downcase contains 'shelf' or link_title_downcase contains 'shelves'
+                          assign mock_str = "Bookshelves / Bookcase|bookshelf|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Bookshelf.jpg?v=1767607752,Kids Wall Shelves|kids-shelves|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-moon-and-stars-shape-wooden-wall-storage-shelf-for-kids-WWSVC_63071_1.webp?v=1755781334"
+                        elsif link_title_downcase contains 'pooja' or link_title_downcase contains 'temple' or link_title_downcase contains 'mandir' or link_title_downcase contains 'essential'
+                          assign mock_str = "All Temple|all-temple|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-aesthetic-pattern-designer-square-shaped-wall-hanging-wooden-temple-pooja-mandir-design-with-shelf-brown-AT618_1.jpg?v=1703746233,Door Temple|door-temple|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Door_temple.jpg?v=1756202121"
+                        elsif link_title_downcase contains 'gift'
+                          assign mock_str = "Gifts|gifts|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/2_5dfccd60-a6eb-49d6-883d-f20f2fe455dc.jpg?v=1770124596,Gifts Under 2999|gifts-under-2999|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Festive_8.jpg?v=1770211062"
+                        endif
+                      %}
+                      {% if mock_str != blank %}
+                        {% assign mock_items = mock_str | split: "," %}
+                        {% for item in mock_items %}
+                          {% assign parts = item | split: "|" %}
+                          {% assign col_title = parts[0] %}
+                          {% assign col_handle = parts[1] %}
+                          {% assign col_img = parts[2] %}
+                          <a href="/collections/{{ col_handle }}" class="custom-category-drawer__grid-item">
+                            <div class="custom-category-drawer__grid-image-wrapper">
+                              <img src="{{ col_img }}" alt="{{ col_title | escape }}" loading="lazy" width="80" height="80">
+                            </div>
+                            <span class="custom-category-drawer__grid-title">{{ col_title }}</span>
+                          </a>
+                        {% endfor %}
+                      {% else %}
+                        <p class="custom-category-drawer__empty">No subcategories linked</p>
+                      {% endif %}
                     {% endif %}
-                  >
-                    <span class="menu-drawer__menu-item-text wrap-text">{{ link.title | escape }}</span>
-                  </a>
-                {%- endif -%}
-              </li>
-            {%- endfor -%}
-          {% endif %}
-        </ul>
-      </nav>
-      <div
-        class="menu-drawer__utility-links menu-drawer__animated-element"
-        style="--menu-drawer-animation-index: {{ linklist.links.size }};"
-      >
-        {% liquid
-          assign show_language = section.settings.show_language
-          if localization.available_languages.size <= 1
-            assign show_language = false
-          endif
-
-          assign show_country = section.settings.show_country
-          if localization.available_countries.size <= 1
-            assign show_country = false
-          endif
-        %}
-        {% if data_header_drawer_type == 'mobile-drawer' and show_country or show_language %}
-          {% liquid
-            assign background_brightness = block_settings.background_color | color_brightness
-            if background_brightness < 64
-              assign flag_shadow_size = 4
-            else
-              assign flag_shadow_size = 2
-            endif
-
-            assign localization_font = '--menu-localization-font: var(--font-[localization_font]--family); ' | replace: '[localization_font]', section.settings.localization_font
-            assign color_shadow = '--color-shadow: rgb(var(--color-foreground-rgb) / var(--opacity-10-25));'
-            assign form_style = localization_font | append: color_shadow
-          %}
-          {% if show_language and show_country == false %}
-            <div class="menu-drawer__localization color-custom-popover">
-              {% render 'localization-form',
-                show_country: show_country,
-                show_language: show_language,
-                localization_style: 'drawer',
-                form_style: form_style,
-                form_id: block.id
-              %}
-            </div>
-          {% else %}
-            <drawer-localization-component class="menu-drawer__localization">
-              <details
-                id="drawer-localization"
-                class="drawer-localization"
-                on:toggle="/toggle"
-              >
-                <summary
-                  id="HeaderDrawer-localization"
-                  class="drawer-localization__button h3 focus-inset"
-                  aria-expanded="false"
-                  on:click="header-drawer/open/submenu"
-                  style="{{ form_style }}"
-                >
-                  <div class="drawer-localization__button--label h6">
-                    {%- if show_country -%}
-                      <div class="mobile-localization mobile-localization--country">
-                        {%- if section.settings.country_selector_style == true -%}
-                          <span
-                            class="icon-flag"
-                            style="
-                              background-image: url({{- localization.country | image_url: width: 32 }});
-                              --size-shadow: {{ flag_shadow_size }}px;
-                              --color-shadow: rgb(var(--color-foreground-rgb) / var(--opacity-30-60));
-                            "
-                          ></span>
-                        {%- endif -%}
-                        <span class="currency-code">
-                          {{- localization.country.currency.iso_code -}}
-                        </span>
-                      </div>
-                    {%- endif -%}
-
-                    {%- if show_country and show_language -%}
-                      <span>/</span>
-                    {%- endif -%}
-
-                    {%- if show_language -%}
-                      <div class="mobile-localization mobile-localization--country">
-                        <span>
-                          {{ localization.language.iso_code | upcase }}
-                        </span>
-                      </div>
-                    {%- endif -%}
-                  </div>
-                  <span class="svg-wrapper icon-caret icon-caret--forward">
-                    {{- 'icon-caret.svg' | inline_asset_content -}}
-                  </span>
-                </summary>
-
-                <div
-                  class="menu-drawer__submenu has-submenu color-custom-drawer"
-                >
-                  <div
-                    class="menu-drawer__nav-buttons"
-                    ref="navButtons"
-                  >
-                    <button
-                      class="button menu-drawer__back-button focus-inset"
-                      on:click="header-drawer/back"
-                    >
-                      <span class="svg-wrapper icon-caret icon-caret--backward">
-                        {{- 'icon-caret.svg' | inline_asset_content -}}
-                      </span>
-                      {{ 'content.localization_region_and_language' | t }}
-                    </button>
-                    <button
-                      class="button close-button menu-drawer__close-button focus-inset"
-                      type="button"
-                      aria-label="{{ 'actions.close' | t }}"
-                      on:click="header-drawer/close"
-                    >
-                      <span class="svg-wrapper header-drawer-icon header-drawer-icon--close">
-                        {{- 'icon-close.svg' | inline_asset_content -}}
-                      </span>
-                    </button>
-                  </div>
-
-                  {% render 'localization-form',
-                    show_country: show_country,
-                    show_language: show_language,
-                    localization_style: 'drawer',
-                    form_style: form_style,
-                    form_id: block.id
-                  %}
+                  {% endif %}
                 </div>
-              </details>
-            </drawer-localization-component>
-          {% endif %}
-        {%- endif -%}
-      </div>
+              </div>
+            {% endfor %}
 
-      {% liquid
-        if block_settings.menu_style == 'featured_collections'
-          assign top_level_featured_collections = linklist.links | where: 'type', 'collection_link'
-        endif
+            <!-- Manually append Festive category group -->
+            <div class="custom-category-drawer__group" id="category-festive">
+              <!-- Category Header Banner -->
+              <a href="/collections/festive" class="custom-category-drawer__banner">
+                <span>Festive</span>
+                <span class="arrow">&rarr;</span>
+              </a>
 
-        if eager_loading and block_settings.menu_style == 'featured_products'
-          for link in linklist.links
-            if link.type == 'collection_link'
-              assign collection_linklist = link
-              assign top_level_featured_products_collection = collection_linklist.object
-              break
-            elsif link.type == 'catalog_link' or link.type == 'collections_link'
-              assign top_level_featured_products_collection = collections.all
-              break
-            endif
-          endfor
-        endif
-      -%}
-      {% if top_level_featured_collections.size > 0 or top_level_featured_products_collection.products_count > 0 %}
-        <div
-          class="menu-drawer__featured-content"
-          style="--menu-drawer-animation-index: {{ linklist.links.size | plus: 1 }};"
-        >
-          <ul class="menu-drawer__featured-content-list menu-drawer__animated-element list-unstyled">
-            {% if top_level_featured_collections.size > 0 %}
-              {%- for collection in top_level_featured_collections limit: max_featured_items -%}
-                <li class="menu-drawer__featured-content-list-item menu-drawer__featured-content-list-item--collection">
-                  {% render 'resource-card',
-                    resource: collection.object,
-                    resource_type: 'collection',
-                    style: 'overlay',
-                    image_aspect_ratio: ratio,
-                    image_sizes: 'auto, 400px'
-                  %}
-                </li>
-              {%- endfor -%}
-            {% elsif top_level_featured_products_collection.products_count > 0 %}
-              {% paginate top_level_featured_products_collection.products by max_featured_items %}
-                {%- for product in top_level_featured_products_collection.products limit: max_featured_items -%}
-                  <li class="menu-drawer__featured-content-list-item menu-drawer__featured-content-list-item--product">
-                    {% render 'resource-card',
-                      resource: product,
-                      resource_type: 'product',
-                      image_aspect_ratio: ratio,
-                      image_sizes: 'auto, 400px',
-                      product_view_context: 'dialog'
-                    %}
-                  </li>
-                {%- endfor -%}
-              {% endpaginate %}
-            {% endif %}
-          </ul>
+              <!-- Submenu Items Grid -->
+              <div class="custom-category-drawer__grid">
+                {% liquid
+                  assign festive_mock = "Festive Special|diwali-special-1|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/1_082902c4-1c23-4dba-ae30-97897541f47f.jpg?v=1770210267,Under 2999|under-2999|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Festive_5.jpg?v=1770210761,Bestseller|best-sellers-products|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Festive_6.jpg?v=1770210825,Clearance Sale|clearance-sale|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/4_0c3ef6c4-bc77-42c3-9632-d41e4fbce3ec.jpg?v=1770210895,New Arrival|new-arrival|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/3_a6764aa4-dba4-4ed1-9266-e29413584ec8.jpg?v=1770210960,Vastu Paintings|vastu-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/seven-horses-running-in-desert-floral-border-canvas-wall-painting-PTVCBH_4215_F_2.jpg?v=1777984610"
+                  assign festive_items = festive_mock | split: ","
+                %}
+                {% for item in festive_items %}
+                  {% assign parts = item | split: "|" %}
+                  {% assign col_title = parts[0] %}
+                  {% assign col_handle = parts[1] %}
+                  {% assign col_img = parts[2] %}
+                  <a href="/collections/{{ col_handle }}" class="custom-category-drawer__grid-item">
+                    <div class="custom-category-drawer__grid-image-wrapper">
+                      <img src="{{ col_img }}" alt="{{ col_title | escape }}" loading="lazy" width="80" height="80">
+                    </div>
+                    <span class="custom-category-drawer__grid-title">{{ col_title }}</span>
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
         </div>
-      {% endif %}
+
+        <!-- Drawer Footer -->
+        <div class="custom-category-drawer__footer">
+          <a href="mailto:Support@vibecrafts.com" class="custom-category-drawer__footer-link">
+            <span class="svg-wrapper">
+              <img src="{{ 'mail-icon.png' | asset_url }}" alt="Email" class="footer-icon" width="20" height="20">
+            </span>
+            <span>Support@vibecrafts.com</span>
+          </a>
+          <a href="/pages/track-order" class="custom-category-drawer__footer-link">
+            <span class="svg-wrapper">
+              <img src="{{ 'order-track-icon.png' | asset_url }}" alt="Track" class="footer-icon" width="20" height="20">
+            </span>
+            <span>Track Order</span>
+          </a>
+        </div>
+      </div>
     </div>
     <div
       class="menu-drawer__backdrop"
@@ -771,7 +295,118 @@
   </details>
 </header-drawer>
 
-{% stylesheet %}
+<script type="module">
+  // We wrap in a function that gets executed when the details element opens
+  const details = document.getElementById('Details-menu-drawer-container');
+  if (details) {
+    const handleDrawerOpen = () => {
+      const sidebarItems = details.querySelectorAll('.custom-category-drawer__sidebar-item');
+      const rightContent = details.querySelector('.custom-category-drawer__content');
+      const groups = details.querySelectorAll('.custom-category-drawer__group');
+      
+      if (!sidebarItems.length || !rightContent || !groups.length) return;
+
+      let isScrollingFromClick = false;
+      let clickTimeout = null;
+
+      // Set active category in sidebar
+      const setActiveSidebarItem = (targetId) => {
+        sidebarItems.forEach(item => {
+          if (item.getAttribute('data-target-category') === targetId) {
+            item.classList.add('is-active');
+            item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } else {
+            item.classList.remove('is-active');
+          }
+        });
+      };
+
+      // Sidebar Click Handler
+      sidebarItems.forEach(item => {
+        item.addEventListener('click', () => {
+          const targetId = item.getAttribute('data-target-category');
+          const targetGroup = details.querySelector(`#${targetId}`);
+          if (targetGroup) {
+            isScrollingFromClick = true;
+            clearTimeout(clickTimeout);
+            
+            // Set active class immediately on click
+            sidebarItems.forEach(i => i.classList.remove('is-active'));
+            item.classList.add('is-active');
+
+            // Scroll right panel to target group
+            rightContent.scrollTo({
+              top: targetGroup.offsetTop - rightContent.offsetTop,
+              behavior: 'smooth'
+            });
+
+            // Re-enable scroll listener after animation finishes
+            clickTimeout = setTimeout(() => {
+              isScrollingFromClick = false;
+            }, 600);
+          }
+        });
+      });
+
+      // Scroll spy logic
+      rightContent.addEventListener('scroll', () => {
+        if (isScrollingFromClick) return;
+
+        let activeGroupId = '';
+        let minDistance = Infinity;
+        const containerTop = rightContent.getBoundingClientRect().top;
+
+        // Find which group is closest to the top of the scroll container
+        groups.forEach(group => {
+          const rect = group.getBoundingClientRect();
+          const relativeTop = rect.top - containerTop;
+          const distance = Math.abs(relativeTop);
+          if (distance < minDistance) {
+            minDistance = distance;
+            activeGroupId = group.id;
+          }
+        });
+
+        if (activeGroupId) {
+          setActiveSidebarItem(activeGroupId);
+        }
+      });
+
+      // Initialize first item as active
+      if (sidebarItems.length) {
+        sidebarItems[0].classList.add('is-active');
+      }
+    };
+
+    // Trigger initialization when the drawer details element is opened
+    details.addEventListener('toggle', (e) => {
+      if (details.open) {
+        // Wait slightly for the DOM transitions to complete
+        setTimeout(handleDrawerOpen, 100);
+      }
+    });
+  }
+</script>
+
+{% style %}
+  /* When closed: hide close icon, show open icon */
+  details:not([open]) .header__icon--summary .header-drawer-icon--close,
+  details:not(.menu-open) .header__icon--summary .header-drawer-icon--close {
+    display: none !important;
+  }
+  details:not([open]) .header__icon--summary .header-drawer-icon--open,
+  details:not(.menu-open) .header__icon--summary .header-drawer-icon--open {
+    display: block !important;
+  }
+
+  /* When open: hide both summary icons (drawer has its own close button) */
+  details[open] .header__icon--summary .header-drawer-icon--close,
+  details.menu-open .header__icon--summary .header-drawer-icon--close,
+  details[open] .header__icon--summary .header-drawer-icon--open,
+  details.menu-open .header__icon--summary .header-drawer-icon--open {
+    display: none !important;
+  }
+
   .header__icon--menu {
     position: initial;
   }
@@ -790,635 +425,254 @@
     height: var(--icon-size-xs);
   }
 
-  .menu-drawer__featured-content {
-    z-index: var(--layer-base);
-    container-type: inline-size;
-  }
-
-  .menu-drawer__featured-content--childlist {
-    z-index: var(--layer-flat);
-  }
-
-  .menu-drawer__featured-content-list {
+  /* Custom Split-Pane Category Drawer Styling */
+  .custom-category-drawer {
     display: flex;
-    gap: 1em;
-    overflow-x: auto;
-    padding-block-end: var(--padding-lg);
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background-color: #ffffff;
   }
 
-  .menu-drawer__featured-content-list-item {
-    flex: 0 0 auto;
-  }
+  .custom-category-drawer__header {
+    background-color: var(--color-background-top-row, #2C3A24);
+    color: var(--color-foreground-top-row, #F4ECD8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 16px;
+    padding-block: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
 
-  .menu-drawer__featured-content-list-item--product {
-    width: 35cqi;
-  }
+    h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: inherit;
+      font-family: var(--font-heading--family);
+    }
 
-  .menu-drawer__featured-content-list-item--collection img.resource-card__image {
-    width: 80cqi;
-  }
+    .custom-category-drawer__close {
+      background: none;
+      border: none;
+      color: inherit;
+      padding: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
 
-  .menu-drawer__featured-content-list-item:first-child {
-    margin-inline-start: var(--margin-xl);
-  }
-
-  .menu-drawer__featured-content-list-item:last-child {
-    margin-inline-end: var(--margin-xl);
-  }
-
-  .menu-drawer__navigation {
-    padding: 0;
-
-    @media screen and (min-width: 750px) {
-      margin-top: var(--drawer-header-desktop-top);
+      svg {
+        width: 16px;
+        height: 16px;
+      }
     }
   }
 
-  details:not(.menu-open) .header__icon--menu .header-drawer-icon--close {
-    display: none;
+  .custom-category-drawer__body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    height: calc(100% - 110px); /* Adjust to leave space for header and footer */
   }
 
-  details.menu-open .header__icon--menu .header-drawer-icon--close {
-    @media screen and (min-width: 750px) {
+  .custom-category-drawer__sidebar {
+    width: 90px;
+    background-color: #f5f6f4;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 80px;
+
+    &::-webkit-scrollbar {
       display: none;
     }
   }
 
-  details.menu-open .header__icon--menu .header-drawer-icon--open {
-    display: none;
-
-    @media screen and (min-width: 750px) {
-      display: flex;
-    }
-  }
-
-  .menu-drawer {
-    position: fixed;
-    transform: translateX(-100%);
-    visibility: hidden;
-    height: var(--drawer-height);
-    width: var(--drawer-width);
-    max-width: var(--drawer-max-width);
-    z-index: var(--layer-menu-drawer);
-    left: 0;
-    top: 0;
-    padding: 0;
-    background-color: var(--color-background);
-    overflow: auto;
-    display: flex;
-    border-right: var(--style-border-drawer);
-    flex-direction: column;
-
-    @media screen and (min-width: 750px) {
-      width: 25rem;
-    }
-  }
-
-  /* When opening a submenu we don't want the first-level menu to be scrollable, so we reset the overflow  */
-  .menu-drawer.menu-drawer--has-submenu-opened {
-    overflow: initial;
-  }
-
-  .menu-drawer__backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100dvh;
-    backdrop-filter: brightness(0.75);
-    z-index: var(--layer-overlay);
-    opacity: 0;
-    transition: opacity var(--drawer-animation-speed) ease;
-
-    .menu-open & {
-      opacity: 1;
-    }
-  }
-
-  .menu-drawer,
-  details[open] > .menu-drawer__submenu {
-    transition: transform var(--drawer-animation-speed) ease, visibility var(--drawer-animation-speed) ease,
-      opacity var(--drawer-animation-speed) ease;
-  }
-
-  .menu-open > .menu-drawer,
-  .menu-open > .menu-drawer__submenu:not(.menu-drawer__menu--childlist) {
-    transform: translateX(0);
-    visibility: visible;
-    opacity: 1;
+  .custom-category-drawer__sidebar-item {
     display: flex;
     flex-direction: column;
-  }
-
-  .menu-drawer__inner-container {
-    position: relative;
-    height: 100%;
-  }
-
-  .menu-drawer__navigation-container {
-    display: grid;
-    grid-template-rows: 1fr auto;
-    align-content: space-between;
-    overflow-y: auto;
-    height: 100%;
-  }
-
-  .menu-drawer__inner-submenu {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow-y: auto;
-
-    @media screen and (min-width: 750px) {
-      margin-top: var(--drawer-header-desktop-top);
-    }
-  }
-
-  .menu-drawer__nav-buttons {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-  }
+    padding: 12px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-left 0.2s ease;
+    border-left: 3px solid transparent;
 
-  .menu-drawer__menu {
-    --menu-drawer-inline-padding: calc(var(--padding-sm) + 7px);
+    &.is-active {
+      background-color: #ffffff;
+      border-left: 3px solid var(--color-background-top-row, #2C3A24);
 
-    list-style: none;
-    padding-inline: var(--drawer-padding);
-    margin-inline: 0;
-    margin-block-start: 0;
-  }
-
-  .menu-drawer__menu--grid {
-    display: grid;
-    width: 100%;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--padding-sm);
-    padding-inline-end: var(--menu-drawer-inline-padding);
-    padding-block-start: var(--padding-xs);
-  }
-
-  .menu-drawer__menu--childlist:not(.menu-drawer__menu--grid) {
-    flex-grow: 1;
-  }
-
-  .menu-drawer__menu.has-submenu,
-  .menu-drawer__menu--childlist:not(:has(.menu-drawer__animated-element)) {
-    margin-block-end: var(--margin-xs);
-
-    @media screen and (min-width: 750px) {
-      margin-block-end: 2.5rem;
+      .custom-category-drawer__sidebar-title {
+        font-weight: 600;
+        color: #2C3A24;
+      }
     }
   }
 
-  .menu-drawer__list-item--divider {
-    border-block-end: 1px solid var(--color-border);
-  }
-
-  .menu-drawer__list-item--deep:not(.menu-drawer__list-item--divider) .menu-drawer__menu {
-    margin-block-start: -0.3rem;
-  }
-
-  .menu-drawer__list-item--flat.menu-drawer__list-item--divider .menu-drawer__menu {
-    margin-block-start: -0.4rem;
-  }
-
-  .menu-drawer__menu-container--divider {
-    border-block-end: 1px solid var(--color-border);
-  }
-
-  .menu-drawer__menu > .menu-drawer__list-item {
-    display: flex;
-    min-height: calc(2 * var(--padding-lg) + var(--icon-size-xs));
-  }
-
-  .menu-drawer__list-item--deep .menu-drawer__list-item,
-  .menu-drawer__list-item--flat .menu-drawer__list-item {
-    min-height: auto;
-  }
-
-  .menu-drawer__menu .menu-drawer__list-item--flat {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-block-end: var(--margin-md);
-  }
-
-  .menu-drawer__menu--childlist .menu-drawer__list-item--flat {
-    margin-block-end: var(--margin-sm);
-
-    @media screen and (min-width: 750px) {
-      margin-block-end: var(--margin-lg);
-    }
-  }
-
-  .menu-drawer__menu--childlist .menu-drawer__list-item--flat.menu-drawer__list-item--divider {
-    margin-block-end: 0;
-  }
-
-  .menu-drawer__list-item--flat .menu-drawer__menu--childlist {
-    width: 100%;
-    padding-inline: 0;
-  }
-
-  .menu-drawer-container[open] .menu-drawer__animated-element {
-    animation: menu-drawer-nav-open var(--drawer-animation-speed) ease-in-out;
-    animation-delay: calc(var(--drawer-animation-speed) + (var(--menu-drawer-animation-index) - 1) * 0.1s);
-    animation-fill-mode: backwards;
-  }
-
-  .menu-drawer__menu accordion-custom .details-content--no-animation {
-    animation: none;
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(0);
-    transition: none;
-  }
-
-  .menu-drawer__menu details,
-  .menu-drawer__menu-item,
-  .menu-drawer__menu accordion-custom {
-    width: 100%;
-  }
-
-  .menu-drawer__list-item--divider .menu-drawer__menu-item:not(.menu-drawer__menu-item--child) {
-    min-height: calc(2 * var(--padding-lg) + var(--icon-size-xs));
-  }
-
-  .menu-drawer__menu-item--mainlist {
-    min-height: calc(2 * var(--padding-lg) + var(--icon-size-xs));
-    font-family: var(--menu-top-level-font-family);
-    font-style: var(--menu-top-level-font-style);
-    font-weight: var(--menu-top-level-font-weight);
-    font-size: var(--menu-top-level-font-size);
-    line-height: var(--menu-top-level-font-line-height);
-    text-transform: var(--menu-top-level-font-case);
-    color: var(--menu-top-level-font-color);
-    justify-content: space-between;
-
-    &:hover {
-      color: var(--menu-top-level-font-color);
-    }
-  }
-
-  .menu-drawer__menu-item--parent {
-    font-family: var(--menu-parent-font-family);
-    font-style: var(--menu-parent-font-style);
-    font-weight: var(--menu-parent-font-weight);
-    font-size: var(--menu-parent-font-size);
-    line-height: var(--menu-parent-font-line-height);
-    text-transform: var(--menu-parent-font-case);
-    color: var(--menu-parent-font-color);
-
-    &:hover {
-      color: var(--menu-parent-font-color);
-    }
-  }
-
-  .menu-drawer__menu-item--child {
-    font-family: var(--menu-child-font-family);
-    font-style: var(--menu-child-font-style);
-    font-weight: var(--menu-child-font-weight);
-    font-size: var(--menu-child-font-size);
-    line-height: var(--menu-child-font-line-height);
-    text-transform: var(--menu-child-font-case);
-    color: var(--menu-child-font-color);
-
-    &:hover {
-      color: var(--menu-child-font-color);
-    }
-  }
-
-  .menu-drawer__menu--childlist summary.menu-drawer__menu-item {
-    display: flex;
-    width: 100%;
-    padding-inline-end: 0;
-  }
-
-  .menu-drawer__list-item--deep .menu-drawer__menu,
-  .menu-drawer__menu--grandchildlist {
-    padding-inline: 0;
-  }
-
-  .menu-drawer__list-item--deep .menu-drawer__menu {
-    padding-block-end: 0.5rem;
-  }
-
-  .menu-drawer__list-item--deep.menu-drawer__list-item--divider .menu-drawer__menu {
-    padding-block-end: 0.3rem;
-  }
-
-  .menu-drawer__list-item--flat.menu-drawer__list-item--divider .menu-drawer__menu--grandchildlist {
-    padding-block-end: 0.5rem;
-  }
-
-  .menu-drawer__menu-item {
-    display: flex;
-    padding: var(--padding-2xs) 0;
-    position: relative;
-    text-decoration: none;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .menu-drawer__menu-item:has(> .menu-drawer__link-image) {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    row-gap: var(--padding-3xs);
-    padding: 0;
-  }
-
-  .menu-drawer__link-image {
-    width: 100%;
-    position: relative;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-  }
-
-  /* Fix alignment for collection image mode links without images in drawer */
-
-  /* Target menu items in grids that have images */
-  .menu-drawer__menu--grid:has(.menu-drawer__link-image) .menu-drawer__menu-item:not(:has(> .menu-drawer__link-image)) {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    row-gap: var(--padding-3xs);
-    padding: 0;
-  }
-
-  .menu-drawer__menu--grid:has(.menu-drawer__link-image)
-    .menu-drawer__menu-item:not(:has(> .menu-drawer__link-image))::before {
-    content: '';
-    display: block;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background-color: var(--color-foreground-muted);
-    opacity: 0.1;
-    border-radius: var(--menu-image-border-radius);
-  }
-
-  .menu-drawer__close-button {
-    position: relative;
-    right: auto;
-    top: auto;
-    width: fit-content;
-    height: fit-content;
-    color: inherit;
-    padding: var(--padding-lg);
-  }
-
-  .menu-drawer__back-button {
-    display: flex;
-    width: 100%;
-    padding: var(--padding-md) var(--padding-xl);
-    border: none;
-    align-items: center;
-    color: var(--color-foreground);
-    background-color: transparent;
-    text-align: left;
-    text-decoration: none;
-    white-space: nowrap;
-    overflow-x: hidden;
-    line-height: 1.2;
-    box-shadow: none;
-  }
-
-  .menu-drawer__close-button.menu-drawer__close-button,
-  .menu-drawer__back-button.menu-drawer__back-button {
-    outline-color: var(--color-foreground-subdued);
-  }
-
-  .menu-drawer__menu-item-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /** Styles when the country selector is hidden */
-  .menu-drawer .language-selector:not(.menu-drawer__submenu *) {
-    width: fit-content;
-    padding-inline-start: 0;
-
-    .localization-form__select {
-      text-align: left;
-    }
-  }
-
-  .menu-drawer__menu-item > .svg-wrapper {
-    width: fit-content;
-    height: fit-content;
-    margin: 0;
-    padding-block: var(--padding-lg);
-    padding-inline-start: var(--padding-xl);
-    flex-shrink: 0;
-  }
-
-  .menu-drawer__list-item--divider .menu-drawer__menu-item > .svg-wrapper {
-    padding-block: var(--padding-md);
-  }
-
-  .menu-drawer svg {
-    width: var(--icon-size-xs);
-    height: var(--icon-size-xs);
-  }
-
-  .menu-drawer__submenu {
-    position: absolute;
-    width: 100%;
-    top: 0;
-    height: 100dvh;
-    left: 0;
-    background-color: var(--color-background);
-    z-index: var(--layer-flat);
-    transform: translateX(-5%);
-    visibility: hidden;
-    overflow-y: auto;
-    opacity: 0;
-  }
-
-  .menu-drawer__back-button > .svg-wrapper {
-    margin-right: var(--padding-md);
-    width: var(--icon-size-xs);
-    height: var(--icon-size-xs);
-  }
-
-  .menu-drawer__utility-links {
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    margin-block: auto var(--padding-sm);
-    margin-inline-start: var(--padding-xl);
-  }
-
-  .menu-drawer__account {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--gap-xs);
-    text-decoration: none;
-    height: 44px;
-    font-size: 1.4rem;
-    color: rgb(var(--color-foreground));
-  }
-
-  .menu-drawer__account svg {
-    height: var(--icon-size-sm);
-    width: var(--icon-size-sm);
-  }
-
-  .menu-drawer__account shop-user-avatar {
-    --shop-avatar-size: 2.4rem;
-
-    margin-right: 0.55rem;
-    margin-left: -0.45rem;
-  }
-
-  .menu-drawer__link-image,
-  .menu-drawer__featured-product-image,
-  .menu-drawer__featured-collection-image,
-  .menu-drawer__featured-collection-link::before {
-    border-radius: var(--menu-image-border-radius);
-  }
-
-  @keyframes menu-drawer-nav-open {
-    0% {
-      visibility: hidden;
-      opacity: 0;
-      transform: translateX(-0.5rem);
-    }
-
-    100% {
-      visibility: visible;
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes menu-drawer-subnav-open {
-    0% {
-      visibility: visible;
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    100% {
-      visibility: hidden;
-      opacity: 0;
-      transform: translateX(-1rem);
-    }
-  }
-
-  /* Drawer Localization Styles */
-  .drawer-localization__button .icon-flag {
-    width: var(--menu-localization-font-size, var(--icon-size-sm));
-    height: var(--menu-localization-font-size, var(--icon-size-sm));
-    clip-path: circle(50%); /* stylelint-disable-line */
-    background-position: center;
-    background-size: cover;
-    margin-inline-end: 4px;
-    position: relative;
-  }
-
-  .drawer-localization__button .icon-flag::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    box-shadow: inset 0 0 var(--size-shadow) var(--color-shadow);
+  .custom-category-drawer__sidebar-image-wrapper {
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-  }
-
-  .drawer-localization .country-filter {
-    padding-block: 8px;
-  }
-
-  .drawer-localization .drawer-localization__button {
+    overflow: hidden;
+    margin-bottom: 6px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     display: flex;
-    padding: 0;
-    position: relative;
-    text-decoration: none;
-    height: 44px;
+    align-items: center;
+    justify-content: center;
 
-    &:hover {
-      color: var(--color-foreground);
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
   }
 
-  .drawer-localization .drawer-localization__button .icon-caret {
-    width: fit-content;
-    height: fit-content;
-    margin: 0;
-    padding: var(--padding-xl) var(--padding-xl) var(--padding-xl) var(--padding-xs);
+  .custom-category-drawer__sidebar-title {
+    font-size: 10px;
+    color: #555555;
+    line-height: 1.2;
+    word-break: break-word;
+    font-family: var(--font-body--family);
   }
 
-  .menu-drawer__localization:not(drawer-localization-component) .language-selector {
-    font-family: var(--menu-localization-font);
-    font-size: var(--menu-localization-font-size);
-  }
-
-  .menu-drawer__localization .language-selector.h5 {
-    padding-inline-start: 0;
-  }
-
-  .drawer-localization {
-    display: contents;
-    color: var(--color-foreground);
-  }
-
-  .drawer-localization localization-form-component {
+  .custom-category-drawer__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
     position: relative;
-    height: 100%;
+    scroll-behavior: smooth;
   }
 
-  .drawer-localization .mobile-localization,
-  .drawer-localization .drawer-localization__button--label {
+  .custom-category-drawer__group {
+    margin-bottom: 24px;
+
+    &:last-child {
+      margin-bottom: 40px;
+    }
+  }
+
+  .custom-category-drawer__banner {
     display: flex;
-    gap: var(--gap-xs);
-    margin-block: 0;
+    justify-content: space-between;
     align-items: center;
+    background-color: #708A6F;
+    color: #ffffff;
+    padding-inline: 16px;
+    padding-block: 8px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    font-family: var(--font-body--family);
+
+    .arrow {
+      font-size: 14px;
+    }
   }
 
-  .drawer-localization__button--label.h6 {
-    font-family: var(--menu-localization-font);
+  .custom-category-drawer__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
   }
 
-  .drawer-localization img {
-    width: var(--icon-size-sm);
-  }
-
-  .drawer-localization .localization-button__icon,
-  .drawer-localization .localization-button__icon svg {
-    width: var(--icon-size-xs);
-    height: var(--icon-size-xs);
-  }
-
-  .drawer-localization summary.is-disabled {
-    pointer-events: none;
-  }
-
-  .drawer-localization .localization-wrapper {
-    width: 100%;
-  }
-
-  .drawer-localization .localization-form {
+  .custom-category-drawer__grid-item {
     display: flex;
     flex-direction: column;
-    position: absolute;
-    inset: 0;
+    align-items: center;
+    text-decoration: none;
+    text-align: center;
+  }
+
+  .custom-category-drawer__grid-image-wrapper {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 
-  .drawer-localization .localization-form > * {
-    padding-inline: var(--padding-xl);
+  .custom-category-drawer__grid-title {
+    font-size: 9.5px;
+    color: #333333;
+    font-weight: 500;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-family: var(--font-body--family);
   }
 
-  .drawer-localization .language-selector .svg-wrapper.icon-caret {
-    transform: translateY(-50%) rotate(0deg);
-    right: 20px;
+  .custom-category-drawer__empty {
+    grid-column: span 3;
+    font-size: 11px;
+    color: #888888;
+    text-align: center;
+    margin-block: 8px;
   }
 
-  .drawer-localization .language-selector .svg-wrapper.icon-caret svg {
-    transform: none;
+  .custom-category-drawer__footer {
+    background-color: #708A6F;
+    padding-block: 14px;
+    padding-inline: 16px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
-{% endstylesheet %}
+
+  .custom-category-drawer__footer-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: var(--font-body--family);
+
+    .footer-icon {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      filter: brightness(0) invert(1); /* makes the icon white */
+    }
+  }
+
+  /* Make details panel take full screen and cover the top header */
+  .menu-drawer-container[open] .menu-drawer {
+    display: flex;
+    flex-direction: column;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    z-index: 99999 !important;
+  }
+{% endstyle %}

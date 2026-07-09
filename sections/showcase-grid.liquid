@@ -1,0 +1,110 @@
+{% stylesheet %}
+  .showcase-grid-section {
+    padding: 60px 20px;
+    background-color: #ffffff;
+  }
+  .showcase-grid-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+  }
+  .showcase-card {
+    display: block;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+  }
+  .showcase-card:hover {
+    transform: translateY(-4px);
+  }
+  .showcase-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+  @media (max-width: 990px) {
+    .showcase-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 480px) {
+    .showcase-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+  }
+{% endstylesheet %}
+
+<div class="showcase-grid-section">
+  <div class="showcase-grid-container">
+    <div class="showcase-grid">
+      {% for block in section.blocks %}
+        {% assign link_url = block.settings.link | default: '#' %}
+        <a href="{{ link_url }}" class="showcase-card" {{ block.shopify_attributes }}>
+          {% if block.settings.image != blank %}
+            {{ block.settings.image | image_url: width: 600 | image_tag: class: 'showcase-image', loading: 'lazy' }}
+          {% else %}
+            {% assign fallback = '' %}
+            {% if forloop.index == 1 %}{% assign fallback = '1_c295eed8-6f69-4677-acf9-53fbb8f63e20_500x500.png' %}{% endif %}
+            {% if forloop.index == 2 %}{% assign fallback = '2_e5edc308-4e07-4e46-84f1-ec9784f651e1_500x500.png' %}{% endif %}
+            {% if forloop.index == 3 %}{% assign fallback = '5_6b6402e6-c391-4bb4-b9b3-c4ee0660c5c5_500x500.webp' %}{% endif %}
+            {% if forloop.index == 4 %}{% assign fallback = '9_4768f9eb-e10f-4d28-91f1-49f6d0711a61_500x500.webp' %}{% endif %}
+            {% if forloop.index == 5 %}{% assign fallback = 'Furniture_Ideas_For_0575001a-892c-4e38-bd03-db03c7f47629_500x500.jpg' %}{% endif %}
+            {% if forloop.index == 6 %}{% assign fallback = 'Furniture_Ideas_For_1_500x500.jpg' %}{% endif %}
+            {% if forloop.index == 7 %}{% assign fallback = 'Furniture_Ideas_For_2_500x500.jpg' %}{% endif %}
+            {% if forloop.index == 8 %}{% assign fallback = 'Furniture_Ideas_For_500x500.jpg' %}{% endif %}
+            
+            {% if fallback != '' %}
+              <img src="{{ fallback | asset_url }}" alt="Showcase" class="showcase-image">
+            {% endif %}
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Showcase Grid",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "showcase_item",
+      "name": "Showcase Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Showcase Grid",
+      "blocks": [
+        { "type": "showcase_item" },
+        { "type": "showcase_item" },
+        { "type": "showcase_item" },
+        { "type": "showcase_item" },
+        { "type": "showcase_item" },
+        { "type": "showcase_item" },
+        { "type": "showcase_item" },
+        { "type": "showcase_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}

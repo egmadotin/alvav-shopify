@@ -103,6 +103,84 @@
           if link_title_downcase == 'gifts' or link_title_downcase == 'gift'
             assign link_is_gift = true
           endif
+
+          # Resolve matching collections dynamically for the link
+          assign has_submenu = false
+          assign matched_handles_str = ""
+
+          if link_is_badged == false and link_is_gift == false
+            if link.links != blank
+              assign has_submenu = true
+            else
+              # Map link title to search keyword
+              assign keyword = ""
+              if link_title_downcase contains 'painting'
+                assign keyword = 'painting'
+              elsif link_title_downcase contains 'decor'
+                assign keyword = 'decor'
+              elsif link_title_downcase contains 'art'
+                assign keyword = 'art'
+              elsif link_title_downcase contains 'table'
+                assign keyword = 'table'
+              elsif link_title_downcase contains 'mirror'
+                assign keyword = 'mirror'
+              elsif link_title_downcase contains 'chair'
+                assign keyword = 'chair'
+              elsif link_title_downcase contains 'clock'
+                assign keyword = 'clock'
+              elsif link_title_downcase contains 'lamp'
+                assign keyword = 'lamp'
+              elsif link_title_downcase contains 'shelf' or link_title_downcase contains 'shelves'
+                assign keyword = 'shelf'
+              elsif link_title_downcase contains 'light'
+                assign keyword = 'light'
+              elsif link_title_downcase contains 'pooja' or link_title_downcase contains 'temple' or link_title_downcase contains 'mandir' or link_title_downcase contains 'essential'
+                assign keyword = 'temple'
+              endif
+
+              if keyword != blank
+                for col in collections
+                  assign col_handle = col.handle | downcase
+                  assign col_title = col.title | downcase
+                  # Only match child collections (not the main category collection itself)
+                  if col_handle != keyword
+                    if col_handle contains keyword or col_title contains keyword
+                      assign matched_handles_str = matched_handles_str | append: col.handle | append: ","
+                    endif
+                  endif
+                endfor
+                
+                # If no matching collections found in database, use high-fidelity mock data fallbacks
+                if matched_handles_str == blank
+                  if keyword == 'painting'
+                    assign matched_handles_str = "2 Pieces Paintings|2-pieces-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/2_Pieces_Wall_Painting.jpg?v=1703745886,3 Pieces Paintings|3-pieces-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/3_Pieces_Wall_Painting.jpg?v=1703745894,3d Wall Painting For Home|3d-wall-painting|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-premium-wall-painting-of-exotic-looking-flowers-with-natural-3d-leaves-PTVCH_2221_1.jpg?v=1709534513,4 Pieces Paintings|4-pieces-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/4_piece_Wall_Painting.jpg?v=1629205160,5 Pieces Paintings|5-pieces-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Five_Pieces_Wall_Painting.jpg?v=1703745982,Abstract Art & Paintings|abstract-painting|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Abstract_art_Wall_Painting.jpg?v=1754047079,Acrylic Glass Painting|acrylic-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/green-and-red-leaf-shape-acrylic-floating-wall-painting-set-of-2-ACVC2Pcs1_58001_1_4cacc78b-ca91-41c6-861b-83679ec2220e.webp?v=1754131485,Animal Paintings|animal-birds-pets|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-golden-retriever-puppies-premium-canvas-wall-painting-PTVCH_2301_White_2.jpg?v=1754048413,Animal/Birds/Pets Paintings|animal-birds-pets-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Animals-Birds-Pets_Painitngs_two_Pieces_of_Peacock_Painting.jpg?v=1629192882,Beach Paintings|beach-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Beach_Wall_Painting.jpg?v=1629263628,Birds Canvas Wall Paintings|birds-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Birds_Wall_Painting.jpg?v=1754048804,Blue Wall Painting|blue-wall-painting|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-premium-wall-painting-of-beautiful-beach-withchair-_-blue-sky-PTVCH_2385_2.jpg?v=1708752767,Boho Painting|boho-painting|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Flower_LeavesFloatingCanvasWallPaintingSetofThree_FFVC3Pcs1_55617_2.webp?v=1697692062,Buddha Painting For Wall|buddha-painting-for-wall|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecraftslordbuddhameditatingstatuecanvaswallpainting-PTVCH_2568_Gold_2.webp?v=1700201390,Buddha Wall Paintings|buddha-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Buddha_Wall_Painting.jpg?v=1754047978,Canvas Wall Paintings|canvas-paintings|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Premium_painting.jpg?v=1754035495"
+                  elsif keyword == 'decor' or keyword == 'art'
+                    assign matched_handles_str = "3D Wall Art|3d-wall-art|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/statement-3d-wall-hanging-with-red-and-cream-wave-motif-3D2694_4_ea494309-9773-498d-8360-1c3e05d6baf5.jpg?v=1755782615,All Artwork|all-artwork|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Premium_Quality_Wooden_Wall_Hanging_Mandala_Pattern_of_OM_WHVC1Pcs1_50001_02.jpg?v=1703746156,Artistic|artistic-frames|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/ColorfulButterflyFloatingCanvasWallPaintingFrame_FFVC1Pcs1_55005_04.jpg?v=1703746367,Artistic Wall Frames|artistic-wall-frames|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Artistic_Wall_Frames_Wall_Painting.jpg?v=1629203960,Ceramic Plates Wall Decor|ceramic-plates-wall-decor|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/WPVC_4PCS1_30802_1.webp?v=1700203161,Crystal Backlit Art|crystal-backlit-art|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Crystal_Backlit_Art.png?v=1758799513,Decor by Art|decor-by-art|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Screenshot_2025-07-16_at_1.12.04_PM.webp?v=1756103823,Decorative items|decorative-items|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-brown-cross-shape-dec.png?v=1709534789,Decorative Showpieces|decorative-showpieces|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Showpieces.png?v=1758799183,Decorative Wall Plates|decorative-wall-plates|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/WPVC_3PCS1_30704_1.webp?v=1700204452,Graffiti Art|graffiti-art|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Graffiti_Art.jpg?v=1754132728,Hanging Plates On wall|hanging-plates-on-wall|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/WPVC_4PCS1_30824_2.webp?v=1708587587,hanuman decor|hanuman-decor|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-statue-of-lord-hanuma.png?v=1709535299,Home decor Items|home-decor-items|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-stay-positive-wooden.png?v=1742298478,LED Modern Art|led-modern-wall-hanging|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/sophisticated-premium-wall-decor-decorative-led-wall-panel-for-office-home-LWH_02_11.jpg?v=1763637910,Metal Art|metal-art|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/stylish-lion-face-metal-wall-art-modern-decor-MA2102_2.png?v=1747394413"
+                  elsif keyword == 'table'
+                    assign matched_handles_str = "2x4 Work Desk|2x4-computer-table|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/2x4_Computer_Table.jpg?v=1763027593,2x5 Work Desk|2x5-computer-table|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/2x5_Computer_Table.png?v=1763029517,Center Table Design For Hall|center-table-design-for-hall|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-round-metal-gold-round-coffee-table-in-shiny-rose-gold-edge-MTVC1Pcs_713_1_1.webp?v=1700204650,Center Table For Drawing Room|center-table-designs-for-drawing-room|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-premium-metallic-nest.png?v=1709534559,Coffee Table|coffee-table|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-trio-golden-nesting-tables-set-of-3-MTVC3Pcs_721_1.jpg?v=1755777933,Computer Table|computer-table|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Computer_Table.webp?v=1763108223,Console Table|console-table|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-classic-design-golden-console-table-in-geometric-pattern-MTVC1Pcs_729_2.jpg?v=1755777511,console table near me|console-table-near-me|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-contemporary-copper-finish-console-table-in-hexagonal-design.webp?v=1689916125,Designer Center Tables|center-tables|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-round-metal-gold-round-coffee-table-in-shiny-rose-gold-edge-MTVC1Pcs_713_1.jpg?v=1681453886,designer center tables in mumbai|designer-center-tables-in-mumbai|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-golden-minimalist-metal-centre-table-in-criss-cross-design.jpg?v=1689851050,designer center tables near me|designer-center-tables-near-me|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-round-shaped-marble-center-table.webp?v=1689850999,L-Shape Work Desk|l-shape-table|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/L-Shape_Table.png?v=1763029545,LED Console Tables|led-console-tables|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/LED_Console_Tables.png?v=1764056214,Side Tables|side-tables|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-premium-golden-tapered-coffee-table-MTVC1Pcs_718_1.jpg?v=1755842412,Side Tables For Living Room|side-tables-for-living-room|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-premium-golden-iron-avarua-round-marble-table_MT53_1.webp?v=1709535530,side tables nainital|side-tables-nainital|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-premium-golden-iron-white-round-marble-table_3a6182d0-6467-4945-95b2-b2c89ee98841.webp?v=1689921526"
+                  elsif keyword == 'mirror'
+                    assign matched_handles_str = "3D Mirrors|3d-mirrors|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/3d_Mirror.jpg?v=1768457163,Bathroom Mirrors|bathroom-mirrors|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-modern-designed-led-round-shape-bathroom-wall-mirror-WMVC_813_1.jpg?v=1754054101,Decorative Mirrors|decorative-mirrors|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-arched-motif-window-frame-wooden-mirror-WMVC_832_1.webp?v=1708671009,Full Length Mirror|full-length-mirror|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-minimalist-design-ful.png?v=1709535134,LED Mirrors|led-mirrors|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-beautiful-modern-designer-led-rectangular-bathroom-mirror-WMVC_830_1.jpg?v=1755842581,Long Mirror|long-mirror|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-scandinavian-frameless-beveled-tapered-shape-mirror--WMVC_876_2.webp?v=1697695224,Mirror|mirror|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-beautiful-scandinavian-frameless-beveled-round-mirror-WMVC_804_1.jpg?v=1764669872,Mirror LED Wall Clock|mirror-led-wall-clock|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Bookshelf_1.jpg?v=1767610799,mirrors hyderabad|mirrors-hyderabad|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-beautiful-vanity-motif-style-mirror-with-walnut-finish-WMVC_846_6_360x_d0bbea56-7c1e-40a3-8afe-467e60c37ab2.webp?v=1690005852,Modern Bathroom Mirror Cabinet|bathroom-mirror-cabinet|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-aesthetic-modern-styl.png?v=1709534432,Vanity Mirror|vanity-mirror|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vanity_mirror.webp?v=1754053572,Vanity Mirror Design|vanity-mirror-design|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-the-autumn-tree-led-rectangular-shape-bathroom-mirror-WMVC_817_1.webp?v=1700204018,Wall Mirror|wall-mirror|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-designer-greek-key-motif-led-rectangular-bathroom-mirror-WMVC_811_1.webp?v=1754053128,Wash Basin Mirror Design|wash-basin-mirror-design|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-beautiful-modern-design-dreamy-illusion-led-bathroom-mirror-WMVC_816_1.webp?v=1709534301,Wooden Mirrors|wooden-mirrors|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-motif-design-art-modern-round-shape-mirror-with-wood-frame-WMVC_854_2.jpg?v=1755842531"
+                  elsif keyword == 'chair'
+                    assign matched_handles_str = "Accent Chairs|accent-chair|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-brick-red-comfy-round.png?v=1755779519,Best selling ottoman & chair|top-selling-ottoman-chair|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/shell-motif-luxury-design-orange-velvet-accent-chair-AC740_11.jpg?v=1757414027,Chairs|chairs|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-royal-blue-color-velvet-iron-dining-chair-AC657_1.webp?v=1742556553,Lounge Chairs|lounge-chair|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-luxurious-pink-comfy.png?v=1755779954,Office Chairs|office-chairs|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/elegant-emerald-green-accent-chair-with-adjustable-height-AC739_5.jpg?v=1754130275,Ottoman Chair|ottoman-chair|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/round-shape-assembled-wide-blue-velvet-ottoman-OC1103_2.png?v=1755780246,Sofa Lounge Chairs|sofa-lounge-chair|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-premium-perfect-cushiony-tufted-super-comfy-emerald-velvet-sofa-lounge-chair-SLC243_1.webp?v=1755780175"
+                  elsif keyword == 'clock'
+                    assign matched_handles_str = "Acrylic Wall Clock|acrylic-wall-clock|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Acrylic_Wall_Clock.jpg?v=1767610585,Antique Wall Clocks|antique-wall-clocks|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/GeometricShapeWoodenWallClock_WW.png?v=1709534352,Big Size 3D clocks|big-size-3d-clocks|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-classic-bold-style-big-size-3d-infinity-wall-clock-WWCVC1Pcs_20003_1.jpg?v=1703746951,Crystal Backlit Wall Clocks|crystal-backlit-wall-clocks-1|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Crystal_Backlit_Wall_Clocks.png?v=1758799598,Designer Wall Clocks|designer-wall-clocks|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/roman-number-vintage-style-wall-clock-RWCVC_40119_01.jpg?v=1681453323,Modern Wall Clocks|modern-wall-clocks|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Hibiscus_Flower_Printed_Wooden_Wall_Clock_WWCVC1Pcs_15063_02.jpg?v=1681455000,Roman Numeral wall clock|roman-numeral-wall-clock|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-designer-roman-number-big-size-3d-infinity-wall-clock-WWCVC1Pcs_20001_01.jpg?v=1700563857,Wall Clocks|wall-clock|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Classic_Style_Wooden_Wall_Clock_WWCVC1Pcs_10010_02.jpg?v=1754650594,Wood Crafted Wall Clocks|wood-crafted-wall-clocks|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Dolphin_Shape_in_Wooden_Wall_Clock_WWCVC1Pcs_10005_03.jpg?v=1681454000,Wooden Clocks|wooden-wall-clock|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Classic_Style_Wooden_Wall_Clock_WWCVC1Pcs_10010_04.jpg?v=1635315240"
+                  elsif keyword == 'lamp' or keyword == 'light'
+                    assign matched_handles_str = "All Lighting|all-lighting|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-world-map-backlit-wooden-wall-decor-with-led-night-light-walnut-finish-WHVC2Pcs1_50058_1.jpg?v=1703746180,Bedroom Ceiling Lights|bedroom-ceiling-lights|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Warm-Light-Chandelier-Modern-Lamp-For-Home-Decoration-Living-Room-1-CL623.webp?v=1703746933,Ceiling Lights|ceiling-lights|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Beautiful-Modern-Design-Wooden-Ceiling-Lamp-For-Home-Decoration-Living-Room-2-CL612.webp?v=1755780522,Floor Lamps|floor-lamps|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Vibecarfts-Modern-House-New-Design-Arch-Floor-Lamp-For-Living-Room-Bedroom_FL706_7.webp?v=1754130453,Floor Lamps For Living Room|floor-lamps-for-living-room|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Vibecarfts-Modern-Style-Wooden-Floor-Lamp-With-Shelf-For-Living-Room-Bedroom_FL713_1.webp?v=1708668835,Floor Standing Lamp|floor-standing-lamp|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/FL701-1.png?v=1709535075,Lamps|lamp|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/FL703_1.jpg?v=1749811032,LED Light Bulbs|led-light-bulbs|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-warm-glow-picture-illuminating-led-light-12-watt-LED_101_1.jpg?v=1681453627,Living Room Ceiling Lights|living-room-ceiling-lights|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Modern-Stylish-Design-Wooden-Cei.png?v=1709535694,Love Neon Light|love-neon-light|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-love-heart-sign-neon-light-NLVC_63529_1.webp?v=1697700528,Modern Floor Lamps|modern-floor-lamps|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Vibecarfts-Beautiful-Modern-House-Wooden-Two-Sided-Shelf-Lamp-For-Living-Room-Bedroom_FL709_2.webp?v=1700205158,Neon Lights|neon-lights|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Neon_Led_ights_for_vibecrafts.com.webp?v=1755781666,Shadow Lamps|shadow-lamps|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-adiyogi-lord-shiva-design-shadow-lamp-SLVC_35502_03.jpg?v=1754130842,Wall LED lights|wall-led-lights|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-subtle-glow-picture-illuminating-led-light-12-watt-LED_102_1.webp?v=1692877754,Wall Lights|wall-lights|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-premium-wooden-wall-lamp--pendant-light--modern-lamp-set-of-2-pc-AL401_1.webp?v=1709534733,Warm Ceiling Light|warm-ceiling-light|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-subtle-glow-picture-illuminating-led-light-12-watt-LED_102_1_67602df0-8d61-4da6-8a67-98007986bae6.webp?v=1709534344"
+                  elsif keyword == 'shelf'
+                    assign matched_handles_str = "Bookshelves / Bookcase|bookshelf|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Bookshelf.jpg?v=1767607752,Kids Wall Shelves|kids-shelves|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-moon-and-stars-shape-wooden-wall-storage-shelf-for-kids-WWSVC_63071_1.webp?v=1755781334,Mini Bar Shelf|mini-bar-shelf|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-engineered-wood-backlit-design-mini-bar-shelf-in-walnut-finish-WWSVC_71014_1.webp?v=1755781391,Modern Wall Shelf Design|modern-wall-shelf-design|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-loving-swan-backlit-designer-wooden-wall-shelf-book-shelf-night-light-walnut-finish-WWSVC_62600_1.webp?v=1697696665,Wall Hanging Shelves|wall-hanging-shelves|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-wooden-wall-hanging-planter-shelf-with-rope-three-layers_red_-WSHR_3_1Pcs_20503_1.jpg?v=1681453749,Wall Shelf|wall-shelf|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/WWSVC_62514_02.jpg?v=1780923452,Wall Shelf Designs For Hall|wall-shelf-designs-for-hall|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-designer-unique-pattern-dark-walnut-planter-shelves-set-of-4-WWSVC_63007_1_f292e311-c391-4c73-b1e0-bd40b6ea2f96.webp?v=1709534408,Wooden Backlit Wall Shelf|wooden-backlit|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/WWSVC2.webp?v=1755781267"
+                  elsif keyword == 'temple'
+                    assign matched_handles_str = "All Temple|all-temple|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-aesthetic-pattern-designer-square-shaped-wall-hanging-wooden-temple-pooja-mandir-design-with-shelf-brown-AT618_1.jpg?v=1703746233,Door Temple|door-temple|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/Door_temple.jpg?v=1756202121,Floor Temples|floor-temple|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-designer-om-chakra-floor-temple-with-spacious-wooden-shelf-_-inbuilt-focus-lightwhite-finish-AT901_1_fac390dd-6fca-456e-8ae6-2de75d8ac700.jpg?v=1768458527,Home Temple|home-temples|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-beautiful-lotus-pattern-floor-temple-with-spacious-wooden-shelf-_-inbuilt-focus-lightbrown-finish-AT904_1.jpg?v=1754641067,Home Temples|home-temple-design|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-designer-om-chakra-floor-temple-with-spacious-wooden-shelf-_-inbuilt-focus-lightwhite-finish-AT901_1.webp?v=1755781976,Mandir|mandir|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-designer-om-chakra-floor-temple-with-spacious-wooden-shelf-_-inbuilt-focus-lightwhite-finish-AT901_1_b4c00fda-02b2-45e3-9f6f-6aab958e46db.jpg?v=1757163031,Small Temple Design For Home|small-temple-design-for-home|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-aesthetic-pattern-designer-square-shaped-wall-hanging-wooden-temple-pooja-mandir-design-with-shelf-brown-AT618_1.webp?v=1700205063,Wall Mounted Temples|pooja-room-decor|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-aesthetic-pattern-designer-square-shaped-wall-hanging-wooden-temple-pooja-mandir-design-with-shelf-white-colAT617_1.jpg?v=1755782042,Wooden Temple For Home|wooden-temple|https://cdn.shopify.com/s/files/1/0500/0711/3892/collections/vibecrafts-designer-om-chakra-floor-temple-with-spacious-wooden-shelf-_-inbuilt-focus-lightbrown-finish-AT902_1.webp?v=1755782339"
+                  endif
+                endif
+
+                # Check if we got any matched collections
+                assign test_split = matched_handles_str | split: ","
+                if test_split.size > 0
+                  assign has_submenu = true
+                endif
+              endif
+            endif
+          endif
         %}
         <li
           role="presentation"
@@ -116,7 +194,7 @@
             href="{{ link.url }}"
             data-skip-node-update="true"
             class="menu-list__link{% if link.active %} menu-list__link--active{% endif %}{% if link_is_badged %} menu-list__link--badge{% endif %}{% if link_is_gift %}{% if block_settings.gifts_menu_image != blank %} menu-list__link--image{% else %} menu-list__link--icon{% endif %}{% endif %}"
-            {%- if link.links != blank -%}
+            {%- if has_submenu -%}
               aria-controls="submenu-{{ forloop.index }}"
               aria-haspopup="true"
               aria-expanded="false"
@@ -138,7 +216,7 @@
               <span class="menu-list__link-title">{{- link.title -}}</span>
             {%- endif -%}
           </a>
-          {%- if link.links != blank -%}
+          {%- if has_submenu -%}
             <div class="menu-list__submenu{{ background_color_classes }}" ref="submenu[]">
               <div
                 id="submenu-{{ forloop.index }}"
@@ -160,7 +238,8 @@
                       grid_columns_count_collection_images: 8,
                       menu_content_type: menu_content_type,
                       content_aspect_ratio: ratio,
-                      image_border_radius: image_border_radius
+                      image_border_radius: image_border_radius,
+                      dynamic_collections: matched_handles_str
                     %}
                   </div>
                 </div>
@@ -234,7 +313,7 @@
     min-height: var(--header-drawer-min-height);
   }
 
-  @media screen and (min-width: 750px) {
+  @media screen and (min-width: 769px) {
     #header-component[data-menu-style='menu'] .header__drawer {
       display: none;
       min-height: 0;
@@ -341,7 +420,7 @@
       color: var(--menu-top-level-font-color);
     }
 
-    @media screen and (min-width: 750px) {
+    @media screen and (min-width: 769px) {
       font-size: var(--menu-top-level-font-size-desktop);
     }
   }
@@ -619,17 +698,26 @@
   .mega-menu__link:has(.mega-menu__link-image) {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    text-align: center;
     padding-inline: 0;
     padding-block: var(--padding-sm) 0;
   }
 
   .mega-menu__link-image {
-    width: 100%;
+    width: 120px;
+    height: 120px;
     position: relative;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 1 / 1;
     margin-bottom: var(--padding-sm);
     object-fit: cover;
+    margin-inline: auto;
     border-radius: var(--menu-image-border-radius);
+    transition: transform 0.3s ease;
+  }
+
+  .mega-menu__link:has(.mega-menu__link-image):hover .mega-menu__link-image {
+    transform: scale(1.03);
   }
 
   /* Fix alignment for collection image mode links without images */
@@ -641,6 +729,8 @@
     > .mega-menu__link:not(:has(.mega-menu__link-image)) {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    text-align: center;
     padding-inline: 0;
     padding-block: var(--padding-sm) 0;
   }
@@ -651,9 +741,11 @@
     > .mega-menu__link:not(:has(.mega-menu__link-image))::before {
     content: '';
     display: block;
-    width: 100%;
-    aspect-ratio: 16 / 9;
+    width: 120px;
+    height: 120px;
+    aspect-ratio: 1 / 1;
     margin-bottom: var(--padding-sm);
+    margin-inline: auto;
     background-color: var(--color-foreground-muted);
     opacity: 0.1;
     border-radius: var(--menu-image-border-radius);
