@@ -1,0 +1,80 @@
+{%- assign block_settings = block.settings -%}
+
+<li class="feature-icon-item" {{ block.shopify_attributes }}>
+  <span
+    class="feature-icon-item__badge"
+    style="
+      --feature-icon-badge-bg: {{ block_settings.badge_color | default: '#3f5b44' }};
+      --feature-icon-color: {{ block_settings.icon_color | default: '#ffffff' }};
+    "
+  >
+    {% render 'icon-or-image',
+      icon: block_settings.icon,
+      image_upload: block_settings.image_upload,
+      width: 28,
+      class_name: 'feature-icon-item__icon'
+    %}
+  </span>
+  <span class="feature-icon-item__label">{{ block_settings.label }}</span>
+</li>
+
+{% schema %}
+{
+  "name": "Feature Icon",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "Icon",
+      "options": [
+        { "value": "heart", "label": "Heart" },
+        { "value": "ruler", "label": "Ruler" },
+        { "value": "star", "label": "Star" },
+        { "value": "box", "label": "Box" },
+        { "value": "price_tag", "label": "Price tag" },
+        { "value": "check_box", "label": "Check" },
+        { "value": "truck", "label": "Truck" },
+        { "value": "lightning_bolt", "label": "Lightning bolt" },
+        { "value": "leaf", "label": "Leaf" },
+        { "value": "recycle", "label": "Recycle" },
+        { "value": "lock", "label": "Lock" },
+        { "value": "return", "label": "Return" }
+      ],
+      "default": "star"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_upload",
+      "label": "Custom icon image (overrides icon above)"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Premium Quality"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "badge_color",
+      "label": "Badge background",
+      "default": "#3f5b44"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature Icon"
+    }
+  ]
+}
+{% endschema %}

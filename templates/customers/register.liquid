@@ -1,0 +1,82 @@
+<div class="customer-layout">
+  <div class="customer-auth-container">
+    <h2 class="customer-auth-title">Create Account</h2>
+    <p class="customer-auth-subtitle">Join us to manage your orders and profile.</p>
+
+    {%- form 'create_customer', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}
+        <div class="form-errors">
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      <div class="customer-form-field">
+        <label for="RegisterFirstName">First name</label>
+        <input
+          type="text"
+          name="customer[first_name]"
+          id="RegisterFirstName"
+          autocomplete="given-name"
+          placeholder="First name"
+          {% if form.first_name %}
+            value="{{ form.first_name }}"
+          {% endif %}
+          required
+        >
+      </div>
+
+      <div class="customer-form-field">
+        <label for="RegisterLastName">Last name</label>
+        <input
+          type="text"
+          name="customer[last_name]"
+          id="RegisterLastName"
+          autocomplete="family-name"
+          placeholder="Last name"
+          {% if form.last_name %}
+            value="{{ form.last_name }}"
+          {% endif %}
+          required
+        >
+      </div>
+
+      <div class="customer-form-field">
+        <label for="RegisterEmail">Email</label>
+        <input
+          type="email"
+          name="customer[email]"
+          id="RegisterEmail"
+          autocomplete="email"
+          placeholder="Email address"
+          {% if form.email %}
+            value="{{ form.email }}"
+          {% endif %}
+          required
+        >
+      </div>
+
+      <div class="customer-form-field">
+        <label for="RegisterPassword">Password</label>
+        <input
+          type="password"
+          name="customer[password]"
+          id="RegisterPassword"
+          autocomplete="new-password"
+          placeholder="Password"
+          required
+        >
+      </div>
+
+      <button type="submit" class="customer-form-btn">
+        Create Account
+      </button>
+
+      <div class="customer-auth-footer">
+        Already have an account? 
+        <a href="{{ routes.account_login_url }}">
+          Log in
+        </a>
+      </div>
+    {%- endform -%}
+  </div>
+</div>

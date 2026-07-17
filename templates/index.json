@@ -1,4 +1,12 @@
-
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero_jVaWmY": {
@@ -42,28 +50,74 @@
     },
     "showcase_grid": {
       "type": "showcase-grid",
-      "settings": {},
       "blocks": {
-        "item_1": { "type": "showcase_item" },
-        "item_2": { "type": "showcase_item" },
-        "item_3": { "type": "showcase_item" },
-        "item_4": { "type": "showcase_item" },
-        "item_5": { "type": "showcase_item" },
-        "item_6": { "type": "showcase_item" },
-        "item_7": { "type": "showcase_item" },
-        "item_8": { "type": "showcase_item" }
+        "item_1": {
+          "type": "showcase_item",
+          "settings": {}
+        },
+        "item_2": {
+          "type": "showcase_item",
+          "settings": {}
+        },
+        "item_3": {
+          "type": "showcase_item",
+          "settings": {}
+        },
+        "item_4": {
+          "type": "showcase_item",
+          "settings": {}
+        },
+        "item_5": {
+          "type": "showcase_item",
+          "settings": {}
+        },
+        "item_6": {
+          "type": "showcase_item",
+          "settings": {}
+        },
+        "item_7": {
+          "type": "showcase_item",
+          "settings": {}
+        },
+        "item_8": {
+          "type": "showcase_item",
+          "settings": {}
+        }
       },
-      "block_order": ["item_1", "item_2", "item_3", "item_4", "item_5", "item_6", "item_7", "item_8"]
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4",
+        "item_5",
+        "item_6",
+        "item_7",
+        "item_8"
+      ],
+      "settings": {}
     },
     "luxury_tables": {
       "type": "luxury-tables",
-      "settings": {},
       "blocks": {
-        "table_1": { "type": "table_category" },
-        "table_2": { "type": "table_category" },
-        "table_3": { "type": "table_category" }
+        "table_1": {
+          "type": "table_category",
+          "settings": {}
+        },
+        "table_2": {
+          "type": "table_category",
+          "settings": {}
+        },
+        "table_3": {
+          "type": "table_category",
+          "settings": {}
+        }
       },
-      "block_order": ["table_1", "table_2", "table_3"]
+      "block_order": [
+        "table_1",
+        "table_2",
+        "table_3"
+      ],
+      "settings": {}
     },
     "home_banner": {
       "type": "home-banner",
@@ -71,46 +125,210 @@
     },
     "search_collections": {
       "type": "search-collections",
-      "settings": {},
       "blocks": {
-        "pill_1": { "type": "collection_pill", "settings": { "title": "Tables" } },
-        "pill_2": { "type": "collection_pill", "settings": { "title": "Coffee Tables" } },
-        "pill_3": { "type": "collection_pill", "settings": { "title": "Center Tables" } },
-        "pill_4": { "type": "collection_pill", "settings": { "title": "Chairs" } },
-        "pill_5": { "type": "collection_pill", "settings": { "title": "Lounge Chairs" } },
-        "pill_6": { "type": "collection_pill", "settings": { "title": "Floor Temples" } },
-        "pill_7": { "type": "collection_pill", "settings": { "title": "Lamps" } },
-        "pill_8": { "type": "collection_pill", "settings": { "title": "Floor Lamps" } },
-        "pill_9": { "type": "collection_pill", "settings": { "title": "Mirrors" } },
-        "pill_10": { "type": "collection_pill", "settings": { "title": "Ceiling Lights" } },
-        "pill_11": { "type": "collection_pill", "settings": { "title": "Shoe Rack" } },
-        "pill_12": { "type": "collection_pill", "settings": { "title": "Home Temples" } },
-        "pill_13": { "type": "collection_pill", "settings": { "title": "Horse Paintings" } },
-        "pill_14": { "type": "collection_pill", "settings": { "title": "Console Table" } },
-        "pill_15": { "type": "collection_pill", "settings": { "title": "Office Chairs" } },
-        "pill_16": { "type": "collection_pill", "settings": { "title": "Side Tables" } },
-        "pill_17": { "type": "collection_pill", "settings": { "title": "3D Wall Art" } },
-        "pill_18": { "type": "collection_pill", "settings": { "title": "Wall Clocks" } },
-        "pill_19": { "type": "collection_pill", "settings": { "title": "Neon Lights" } },
-        "pill_20": { "type": "collection_pill", "settings": { "title": "Ottoman Chair" } },
-        "pill_21": { "type": "collection_pill", "settings": { "title": "Vanity Mirror" } },
-        "pill_22": { "type": "collection_pill", "settings": { "title": "Wooden Backlit" } },
-        "pill_23": { "type": "collection_pill", "settings": { "title": "Door Temple" } },
-        "pill_24": { "type": "collection_pill", "settings": { "title": "Bar Trolley" } },
-        "pill_25": { "type": "collection_pill", "settings": { "title": "Acrylic Glass Painting" } },
-        "pill_26": { "type": "collection_pill", "settings": { "title": "Wall Plates" } },
-        "pill_27": { "type": "collection_pill", "settings": { "title": "Bathroom Cabinet" } },
-        "pill_8_2": { "type": "collection_pill", "settings": { "title": "Floor Lamps" } }
+        "pill_1": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Tables"
+          }
+        },
+        "pill_2": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Coffee Tables"
+          }
+        },
+        "pill_3": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Center Tables"
+          }
+        },
+        "pill_4": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Chairs"
+          }
+        },
+        "pill_5": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Lounge Chairs"
+          }
+        },
+        "pill_6": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Floor Temples"
+          }
+        },
+        "pill_7": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Lamps"
+          }
+        },
+        "pill_8": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Floor Lamps"
+          }
+        },
+        "pill_9": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Mirrors"
+          }
+        },
+        "pill_10": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Ceiling Lights"
+          }
+        },
+        "pill_11": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Shoe Rack"
+          }
+        },
+        "pill_12": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Home Temples"
+          }
+        },
+        "pill_13": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Horse Paintings"
+          }
+        },
+        "pill_14": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Console Table"
+          }
+        },
+        "pill_15": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Office Chairs"
+          }
+        },
+        "pill_16": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Side Tables"
+          }
+        },
+        "pill_17": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "3D Wall Art"
+          }
+        },
+        "pill_18": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Wall Clocks"
+          }
+        },
+        "pill_19": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Neon Lights"
+          }
+        },
+        "pill_20": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Ottoman Chair"
+          }
+        },
+        "pill_21": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Vanity Mirror"
+          }
+        },
+        "pill_22": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Wooden Backlit"
+          }
+        },
+        "pill_23": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Door Temple"
+          }
+        },
+        "pill_24": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Bar Trolley"
+          }
+        },
+        "pill_25": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Acrylic Glass Painting"
+          }
+        },
+        "pill_26": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Wall Plates"
+          }
+        },
+        "pill_27": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Bathroom Cabinet"
+          }
+        },
+        "pill_8_2": {
+          "type": "collection_pill",
+          "settings": {
+            "title": "Floor Lamps"
+          }
+        }
       },
       "block_order": [
-        "pill_1", "pill_2", "pill_3", "pill_4", "pill_5", "pill_6", "pill_7", "pill_8", "pill_9", "pill_10", "pill_11", 
-        "pill_12", "pill_13", "pill_14", "pill_15", "pill_8_2", "pill_16", "pill_17", "pill_18", "pill_19", "pill_20", 
-        "pill_21", "pill_22", "pill_23", "pill_24", "pill_25", "pill_26", "pill_27"
-      ]
+        "pill_1",
+        "pill_2",
+        "pill_3",
+        "pill_4",
+        "pill_5",
+        "pill_6",
+        "pill_7",
+        "pill_8",
+        "pill_9",
+        "pill_10",
+        "pill_11",
+        "pill_12",
+        "pill_13",
+        "pill_14",
+        "pill_15",
+        "pill_8_2",
+        "pill_16",
+        "pill_17",
+        "pill_18",
+        "pill_19",
+        "pill_20",
+        "pill_21",
+        "pill_22",
+        "pill_23",
+        "pill_24",
+        "pill_25",
+        "pill_26",
+        "pill_27"
+      ],
+      "settings": {}
     },
     "happy_customers": {
       "type": "happy-customers",
-      "settings": {},
       "blocks": {
         "review_1": {
           "type": "review",
@@ -163,12 +381,19 @@
           }
         }
       },
-      "block_order": ["review_1", "review_2", "review_3", "review_4", "review_5"]
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_4",
+        "review_5"
+      ],
+      "settings": {}
     },
     "seo_text_expandable": {
       "type": "seo-text-expandable",
       "settings": {
-        "seo_content": "<h2>Best Wall Decor &amp; Home Decor Items, Delivered Across India - Vibecrafts</h2><p>Your home says a lot about you, and every piece of decor you choose adds a little personality to your space. At Vibecrafts, we offer a wide collection of <strong>home decor items</strong> that help you build a space that feels calm, creative, and completely yours. From wall art to furniture, we bring you pieces that look good and feel right at home.</p><p>Whether you're setting up a new house or simply changing a few corners, our carefully selected products can make a big difference. Browse through our unique range of <a href=\"#\">wall painting</a>, handcrafted <a href=\"#\">mandir</a>, soft lighting solutions like <a href=\"#\">lamp</a>, elegant <a href=\"#\">mirror</a>, or space-saving <a href=\"#\">tables</a> and <a href=\"#\">chairs</a>  each one designed to make your space more meaningful.</p><p>With easy online access and delivery across India, decorating your home is now just a few clicks away.</p><h3>Choose From a Wide Range of Home Decor Categories</h3><p>Vibecrafts makes it easy to shop for your entire home. Our categories are built to suit different tastes and needs, making it simple to find items that match your style and space.</p><h4>Wall Art and Paintings</h4><p>Browse our <a href=\"#\">Wall Paintings</a> collection to add color and expression to your rooms. From abstract and modern designs to traditional themes, we have pieces that speak to every mood. Looking for something spiritual? Our Radha Krishna Paintings are ideal for prayer areas or quiet corners.</p><h4>Mirrors</h4><p>Our <a href=\"#\">Mirrors</a> combine function with style. Use them to brighten up small rooms, reflect natural light, or simply add a designer touch to walls and entrances.</p><h4>Lamps and Lighting</h4><p>Set the mood with our <a href=\"#\">Lamps</a>. Choose from table lamps, wall lights, or decorative pieces to light up your space with warmth and comfort.</p><h4>Wooden Mandirs</h4><p>Create a peaceful space with our Mandirs. Perfect for pooja rooms or small home corners, these <a href=\"#\">wooden temples</a> are designed with detail and devotion.</p><h4>Tables and Chairs</h4><p>Explore <a href=\"#\">Tables</a> and <a href=\"#\">Chairs</a> that fit in anywhere  from living rooms and balconies to work-from-home setups. Crafted for daily use, our tables and chairs offer both comfort and lasting quality  perfect for any space in your home.</p><h4>Showpieces and Handmade Items</h4><p>Add final touches to your home with thoughtfully selected decor like vases, <a href=\"#\">clocks</a>, and <a href=\"#\">photo frames</a>  simple elements that bring out the charm in every room.</p><h3>Refresh Any Room with Smart Home Decor Ideas</h3><p>Not sure where to start? You don't need to change everything  even a few thoughtful updates can bring new life to your space.</p><ul>\n<li>Place a bold wall painting in the living room to set the tone.</li>\n<li>Add a sleek mirror in the hallway or above a console to open up the space.</li>\n<li>A soft-glow lamp on your nightstand adds warmth and makes bedtime feel relaxing.</li>\n<li>Use a corner chair and side table to create a small reading nook.</li>\n<li>Install a wooden mandir in your pooja space to bring peace and devotion.</li>\n<li>Add a <a href=\"#\">Radha Krishna Painting</a> to any room for a calm and spiritual touch.</li>\n</ul><h3>Why Vibecrafts is the Right Choice for Home Decor Items</h3><p>We know home decor isn't just about looks it's about how you feel in your space. That's why everything we offer is selected for its design, comfort, and long-term value.</p><ul>\n<li>A wide collection of decor options for living rooms, bedrooms, hallways, and more.</li>\n<li>Proudly crafted in India by skilled artisans, blending tradition with modern design.</li>\n<li>Affordable prices without compromising quality.</li>\n<li>Easy ordering and safe doorstep delivery.</li>\n<li>Loved by homeowners across the country for quality, style, and service.</li>\n</ul><p>No matter your budget or home size, you'll find pieces that fit perfectly  and last longer.</p><h3>Stay Updated with the Latest Home Decor Trends</h3><p>At Vibecrafts, we keep track of what's new and useful. Our collections are regularly updated with fresh arrivals, including trending designs in lighting, wall art, wooden furniture, and devotional decor. Whether your style is minimal or traditional, bold or soft , our team curates products that match what real people are looking for today.</p><h3>Want to stay inspired? Follow us for the latest in</h3><ul>\n<li>Canvas and crystal wall art</li>\n<li>Multi-use tables and chairs</li>\n<li>Wooden mandirs with storage</li>\n<li>Decorative mirrors in modern frames</li>\n<li>Lamps for every mood</li>\n</ul><h3>Shop Home Decor Items Online with Confidence</h3><p>We know your time matters  that's why we make decorating easy, quick, and worry-free. With Vibecrafts, shopping for home decor items online is simple, secure, and satisfying. No crowds, no guesswork  just clear options, detailed photos, and easy checkout.</p><p>Start by exploring our collections</p><p><a href=\"#\">Wall Painting</a> | <a href=\"#\">Lamp</a> | <a href=\"#\">Mirror</a> | <a href=\"#\">Chair</a> | <a href=\"#\">Table</a> | <a href=\"#\">Mandir</a> | <a href=\"#\">Radha Krishna Painting</a></p><h3>Frequently Asked Questions</h3><h4>What are the most popular home decor items available at Vibecrafts?</h4><p><strong>Answer -</strong> We offer a wide range of home decor items including wall paintings, mirrors, lamps, mandirs, chairs, and tables. All our products are carefully selected to suit Indian homes and modern lifestyles.</p><h4>Can I buy wall paintings and Radha Krishna paintings online?</h4><p><strong>Answer -</strong> Yes, at Vibecrafts you can explore a large collection of wall paintings including spiritual art like Radha Krishna paintings. They're available in different styles, sizes, and themes to suit every room.</p><h4>Are the wooden mandirs suitable for small homes or flats?</h4><p><strong>Answer -</strong> Absolutely. Our wooden mandirs are designed to fit comfortably in compact spaces while still offering a peaceful and spiritual atmosphere. Some mandirs also include shelves and built-in drawers, giving you extra space for keeping essentials.</p><h4>Do you offer mirrors that are decorative as well as functional?</h4><p><strong>Answer -</strong> Yes, our mirrors are both stylish and practical. You can use them in hallways, bedrooms, or living rooms to brighten up the space and add a decorative element to your wall.</p><h4>What types of lamps are available on Vibecrafts?</h4><p><strong>Answer -</strong> We have a curated collection of lamps including table lamps, floor lamps, and wall-mounted lights. These lamps add warm lighting and enhance the mood of any room.</p><h4>Are your chairs and tables good for daily use?</h4><p><strong>Answer -</strong> Yes. Our chairs and tables are built for regular use. Whether it's a side table, center table, or lounge chair, each piece is durable, functional, and fits into any corner of your home.</p><h4>Do you provide home delivery across India?</h4><p><strong>Answer -</strong> Yes, Vibecrafts offers safe and timely home delivery across India. Just place your order online, and well handle the rest  from packaging to doorstep delivery.</p><h4>Are all Vibecrafts products made in India?</h4><p><strong>Answer -</strong> Most of our home decor items are made by skilled Indian artisans. We proudly support local craftsmanship and traditional techniques blended with modern designs.</p>"
+        "content": "<p><strong>Best Wall Decor & Home Decor Items, Delivered Across India - Dekorvibe</strong></p><p>Your home says a lot about you, and every piece of decor you choose adds a little personality to your space. At Dekorvibe, we offer a wide collection of <strong>home decor items</strong> that help you build a space that feels calm, creative, and completely yours. From wall art to furniture, we bring you pieces that look good and feel right at home.</p><p>Whether you're setting up a new house or simply changing a few corners, our carefully selected products can make a big difference. Browse through our unique range of <a href=\"#\">wall painting</a>, handcrafted <a href=\"#\">mandir</a>, soft lighting solutions like <a href=\"#\">lamp</a>, elegant <a href=\"#\">mirror</a>, or space-saving <a href=\"#\">tables</a> and <a href=\"#\">chairs</a>  each one designed to make your space more meaningful.</p><p>With easy online access and delivery across India, decorating your home is now just a few clicks away.</p><p><strong>Choose From a Wide Range of Home Decor Categories</strong></p><p>Dekorvibe makes it easy to shop for your entire home. Our categories are built to suit different tastes and needs, making it simple to find items that match your style and space.</p><p><strong>Wall Art and Paintings</strong></p><p>Browse our <a href=\"#\">Wall Paintings</a> collection to add color and expression to your rooms. From abstract and modern designs to traditional themes, we have pieces that speak to every mood. Looking for something spiritual? Our Radha Krishna Paintings are ideal for prayer areas or quiet corners.</p><p><strong>Mirrors</strong></p><p>Our <a href=\"#\">Mirrors</a> combine function with style. Use them to brighten up small rooms, reflect natural light, or simply add a designer touch to walls and entrances.</p><p><strong>Lamps and Lighting</strong></p><p>Set the mood with our <a href=\"#\">Lamps</a>. Choose from table lamps, wall lights, or decorative pieces to light up your space with warmth and comfort.</p><p><strong>Wooden Mandirs</strong></p><p>Create a peaceful space with our Mandirs. Perfect for pooja rooms or small home corners, these <a href=\"#\">wooden temples</a> are designed with detail and devotion.</p><p><strong>Tables and Chairs</strong></p><p>Explore <a href=\"#\">Tables</a> and <a href=\"#\">Chairs</a> that fit in anywhere  from living rooms and balconies to work-from-home setups. Crafted for daily use, our tables and chairs offer both comfort and lasting quality  perfect for any space in your home.</p><p><strong>Showpieces and Handmade Items</strong></p><p>Add final touches to your home with thoughtfully selected decor like vases, <a href=\"#\">clocks</a>, and <a href=\"#\">photo frames</a>  simple elements that bring out the charm in every room.</p><p><strong>Refresh Any Room with Smart Home Decor Ideas</strong></p><p>Not sure where to start? You don't need to change everything  even a few thoughtful updates can bring new life to your space.</p><ul>\n<li>Place a bold wall painting in the living room to set the tone.</li>\n<li>Add a sleek mirror in the hallway or above a console to open up the space.</li>\n<li>A soft-glow lamp on your nightstand adds warmth and makes bedtime feel relaxing.</li>\n<li>Use a corner chair and side table to create a small reading nook.</li>\n<li>Install a wooden mandir in your pooja space to bring peace and devotion.</li>\n<li>Add a <a href=\"#\">Radha Krishna Painting</a> to any room for a calm and spiritual touch.</li>\n</ul><p><strong>Why Dekorvibe is the Right Choice for Home Decor Items</strong></p><p>We know home decor isn't just about looks it's about how you feel in your space. That's why everything we offer is selected for its design, comfort, and long-term value.</p><ul>\n<li>A wide collection of decor options for living rooms, bedrooms, hallways, and more.</li>\n<li>Proudly crafted in India by skilled artisans, blending tradition with modern design.</li>\n<li>Affordable prices without compromising quality.</li>\n<li>Easy ordering and safe doorstep delivery.</li>\n<li>Loved by homeowners across the country for quality, style, and service.</li>\n</ul><p>No matter your budget or home size, you'll find pieces that fit perfectly  and last longer.</p><p><strong>Stay Updated with the Latest Home Decor Trends</strong></p><p>At Dekorvibe, we keep track of what's new and useful. Our collections are regularly updated with fresh arrivals, including trending designs in lighting, wall art, wooden furniture, and devotional decor. Whether your style is minimal or traditional, bold or soft , our team curates products that match what real people are looking for today.</p><p><strong>Want to stay inspired? Follow us for the latest in</strong></p><ul>\n<li>Canvas and crystal wall art</li>\n<li>Multi-use tables and chairs</li>\n<li>Wooden mandirs with storage</li>\n<li>Decorative mirrors in modern frames</li>\n<li>Lamps for every mood</li>\n</ul><p><strong>Shop Home Decor Items Online with Confidence</strong></p><p>We know your time matters  that's why we make decorating easy, quick, and worry-free. With Dekorvibe, shopping for home decor items online is simple, secure, and satisfying. No crowds, no guesswork  just clear options, detailed photos, and easy checkout.</p><p>Start by exploring our collections</p><p><a href=\"#\">Wall Painting</a> | <a href=\"#\">Lamp</a> | <a href=\"#\">Mirror</a> | <a href=\"#\">Chair</a> | <a href=\"#\">Table</a> | <a href=\"#\">Mandir</a> | <a href=\"#\">Radha Krishna Painting</a></p><p><strong>Frequently Asked Questions</strong></p><p><strong>What are the most popular home decor items available at Dekorvibe?</strong></p><p><strong>Answer -</strong> We offer a wide range of home decor items including wall paintings, mirrors, lamps, mandirs, chairs, and tables. All our products are carefully selected to suit Indian homes and modern lifestyles.</p><p><strong>Can I buy wall paintings and Radha Krishna paintings online?</strong></p><p><strong>Answer -</strong> Yes, at Dekorvibe you can explore a large collection of wall paintings including spiritual art like Radha Krishna paintings. They're available in different styles, sizes, and themes to suit every room.</p><p><strong>Are the wooden mandirs suitable for small homes or flats?</strong></p><p><strong>Answer -</strong> Absolutely. Our wooden mandirs are designed to fit comfortably in compact spaces while still offering a peaceful and spiritual atmosphere. Some mandirs also include shelves and built-in drawers, giving you extra space for keeping essentials.</p><p><strong>Do you offer mirrors that are decorative as well as functional?</strong></p><p><strong>Answer -</strong> Yes, our mirrors are both stylish and practical. You can use them in hallways, bedrooms, or living rooms to brighten up the space and add a decorative element to your wall.</p><p><strong>What types of lamps are available on Dekorvibe?</strong></p><p><strong>Answer -</strong> We have a curated collection of lamps including table lamps, floor lamps, and wall-mounted lights. These lamps add warm lighting and enhance the mood of any room.</p><p><strong>Are your chairs and tables good for daily use?</strong></p><p><strong>Answer -</strong> Yes. Our chairs and tables are built for regular use. Whether it's a side table, center table, or lounge chair, each piece is durable, functional, and fits into any corner of your home.</p><p><strong>Do you provide home delivery across India?</strong></p><p><strong>Answer -</strong> Yes, Dekorvibe offers safe and timely home delivery across India. Just place your order online, and well handle the rest  from packaging to doorstep delivery.</p><p><strong>Are all Dekorvibe products made in India?</strong></p><p><strong>Answer -</strong> Most of our home decor items are made by skilled Indian artisans. We proudly support local craftsmanship and traditional techniques blended with modern designs.</p>"
       }
     },
     "featured_in_marquee": {
@@ -177,41 +402,143 @@
     },
     "category_shop": {
       "type": "category-shop",
-      "settings": {},
       "blocks": {
-        "cat_1": { "type": "category_item" },
-        "cat_2": { "type": "category_item" },
-        "cat_3": { "type": "category_item" },
-        "cat_4": { "type": "category_item" },
-        "cat_5": { "type": "category_item" },
-        "cat_6": { "type": "category_item" },
-        "cat_7": { "type": "category_item" },
-        "cat_8": { "type": "category_item" }
+        "cat_1": {
+          "type": "category_item",
+          "settings": {}
+        },
+        "cat_2": {
+          "type": "category_item",
+          "settings": {}
+        },
+        "cat_3": {
+          "type": "category_item",
+          "settings": {}
+        },
+        "cat_4": {
+          "type": "category_item",
+          "settings": {}
+        },
+        "cat_5": {
+          "type": "category_item",
+          "settings": {}
+        },
+        "cat_6": {
+          "type": "category_item",
+          "settings": {}
+        },
+        "cat_7": {
+          "type": "category_item",
+          "settings": {}
+        },
+        "cat_8": {
+          "type": "category_item",
+          "settings": {}
+        }
       },
-      "block_order": ["cat_1", "cat_2", "cat_3", "cat_4", "cat_5", "cat_6", "cat_7", "cat_8"]
+      "block_order": [
+        "cat_1",
+        "cat_2",
+        "cat_3",
+        "cat_4",
+        "cat_5",
+        "cat_6",
+        "cat_7",
+        "cat_8"
+      ],
+      "settings": {}
     },
     "shoppable_reels": {
       "type": "shoppable-reels",
-      "settings": {},
       "blocks": {
-        "reel_1": { "type": "reel", "settings": { "title": "Nesting Coffee Table" } },
-        "reel_2": { "type": "reel", "settings": { "title": "Led Wall Art", "likes": "2.5K", "views": "107.9K" } },
-        "reel_3": { "type": "reel", "settings": { "title": "Modern Center Table", "views": "96.1K" } },
-        "reel_4": { "type": "reel", "settings": { "title": "Sofa Lounge Chair", "views": "94K" } },
-        "reel_5": { "type": "reel", "settings": { "title": "Coffee Table Set of 2", "views": "97.1K" } }
+        "reel_1": {
+          "type": "reel",
+          "settings": {
+            "title": "Nesting Coffee Table"
+          }
+        },
+        "reel_2": {
+          "type": "reel",
+          "settings": {
+            "title": "Led Wall Art",
+            "likes": "2.5K",
+            "views": "107.9K"
+          }
+        },
+        "reel_3": {
+          "type": "reel",
+          "settings": {
+            "title": "Modern Center Table",
+            "views": "96.1K"
+          }
+        },
+        "reel_4": {
+          "type": "reel",
+          "settings": {
+            "title": "Sofa Lounge Chair",
+            "views": "94K"
+          }
+        },
+        "reel_5": {
+          "type": "reel",
+          "settings": {
+            "title": "Coffee Table Set of 2",
+            "views": "97.1K"
+          }
+        }
       },
-      "block_order": ["reel_1", "reel_2", "reel_3", "reel_4", "reel_5"]
+      "block_order": [
+        "reel_1",
+        "reel_2",
+        "reel_3",
+        "reel_4",
+        "reel_5"
+      ],
+      "settings": {}
     },
     "deal_of_the_day": {
       "type": "deal-of-the-day",
-      "settings": {},
       "blocks": {
-        "dod_1": { "type": "product", "settings": { "title": "Yin Yang Style Decorative Wooden Vanity Mirror", "price": "₹5,099", "compare_price": "₹13,499" } },
-        "dod_2": { "type": "product", "settings": { "title": "Islamic verse from the Quran Set of Five", "price": "₹1,599", "compare_price": "₹4,099" } },
-        "dod_3": { "type": "product", "settings": { "title": "Luxury Blue Tufted Ottoman", "price": "₹11,699", "compare_price": "₹26,999" } },
-        "dod_4": { "type": "product", "settings": { "title": "Edgy Shell Style Accent Chair", "price": "₹11,699", "compare_price": "₹25,999" } }
+        "dod_1": {
+          "type": "product",
+          "settings": {
+            "title": "Yin Yang Style Decorative Wooden Vanity Mirror",
+            "price": "₹5,099",
+            "compare_price": "₹13,499"
+          }
+        },
+        "dod_2": {
+          "type": "product",
+          "settings": {
+            "title": "Islamic verse from the Quran Set of Five",
+            "price": "₹1,599",
+            "compare_price": "₹4,099"
+          }
+        },
+        "dod_3": {
+          "type": "product",
+          "settings": {
+            "title": "Luxury Blue Tufted Ottoman",
+            "price": "₹11,699",
+            "compare_price": "₹26,999"
+          }
+        },
+        "dod_4": {
+          "type": "product",
+          "settings": {
+            "title": "Edgy Shell Style Accent Chair",
+            "price": "₹11,699",
+            "compare_price": "₹25,999"
+          }
+        }
       },
-      "block_order": ["dod_1", "dod_2", "dod_3", "dod_4"]
+      "block_order": [
+        "dod_1",
+        "dod_2",
+        "dod_3",
+        "dod_4"
+      ],
+      "settings": {}
     },
     "advance_banner": {
       "type": "advance-banner",
@@ -219,61 +546,192 @@
     },
     "collection_showcase_1": {
       "type": "collection-showcase",
+      "blocks": {
+        "c1_1": {
+          "type": "product",
+          "settings": {}
+        },
+        "c1_2": {
+          "type": "product",
+          "settings": {}
+        },
+        "c1_3": {
+          "type": "product",
+          "settings": {}
+        },
+        "c1_4": {
+          "type": "product",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "c1_1",
+        "c1_2",
+        "c1_3",
+        "c1_4"
+      ],
       "settings": {
         "title": "The Luxe Art Collection",
         "subtitle": "Home Decor is the most important segment in setting the complate ambaiance of your home."
-      },
-      "blocks": {
-        "c1_1": { "type": "product" }, "c1_2": { "type": "product" }, "c1_3": { "type": "product" }, "c1_4": { "type": "product" }
-      },
-      "block_order": ["c1_1", "c1_2", "c1_3", "c1_4"]
+      }
     },
     "popular_picks": {
       "type": "popular-picks",
-      "settings": {},
       "blocks": {
-        "pp_1": { "type": "category", "settings": { "title": "Coffee Tables", "price_text": "Starting At ₹ 10,679" } },
-        "pp_2": { "type": "category", "settings": { "title": "Table Lamps", "price_text": "Starting At ₹ 2,699" } },
-        "pp_3": { "type": "category", "settings": { "title": "Wooden Mirrors", "price_text": "Starting At ₹ 2,669" } },
-        "pp_4": { "type": "category", "settings": { "title": "Side Table", "price_text": "Starting At ₹ 3,559" } },
-        "pp_5": { "type": "category", "settings": { "title": "Floor Lamps", "price_text": "Starting At ₹ 4,449" } },
-        "pp_6": { "type": "category", "settings": { "title": "Office Chairs", "price_text": "Starting At ₹ 12,999" } }
+        "pp_1": {
+          "type": "category",
+          "settings": {
+            "title": "Coffee Tables",
+            "price_text": "Starting At ₹ 10,679"
+          }
+        },
+        "pp_2": {
+          "type": "category",
+          "settings": {
+            "title": "Table Lamps",
+            "price_text": "Starting At ₹ 2,699"
+          }
+        },
+        "pp_3": {
+          "type": "category",
+          "settings": {
+            "title": "Wooden Mirrors",
+            "price_text": "Starting At ₹ 2,669"
+          }
+        },
+        "pp_4": {
+          "type": "category",
+          "settings": {
+            "title": "Side Table",
+            "price_text": "Starting At ₹ 3,559"
+          }
+        },
+        "pp_5": {
+          "type": "category",
+          "settings": {
+            "title": "Floor Lamps",
+            "price_text": "Starting At ₹ 4,449"
+          }
+        },
+        "pp_6": {
+          "type": "category",
+          "settings": {
+            "title": "Office Chairs",
+            "price_text": "Starting At ₹ 12,999"
+          }
+        }
       },
-      "block_order": ["pp_1", "pp_2", "pp_3", "pp_4", "pp_5", "pp_6"]
+      "block_order": [
+        "pp_1",
+        "pp_2",
+        "pp_3",
+        "pp_4",
+        "pp_5",
+        "pp_6"
+      ],
+      "settings": {}
     },
     "collection_showcase_2": {
       "type": "collection-showcase",
+      "blocks": {
+        "c2_1": {
+          "type": "product",
+          "settings": {}
+        },
+        "c2_2": {
+          "type": "product",
+          "settings": {}
+        },
+        "c2_3": {
+          "type": "product",
+          "settings": {}
+        },
+        "c2_4": {
+          "type": "product",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "c2_1",
+        "c2_2",
+        "c2_3",
+        "c2_4"
+      ],
       "settings": {
         "bg_gradient": "linear-gradient(to bottom, #ffffff, #f2f4e8)",
         "title": "Glass Paintings",
         "subtitle": "Class painting adds a creative and elegant touch to your home décor."
-      },
-      "blocks": {
-        "c2_1": { "type": "product" }, "c2_2": { "type": "product" }, "c2_3": { "type": "product" }, "c2_4": { "type": "product" }
-      },
-      "block_order": ["c2_1", "c2_2", "c2_3", "c2_4"]
+      }
     },
     "collection_showcase_3": {
       "type": "collection-showcase",
+      "blocks": {
+        "c3_1": {
+          "type": "product",
+          "settings": {}
+        },
+        "c3_2": {
+          "type": "product",
+          "settings": {}
+        },
+        "c3_3": {
+          "type": "product",
+          "settings": {}
+        },
+        "c3_4": {
+          "type": "product",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "c3_1",
+        "c3_2",
+        "c3_3",
+        "c3_4"
+      ],
       "settings": {
         "bg_gradient": "linear-gradient(to bottom, #f2f4e8, #e8eddf)",
         "title": "Best Sellers",
         "subtitle": "Discover our most loved and top-selling home décor pieces."
-      },
-      "blocks": {
-        "c3_1": { "type": "product" }, "c3_2": { "type": "product" }, "c3_3": { "type": "product" }, "c3_4": { "type": "product" }
-      },
-      "block_order": ["c3_1", "c3_2", "c3_3", "c3_4"]
+      }
     },
     "designer_chairs": {
       "type": "designer-chairs",
-      "settings": {},
       "blocks": {
-        "dc_1": { "type": "chair_card", "settings": { "title": "Accent Chairs", "title_color": "#135c49", "subtitle": "Make Your Room Look Amazing", "subtitle_color": "#405b53" } },
-        "dc_2": { "type": "chair_card", "settings": { "title": "Ottoman", "title_color": "#6e3f3b", "subtitle": "Soft, Stylish & Super Functional!", "subtitle_color": "#754f4b" } },
-        "dc_3": { "type": "chair_card", "settings": { "title": "Lounge Chairs", "title_color": "#2c2c2c", "subtitle": "Relax, recline, refresh", "subtitle_color": "#444444" } }
+        "dc_1": {
+          "type": "chair_card",
+          "settings": {
+            "title": "Accent Chairs",
+            "title_color": "#135c49",
+            "subtitle": "Make Your Room Look Amazing",
+            "subtitle_color": "#405b53"
+          }
+        },
+        "dc_2": {
+          "type": "chair_card",
+          "settings": {
+            "title": "Ottoman",
+            "title_color": "#6e3f3b",
+            "subtitle": "Soft, Stylish & Super Functional!",
+            "subtitle_color": "#754f4b"
+          }
+        },
+        "dc_3": {
+          "type": "chair_card",
+          "settings": {
+            "title": "Lounge Chairs",
+            "title_color": "#2c2c2c",
+            "subtitle": "Relax, recline, refresh",
+            "subtitle_color": "#444444"
+          }
+        }
       },
-      "block_order": ["dc_1", "dc_2", "dc_3"]
+      "block_order": [
+        "dc_1",
+        "dc_2",
+        "dc_3"
+      ],
+      "settings": {}
     },
     "promo_banner_2": {
       "type": "promo-banner-2",
@@ -281,35 +739,82 @@
     },
     "premium_mirrors": {
       "type": "premium-mirrors",
-      "settings": {},
       "blocks": {
-        "pm_1": { "type": "mirror" },
-        "pm_2": { "type": "mirror" },
-        "pm_3": { "type": "mirror" }
+        "pm_1": {
+          "type": "mirror",
+          "settings": {}
+        },
+        "pm_2": {
+          "type": "mirror",
+          "settings": {}
+        },
+        "pm_3": {
+          "type": "mirror",
+          "settings": {}
+        }
       },
-      "block_order": ["pm_1", "pm_2", "pm_3"]
+      "block_order": [
+        "pm_1",
+        "pm_2",
+        "pm_3"
+      ],
+      "settings": {}
     },
     "before_after_toggle": {
       "type": "before-after-toggle",
-      "settings": {},
       "blocks": {
-        "bat_1": { "type": "toggle_card" },
-        "bat_2": { "type": "toggle_card" },
-        "bat_3": { "type": "toggle_card" },
-        "bat_4": { "type": "toggle_card" }
+        "bat_1": {
+          "type": "toggle_card",
+          "settings": {}
+        },
+        "bat_2": {
+          "type": "toggle_card",
+          "settings": {}
+        },
+        "bat_3": {
+          "type": "toggle_card",
+          "settings": {}
+        },
+        "bat_4": {
+          "type": "toggle_card",
+          "settings": {}
+        }
       },
-      "block_order": ["bat_1", "bat_2", "bat_3", "bat_4"]
+      "block_order": [
+        "bat_1",
+        "bat_2",
+        "bat_3",
+        "bat_4"
+      ],
+      "settings": {}
     },
     "lamp_multi_toggle": {
       "type": "lamp-multi-toggle",
-      "settings": {},
       "blocks": {
-        "lmt_1": { "type": "lamp_card" },
-        "lmt_2": { "type": "lamp_card" },
-        "lmt_3": { "type": "lamp_card" },
-        "lmt_4": { "type": "lamp_card" }
+        "lmt_1": {
+          "type": "lamp_card",
+          "settings": {}
+        },
+        "lmt_2": {
+          "type": "lamp_card",
+          "settings": {}
+        },
+        "lmt_3": {
+          "type": "lamp_card",
+          "settings": {}
+        },
+        "lmt_4": {
+          "type": "lamp_card",
+          "settings": {}
+        }
       },
-      "block_order": ["lmt_1", "lmt_2", "lmt_3", "lmt_4"]
+      "block_order": [
+        "lmt_1",
+        "lmt_2",
+        "lmt_3",
+        "lmt_4"
+      ],
+      "settings": {}
     }
   },
   "order": [

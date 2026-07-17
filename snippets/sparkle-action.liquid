@@ -6,9 +6,9 @@
 {%- enddoc -%}
 
 <a
-  href="{{ routes.root_url }}"
+  href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
   class="header-actions__action header-actions__action--sparkle"
-  aria-label="Highlights"
+  aria-label="{%- if customer -%}Account{%- else -%}{{ 'accessibility.log_in' | t }}{%- endif -%}"
 >
   <img
     src="{{ 'icon-sparkle-person.png' | asset_url }}"

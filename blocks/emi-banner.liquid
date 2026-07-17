@@ -1,0 +1,180 @@
+
+
+{%- liquid
+  assign product_resource = closest.product
+  assign variant = product_resource.selected_or_first_available_variant
+  assign order_value = variant.price | round: 0
+-%}
+
+<div
+  class="snap_emi_txt snap_emi_txt_wrapper above_pdp_widget"
+  id="sm-widget-btn"
+  onclick="startPop(this)"
+  data-widget="{{ order_value }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="snap_flex_section">
+    <div>
+      <div class="snap-emi-inst">
+        <span>
+          <span class="snap-green-bg">
+            <span class="snaprupee">₹</span><span class="dp-class" id="dp">722</span
+            ><span class="snap_emi_white_text snap_first_line_text">/month</span>
+          </span>
+          <span class="rst_in">|</span>
+          <span class="snap_rest_text"><span class="dynamic_emis snampt_emis">3/6</span>EMI options</span>
+        </span>
+        <span class="rst_in">|</span>
+        <span><img class="snap-widget-buyonemi" src="https://assets.snapmint.com/assets/merchant/vibecrafts_buyonemi.png"></span>
+      </div>
+      <div class="snap-emi-slogan">
+        <span class="snap_emi_slogan_text">
+          <span class="snap_rest_text"></span>
+          <img
+            class="snap_upi_widget_imgd"
+            src="https://assets.snapmint.com/assets/merchant/UPI_logo_grey__.svg"
+            onclick="startPop(this)"
+          >&nbsp;&amp; Cards Accepted<span class="snap-line">|</span>0 Extra Cost<span><span class="snap-line">|</span></span
+          ><span><img class="snap_widget_logo_merchant" src="https://assets.snapmint.com/assets/merchant/snapmint_logo_black_text.svg"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <span class="cashback_text_widget payment_page_snap" style="display: block;">
+    <span class="cashback_text_enter payment_page_snap_color"></span>
+  </span>
+</div>
+
+{% stylesheet %}
+  /*
+    Baseline look so the widget isn't unstyled before Snapmint's app embed loads.
+    Snapmint's own script may override these rules once it activates.
+  */
+  #sm-widget-btn.snap_emi_txt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    background: #f0f0f0;
+    border-radius: 6px;
+    padding: 16px 20px;
+    cursor: pointer;
+  }
+
+  #sm-widget-btn .snap_flex_section,
+  #sm-widget-btn .snap_flex_section > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  #sm-widget-btn .snap-emi-inst {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.8125rem;
+    color: rgb(0 0 0 / 75%);
+  }
+
+  #sm-widget-btn .snap-emi-inst > span:first-child {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  #sm-widget-btn .snap-green-bg {
+    display: inline-flex;
+    align-items: center;
+    background: #2da257;
+    color: #ffffff;
+    font-weight: 700;
+    border-radius: 3px;
+    padding: 3px 5px;
+  }
+
+  #sm-widget-btn .snaprupee {
+    margin-right: 1px;
+  }
+
+  #sm-widget-btn .snap_emi_white_text.snap_first_line_text {
+    margin-left: 2px;
+    font-weight: 400;
+  }
+
+  #sm-widget-btn .rst_in {
+    color: rgb(0 0 0 / 30%);
+  }
+
+  #sm-widget-btn .snap_rest_text {
+    display: flex;
+    align-items: center;
+  }
+
+  #sm-widget-btn .dynamic_emis.snampt_emis {
+    font-weight: 700;
+    color: rgb(0 0 0 / 85%);
+    margin-right: 3px;
+  }
+
+  #sm-widget-btn img.snap-widget-buyonemi {
+    display: block;
+    height: 24px;
+    width: auto;
+    margin-left: 4px;
+  }
+
+  #sm-widget-btn .snap-emi-slogan {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  #sm-widget-btn .snap_emi_slogan_text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 0.8125rem;
+    color: rgb(0 0 0 / 70%);
+  }
+
+  #sm-widget-btn img.snap_upi_widget_imgd {
+    height: 16px;
+    width: auto;
+    vertical-align: middle;
+  }
+
+  #sm-widget-btn .snap-line {
+    color: rgb(0 0 0 / 30%);
+    margin: 0 2px;
+  }
+
+  #sm-widget-btn img.snap_widget_logo_merchant {
+    height: 16px;
+    width: auto;
+    vertical-align: middle;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "EMI Banner",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "This renders Snapmint's real EMI widget markup. It requires the Snapmint app's Theme App Embed to be enabled (Theme editor > App embeds) — that script provides startPop(), calculates the live EMI amount, and injects the widget's styling. Without it enabled, this will show unstyled placeholder numbers."
+    }
+  ],
+  "presets": [
+    {
+      "name": "EMI Banner",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

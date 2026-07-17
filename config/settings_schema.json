@@ -2116,5 +2116,48 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Cart Free Gift settings",
+    "settings": [
+      {
+        "type": "number",
+        "id": "cart_free_gift_threshold",
+        "label": "Free Gift Threshold",
+        "info": "The subtotal milestone amount required to get a free gift (e.g. 999 for ₹999)",
+        "default": 999
+      },
+      {
+        "type": "text",
+        "id": "cart_free_gift_ticker_text_1",
+        "label": "Free Gift Ticker Text 1",
+        "default": "Free Gift with Every Purchase"
+      },
+      {
+        "type": "text",
+        "id": "cart_free_gift_ticker_text_2",
+        "label": "Free Gift Ticker Text 2",
+        "default": "Express Delivery on Pre-Paid Orders"
+      },
+      {
+        "type": "text",
+        "id": "cart_free_gift_ticker_text_3",
+        "label": "Free Gift Ticker Text 3",
+        "default": "Milestone Unlocks Extra Free Gift!"
+      },
+      {
+        "type": "text",
+        "id": "cart_free_gift_reached_text",
+        "label": "Milestone Reached Glow Text",
+        "default": "You have successfully reached the milestone"
+      },
+      {
+        "type": "text",
+        "id": "cart_free_gift_unreached_text",
+        "label": "Milestone Unreached Text",
+        "info": "Use [remaining] to display the remaining amount needed.",
+        "default": "Add products worth [remaining] to unlock a free gift!"
+      }
+    ]
   }
 ]

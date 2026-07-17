@@ -1,0 +1,136 @@
+
+
+{%- liquid
+  assign block_settings = block.settings
+  assign product_resource = closest.product
+  assign share_url = product_resource.url | prepend: request.origin
+  assign share_title = product_resource.title
+  assign button_id = 'ShareButton-' | append: block.id
+-%}
+
+<share-button
+  class="share-button"
+  data-share-url="{{ share_url }}"
+  data-share-title="{{ share_title | escape }}"
+  {{ block.shopify_attributes }}
+>
+  <button
+    type="button"
+    id="{{ button_id }}"
+    class="share-button__trigger"
+    style="
+      --share-button-bg: {{ block_settings.background_color | default: '#e7e5df' }};
+      --share-button-color: {{ block_settings.icon_color | default: '#1a1a1a' }};
+    "
+    aria-label="{{ 'actions.share' | t | default: 'Share' }}"
+  >
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="18" cy="5" r="3"></circle>
+      <circle cx="6" cy="12" r="3"></circle>
+      <circle cx="18" cy="19" r="3"></circle>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+    </svg>
+  </button>
+  <span class="share-button__copied-note" hidden>Link copied</span>
+</share-button>
+
+<script>
+  if (!customElements.get('share-button')) {
+    customElements.define(
+      'share-button',
+      class extends HTMLElement {
+        connectedCallback() {
+          const trigger = this.querySelector('.share-button__trigger');
+          const note = this.querySelector('.share-button__copied-note');
+          trigger.addEventListener('click', async () => {
+            const url = this.dataset.shareUrl;
+            const title = this.dataset.shareTitle;
+            if (navigator.share) {
+              try {
+                await navigator.share({ title, url });
+              } catch (error) {
+                /* user cancelled or share failed silently */
+              }
+            } else if (navigator.clipboard) {
+              await navigator.clipboard.writeText(url);
+              note.hidden = false;
+              setTimeout(() => {
+                note.hidden = true;
+              }, 1500);
+            }
+          });
+        }
+      }
+    );
+  }
+</script>
+
+{% stylesheet %}
+  .share-button {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .share-button__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--share-button-bg);
+    color: var(--share-button-color);
+    cursor: pointer;
+  }
+
+  .share-button__copied-note {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #1a1a1a;
+    color: #ffffff;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Share Button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#e7e5df"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#1a1a1a"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Share Button",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

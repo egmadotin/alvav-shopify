@@ -396,7 +396,21 @@
                   role="cell"
                   headers="productTotal"
                 >
-                  <text-component value="{{ price | strip_html }}">{{ price }}</text-component>
+                  <div class="cart-items__price-container">
+                    <text-component value="{{ price | strip_html }}">{{ price }}</text-component>
+                    {%- liquid
+                      assign compare_at = item.variant.compare_at_price
+                      if compare_at > item.final_price
+                        assign line_compare_at = compare_at | times: item.quantity
+                        if settings.currency_code_enabled_cart_items
+                          assign compare_price = line_compare_at | money_with_currency
+                        else
+                          assign compare_price = line_compare_at | money
+                        endif
+                        echo '<s class="compare-at-price">' | append: compare_price | append: '</s>'
+                      endif
+                    -%}
+                  </div>
                   {%- if item.unit_price_measurement -%}
                     <div class="cart-items__price-unit cart-secondary-typography">
                       {% render 'unit-price', price: unit_price, measurement: item.unit_price_measurement %}

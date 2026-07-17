@@ -26,9 +26,14 @@
         assign status = option.name
       endif
     endfor
+
+    assign sort_button_label = status
+    if sort_button_label == blank or sort_by == default_sort_by or sort_button_label == 'Most relevant'
+      assign sort_button_label = 'Sort by featured'
+    endif
   %}
 
-  <div class="sorting-filter__container {% if should_use_select_on_mobile %} desktop:hidden {% else %} hidden {% endif %}">
+  <div class="sorting-filter__container{% if should_use_select_on_mobile %} desktop:hidden{% else %} hidden{% endif %}">
     <label
       for="sort-select-{{ section_id }}"
       class="facets__label"
@@ -88,12 +93,7 @@
           class="facets__label"
           id="sort-label-{{ section_id }}"
         >
-          {{- 'actions.sort' | t -}}
-        </span>
-        <span
-          class="facets__status h6 desktop:hidden"
-        >
-          {{- status -}}
+          {{- sort_button_label -}}
         </span>
         <span class="svg-wrapper icon-caret icon-animated">
           {{- 'icon-caret.svg' | inline_asset_content -}}

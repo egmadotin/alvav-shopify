@@ -1,0 +1,49 @@
+{%- assign block_settings = block.settings -%}
+
+<li class="trust-badge-item" {{ block.shopify_attributes }}>
+  <span class="trust-badge-item__icon-wrap">
+    {% render 'icon-or-image',
+      icon: block_settings.icon,
+      image_upload: blank,
+      width: 16,
+      class_name: 'trust-badge-item__icon'
+    %}
+  </span>
+  <span>{{ block_settings.text }}</span>
+</li>
+
+{% schema %}
+{
+  "name": "Promise Item",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "Icon",
+      "options": [
+        { "value": "check_box", "label": "Check" },
+        { "value": "price_tag", "label": "Price tag" },
+        { "value": "heart", "label": "Heart" },
+        { "value": "return", "label": "Return" },
+        { "value": "truck", "label": "Truck" },
+        { "value": "lock", "label": "Lock" },
+        { "value": "star", "label": "Star" },
+        { "value": "leaf", "label": "Leaf" }
+      ],
+      "default": "check_box"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Quality Checked & Assured"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promise Item"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,105 @@
+
+
+{%- liquid
+  assign block_settings = block.settings
+  assign product_resource = closest.product
+  assign variant = product_resource.selected_or_first_available_variant
+  assign form_id = 'BuyItNowForm-' | append: block.id
+-%}
+
+{% form 'product', product_resource, id: form_id, class: 'buy-it-now-form' %}
+  <input
+    type="hidden"
+    name="id"
+    value="{{ variant.id }}"
+  >
+  <button
+    type="submit"
+    name="checkout"
+    class="buy-it-now-button"
+    style="
+      --buy-it-now-bg: {{ block_settings.background_color | default: '#3f5b44' }};
+      --buy-it-now-text: {{ block_settings.text_color | default: '#ffffff' }};
+    "
+    {% unless variant.available %}
+      disabled
+    {% endunless %}
+    {{ block.shopify_attributes }}
+  >
+    <span class="svg-wrapper">
+      {{- 'icon-add-to-cart.svg' | inline_asset_content -}}
+    </span>
+    <span>
+      {% if variant.available %}
+        {{ block_settings.button_text | default: 'Buy It Now' }}
+      {% else %}
+        {{ 'products.product.sold_out' | t }}
+      {% endif %}
+    </span>
+  </button>
+{% endform %}
+
+{% stylesheet %}
+  .buy-it-now-form {
+    width: 100%;
+  }
+
+  .buy-it-now-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--buy-it-now-bg);
+    color: var(--buy-it-now-text);
+    border: none;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+  }
+
+  .buy-it-now-button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .buy-it-now-button .svg-wrapper {
+    display: flex;
+    color: var(--buy-it-now-text);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Buy It Now Button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Buy It Now"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#3f5b44"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Buy It Now Button",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

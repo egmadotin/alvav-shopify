@@ -97,11 +97,11 @@
   <div class="page-width">
     <div class="seo-text__container collapsed" id="seoTextContainer-{{ section.id }}">
       <div class="seo-text__content">
-        {{ section.settings.seo_content }}
+        {{ section.settings.content }}
       </div>
       <div class="seo-text__fade"></div>
     </div>
-    
+
     <button class="seo-text__toggle" id="seoTextToggle-{{ section.id }}">Read All</button>
   </div>
 </div>
@@ -110,7 +110,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     var toggleBtn = document.getElementById('seoTextToggle-{{ section.id }}');
     var container = document.getElementById('seoTextContainer-{{ section.id }}');
-    
+
     if (toggleBtn && container) {
       toggleBtn.addEventListener('click', function() {
         if (container.classList.contains('collapsed')) {
@@ -132,9 +132,10 @@
   "name": "SEO Expandable Text",
   "settings": [
     {
-      "type": "html",
-      "id": "seo_content",
-      "label": "SEO HTML Content"
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p><strong>Best Wall Decor & Home Decor Items, Delivered Across India - Dekorvibe</strong></p><p>Your home says a lot about you, and every piece of decor you choose adds a little personality to your space. At Dekorvibe, we offer a wide collection of <strong>home decor items</strong> that help you build a space that feels calm, creative, and completely yours. From wall art to furniture, we bring you pieces that look good and feel right at home.</p><p>Whether you're setting up a new house or simply changing a few corners, our carefully selected products can make a big difference. Browse through our unique range of <a href=\"#\">wall painting</a>, handcrafted <a href=\"#\">mandir</a>, soft lighting solutions like <a href=\"#\">lamp</a>, elegant <a href=\"#\">mirror</a>, or space-saving <a href=\"#\">tables</a> and <a href=\"#\">chairs</a>  each one designed to make your space more meaningful.</p><p>With easy online access and delivery across India, decorating your home is now just a few clicks away.</p><p><strong>Choose From a Wide Range of Home Decor Categories</strong></p><p>Dekorvibe makes it easy to shop for your entire home. Our categories are built to suit different tastes and needs, making it simple to find items that match your style and space.</p><p><strong>Wall Art and Paintings</strong></p><p>Browse our <a href=\"#\">Wall Paintings</a> collection to add color and expression to your rooms. From abstract and modern designs to traditional themes, we have pieces that speak to every mood. Looking for something spiritual? Our Radha Krishna Paintings are ideal for prayer areas or quiet corners.</p><p><strong>Mirrors</strong></p><p>Our <a href=\"#\">Mirrors</a> combine function with style. Use them to brighten up small rooms, reflect natural light, or simply add a designer touch to walls and entrances.</p><p><strong>Lamps and Lighting</strong></p><p>Set the mood with our <a href=\"#\">Lamps</a>. Choose from table lamps, wall lights, or decorative pieces to light up your space with warmth and comfort.</p><p><strong>Wooden Mandirs</strong></p><p>Create a peaceful space with our Mandirs. Perfect for pooja rooms or small home corners, these <a href=\"#\">wooden temples</a> are designed with detail and devotion.</p><p><strong>Tables and Chairs</strong></p><p>Explore <a href=\"#\">Tables</a> and <a href=\"#\">Chairs</a> that fit in anywhere  from living rooms and balconies to work-from-home setups. Crafted for daily use, our tables and chairs offer both comfort and lasting quality  perfect for any space in your home.</p><p><strong>Showpieces and Handmade Items</strong></p><p>Add final touches to your home with thoughtfully selected decor like vases, <a href=\"#\">clocks</a>, and <a href=\"#\">photo frames</a>  simple elements that bring out the charm in every room.</p><p><strong>Refresh Any Room with Smart Home Decor Ideas</strong></p><p>Not sure where to start? You don't need to change everything  even a few thoughtful updates can bring new life to your space.</p><ul>\n<li>Place a bold wall painting in the living room to set the tone.</li>\n<li>Add a sleek mirror in the hallway or above a console to open up the space.</li>\n<li>A soft-glow lamp on your nightstand adds warmth and makes bedtime feel relaxing.</li>\n<li>Use a corner chair and side table to create a small reading nook.</li>\n<li>Install a wooden mandir in your pooja space to bring peace and devotion.</li>\n<li>Add a <a href=\"#\">Radha Krishna Painting</a> to any room for a calm and spiritual touch.</li>\n</ul><p><strong>Why Dekorvibe is the Right Choice for Home Decor Items</strong></p><p>We know home decor isn't just about looks it's about how you feel in your space. That's why everything we offer is selected for its design, comfort, and long-term value.</p><ul>\n<li>A wide collection of decor options for living rooms, bedrooms, hallways, and more.</li>\n<li>Proudly crafted in India by skilled artisans, blending tradition with modern design.</li>\n<li>Affordable prices without compromising quality.</li>\n<li>Easy ordering and safe doorstep delivery.</li>\n<li>Loved by homeowners across the country for quality, style, and service.</li>\n</ul><p>No matter your budget or home size, you'll find pieces that fit perfectly  and last longer.</p><p><strong>Stay Updated with the Latest Home Decor Trends</strong></p><p>At Dekorvibe, we keep track of what's new and useful. Our collections are regularly updated with fresh arrivals, including trending designs in lighting, wall art, wooden furniture, and devotional decor. Whether your style is minimal or traditional, bold or soft , our team curates products that match what real people are looking for today.</p><p><strong>Want to stay inspired? Follow us for the latest in</strong></p>"
     }
   ],
   "presets": [

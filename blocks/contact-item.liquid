@@ -1,0 +1,99 @@
+{% liquid
+  if block.settings.icon != blank
+    assign icon_src = block.settings.icon | img_url: '30x30'
+  elsif block.settings.icon_asset != blank
+    assign icon_src = block.settings.icon_asset | asset_url
+  endif
+%}
+
+<div class="contact-item-block" {{ block.shopify_attributes }}>
+  {% if block.settings.link != blank %}
+    <a href="{{ block.settings.link }}" class="contact-item-block__link">
+  {% endif %}
+  
+  {% if icon_src != blank %}
+    <img
+      src="{{ icon_src }}"
+      alt="{{ block.settings.label }}"
+      class="contact-item-block__icon"
+      loading="lazy"
+      width="15"
+      height="15"
+    >
+  {% endif %}
+  
+  {% if block.settings.label != blank %}
+    <span class="contact-item-block__label">{{ block.settings.label }}</span>
+  {% endif %}
+  
+  {% if block.settings.link != blank %}
+    </a>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .contact-item-block {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  .contact-item-block__link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .contact-item-block__icon {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+  }
+  .contact-item-block__label {
+    color: #ffffff;
+    opacity: 0.9;
+    line-height: 1.5;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact Item",
+  "tag": null,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "icon",
+      "label": "Icon Image (Upload)",
+      "info": "Upload an icon. Overrides the asset filename below."
+    },
+    {
+      "type": "text",
+      "id": "icon_asset",
+      "label": "Icon Asset Filename",
+      "info": "Enter the filename of an existing theme asset, e.g. order-track-icon.png",
+      "placeholder": "order-track-icon.png"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Contact item"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Item"
+    }
+  ]
+}
+{% endschema %}

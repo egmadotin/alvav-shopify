@@ -1,0 +1,127 @@
+
+
+{%- liquid
+  assign block_settings = block.settings
+  assign product_resource = closest.product
+  assign product_url = product_resource.url | prepend: request.origin
+  assign phone_digits = block_settings.phone_number | remove: ' ' | remove: '+' | remove: '-'
+
+  assign bulk_message = block_settings.bulk_message_template
+  assign bulk_message = bulk_message | replace: '[product_title]', product_resource.title
+  assign bulk_message = bulk_message | replace: '[product_url]', product_url
+  assign bulk_link = 'https://wa.me/' | append: phone_digits | append: '?text=' | append: bulk_message | url_encode
+
+  assign customise_message = block_settings.customise_message_template
+  assign customise_message = customise_message | replace: '[product_title]', product_resource.title
+  assign customise_message = customise_message | replace: '[product_url]', product_url
+  assign customise_link = 'https://wa.me/' | append: phone_digits | append: '?text=' | append: customise_message | url_encode
+-%}
+
+<div class="bulk-customise-links" {{ block.shopify_attributes }}>
+  {% if block_settings.bulk_text != blank %}
+    <p class="bulk-customise-links__line">
+      {% if block_settings.bulk_prefix_text != blank %}
+        <span class="bulk-customise-links__prefix">{{ block_settings.bulk_prefix_text }}</span>
+      {% endif %}
+      <a
+        href="{{ bulk_link }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="bulk-customise-links__link"
+      >
+        {{ block_settings.bulk_text }}
+      </a>
+    </p>
+  {% endif %}
+  {% if block_settings.customise_text != blank %}
+    <a
+      href="{{ customise_link }}"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="bulk-customise-links__link"
+    >
+      {{ block_settings.customise_text }}
+    </a>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .bulk-customise-links {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .bulk-customise-links__line {
+    margin: 0;
+    font-size: 0.8125rem;
+  }
+
+  .bulk-customise-links__prefix {
+    color: rgb(0 0 0 / 85%);
+    font-weight: 400;
+  }
+
+  .bulk-customise-links__link {
+    color: #1f6f4a;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    text-decoration: underline;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Bulk/Customise Links",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "phone_number",
+      "label": "WhatsApp number (with country code)",
+      "default": "919999999999",
+      "info": "Digits only, include country code, no + or spaces needed."
+    },
+    {
+      "type": "text",
+      "id": "bulk_prefix_text",
+      "label": "Bulk order text (non-clickable)",
+      "default": "Extra Discount on"
+    },
+    {
+      "type": "text",
+      "id": "bulk_text",
+      "label": "Bulk order link text (clickable)",
+      "default": "Bulk Order"
+    },
+    {
+      "type": "textarea",
+      "id": "bulk_message_template",
+      "label": "Bulk order WhatsApp message",
+      "default": "Hi, I want extra discount on bulk order for [product_title] - [product_url]",
+      "info": "Use [product_title] and [product_url] as placeholders."
+    },
+    {
+      "type": "text",
+      "id": "customise_text",
+      "label": "Customise order link text",
+      "default": "Customise Order"
+    },
+    {
+      "type": "textarea",
+      "id": "customise_message_template",
+      "label": "Customise order WhatsApp message",
+      "default": "Hi, I want to customise [product_title] - [product_url]",
+      "info": "Use [product_title] and [product_url] as placeholders."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bulk/Customise Links",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

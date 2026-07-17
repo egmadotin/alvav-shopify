@@ -1,0 +1,171 @@
+
+
+{%- liquid
+  assign block_settings = block.settings
+  assign input_id = 'PincodeInput-' | append: block.id
+-%}
+
+<div class="delivery-pincode-checker" {{ block.shopify_attributes }}>
+  {% if block_settings.heading != blank %}
+    <p class="delivery-pincode-checker__heading">{{ block_settings.heading }}</p>
+  {% endif %}
+
+  <pincode-checker class="delivery-pincode-checker__form">
+    <label
+      for="{{ input_id }}"
+      class="visually-hidden"
+    >
+      {{ block_settings.placeholder | default: 'Enter PIN code' }}
+    </label>
+    <span class="delivery-pincode-checker__pin-icon">
+      {% render 'icon-or-image', icon: 'map_pin', image_upload: blank, width: 16, class_name: '' %}
+    </span>
+    <input
+      type="text"
+      inputmode="numeric"
+      pattern="[0-9]*"
+      maxlength="6"
+      id="{{ input_id }}"
+      class="delivery-pincode-checker__input"
+      placeholder="{{ block_settings.placeholder | default: 'Enter PIN code' }}"
+    >
+    <button
+      type="button"
+      class="delivery-pincode-checker__button"
+    >
+      {{ block_settings.button_text | default: 'Check' }}
+    </button>
+  </pincode-checker>
+
+  <p class="delivery-pincode-checker__result" hidden></p>
+</div>
+
+<script>
+  if (!customElements.get('pincode-checker')) {
+    customElements.define(
+      'pincode-checker',
+      class extends HTMLElement {
+        connectedCallback() {
+          const input = this.querySelector('.delivery-pincode-checker__input');
+          const button = this.querySelector('.delivery-pincode-checker__button');
+          const result = this.closest('.delivery-pincode-checker').querySelector(
+            '.delivery-pincode-checker__result'
+          );
+
+          const check = () => {
+            const value = input.value.trim();
+            if (!/^[0-9]{6}$/.test(value)) {
+              result.textContent = 'Please enter a valid 6-digit PIN code.';
+              result.hidden = false;
+              return;
+            }
+            /* No serviceability API connected yet - placeholder response only. */
+            result.textContent = 'Delivery availability for ' + value + ' will be shown here.';
+            result.hidden = false;
+          };
+
+          button.addEventListener('click', check);
+          input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              check();
+            }
+          });
+        }
+      }
+    );
+  }
+</script>
+
+{% stylesheet %}
+  .delivery-pincode-checker {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .delivery-pincode-checker__heading {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.9375rem;
+  }
+
+  .delivery-pincode-checker__form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgb(0 0 0 / 20%);
+    border-radius: 999px;
+    padding: 10px 16px;
+  }
+
+  .delivery-pincode-checker__pin-icon {
+    display: flex;
+    flex-shrink: 0;
+    color: rgb(0 0 0 / 55%);
+  }
+
+  .delivery-pincode-checker__input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 0.875rem;
+  }
+
+  .delivery-pincode-checker__button {
+    flex-shrink: 0;
+    background: #2f4a35;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .delivery-pincode-checker__result {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: rgb(0 0 0 / 70%);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Delivery Pincode Check",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Check delivery timeline"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Input placeholder",
+      "default": "Enter PIN code"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Check"
+    },
+    {
+      "type": "paragraph",
+      "content": "This is a visual UI only — it does not look up real delivery dates. Connect a serviceability API or app to make it functional."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Delivery Pincode Check",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

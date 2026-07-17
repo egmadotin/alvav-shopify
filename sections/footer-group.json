@@ -5,7 +5,44 @@
   "sections": {
     "footer_trust_banner": {
       "type": "footer-trust-banner",
-      "settings": {}
+      "blocks": {
+        "trust_1": {
+          "type": "trust_item",
+          "settings": {
+            "heading": "Trusted By 700000+",
+            "subtext": "Customers",
+            "icon_url": "hand-shake.png"
+          }
+        },
+        "trust_2": {
+          "type": "trust_item",
+          "settings": {
+            "heading": "Next Day Dispatch",
+            "subtext": "Fast shipping all over india",
+            "icon_url": "car.png"
+          }
+        },
+        "trust_3": {
+          "type": "trust_item",
+          "settings": {
+            "heading": "Unique Designs",
+            "subtext": "World class Quality and Design experience",
+            "icon_url": "wheel.png"
+          }
+        },
+        "trust_4": {
+          "type": "trust_item",
+          "settings": {
+            "heading": "100% Secure Payment",
+            "subtext": "Trusted & Secure Payment",
+            "icon_url": "rupee.png"
+          }
+        }
+      },
+      "block_order": ["trust_1", "trust_2", "trust_3", "trust_4"],
+      "settings": {
+        "background_color": "#555e4e"
+      }
     },
     "footer_m9NzUG": {
       "type": "footer",
@@ -19,16 +56,128 @@
           }
         },
         "menu_info": {
-          "type": "custom-liquid",
+          "type": "group",
           "settings": {
-            "custom_liquid": "<style>.custom-menu ul { list-style: none; padding: 0; margin: 0; } .custom-menu li { margin-bottom: 10px; } .custom-menu a { text-decoration: none; color: inherit; font-size: 14px; } .custom-menu a:hover { text-decoration: underline; } .custom-menu h3 { font-size: 16px; margin-top: 0; margin-bottom: 15px; font-weight: 500; }</style><div class=\"custom-menu\"><h3>Further info</h3><ul><li><a href=\"/pages/about-us\">About Us</a></li><li><a href=\"/policies/refund-policy\">Return and Refund Policy</a></li><li><a href=\"/policies/shipping-policy\">Shipping Policy</a></li><li><a href=\"/policies/privacy-policy\">Privacy Policy</a></li><li><a href=\"/policies/terms-of-service\">Terms of service</a></li><li><a href=\"/pages/customer-testimonials\">Customer Testimonials</a></li><li><a href=\"/pages/contact\">Contact Us</a></li><li><a href=\"/pages/track-order\">Track your Order</a></li></ul></div>"
-          }
+            "content_direction": "column",
+            "gap": 8
+          },
+          "blocks": {
+            "fi_heading": {
+              "type": "text",
+              "settings": {
+                "text": "<h3>Further info</h3>",
+                "type_preset": "h3",
+                "width": "100%"
+              }
+            },
+            "fi_about": {
+              "type": "text",
+              "settings": {
+                "text": "<p><a href='/pages/about-us'>About Us</a></p>",
+                "type_preset": "rte",
+                "width": "100%"
+              }
+            },
+            "fi_refund": {
+              "type": "text",
+              "settings": {
+                "text": "<p><a href='/policies/refund-policy'>Return and Refund Policy</a></p>",
+                "type_preset": "rte",
+                "width": "100%"
+              }
+            },
+            "fi_shipping": {
+              "type": "text",
+              "settings": {
+                "text": "<p><a href='/policies/shipping-policy'>Shipping Policy</a></p>",
+                "type_preset": "rte",
+                "width": "100%"
+              }
+            },
+            "fi_privacy": {
+              "type": "text",
+              "settings": {
+                "text": "<p><a href='/policies/privacy-policy'>Privacy Policy</a></p>",
+                "type_preset": "rte",
+                "width": "100%"
+              }
+            },
+            "fi_terms": {
+              "type": "text",
+              "settings": {
+                "text": "<p><a href='/policies/terms-of-service'>Terms of service</a></p>",
+                "type_preset": "rte",
+                "width": "100%"
+              }
+            },
+            "fi_testimonials": {
+              "type": "text",
+              "settings": {
+                "text": "<p><a href='/pages/customer-testimonials'>Customer Testimonials</a></p>",
+                "type_preset": "rte",
+                "width": "100%"
+              }
+            },
+            "fi_contact": {
+              "type": "text",
+              "settings": {
+                "text": "<p><a href='/pages/contact'>Contact Us</a></p>",
+                "type_preset": "rte",
+                "width": "100%"
+              }
+            },
+            "fi_track": {
+              "type": "text",
+              "settings": {
+                "text": "<p><a href='/pages/track-order'>Track your Order</a></p>",
+                "type_preset": "rte",
+                "width": "100%"
+              }
+            }
+          },
+          "block_order": ["fi_heading", "fi_about", "fi_refund", "fi_shipping", "fi_privacy", "fi_terms", "fi_testimonials", "fi_contact", "fi_track"]
         },
         "contact_us": {
-          "type": "custom-liquid",
+          "type": "group",
           "settings": {
-            "custom_liquid": "<style>.contact-us-col p { display:flex; align-items:center; gap:10px; margin: 0 0 10px 0; font-size:14px;} .contact-us-col img { width: 15px; flex-shrink:0;} .contact-us-col h3 { margin-top:0; font-size:16px; margin-bottom:15px;} .social-icons__wrapper { display: flex; gap: 10px; } .social-icons__wrapper a { display: flex; justify-content: center; align-items: center; width: 32px; height: 32px; background-color: #fff; color: #555e4e; border-radius: 50%; } .social-icons__wrapper a svg { width: 18px; height: 18px; }</style><div class=\"contact-us-col\"><h3>Contact us</h3><p><img src=\"{{ 'order-track-icon.png' | asset_url }}\"> Track Order</p><p><img src=\"{{ 'whatsapp-footer-icon.png' | asset_url }}\"> WhatsApp Support</p><p><img src=\"{{ 'mail-icon.png' | asset_url }}\"> support@vibecrafts.com</p></div>"
-          }
+            "content_direction": "column",
+            "gap": 8
+          },
+          "blocks": {
+            "contact_heading": {
+              "type": "text",
+              "settings": {
+                "text": "<h3>Contact us</h3>",
+                "type_preset": "h3",
+                "width": "100%"
+              }
+            },
+            "contact_track": {
+              "type": "contact-item",
+              "settings": {
+                "icon_asset": "order-track-icon.png",
+                "label": "Track Order",
+                "link": "/pages/track-order"
+              }
+            },
+            "contact_whatsapp": {
+              "type": "contact-item",
+              "settings": {
+                "icon_asset": "whatsapp-footer-icon.png",
+                "label": "WhatsApp Support",
+                "link": "https://wa.me/your-number"
+              }
+            },
+            "contact_email": {
+              "type": "contact-item",
+              "settings": {
+                "icon_asset": "mail-icon.png",
+                "label": "support@dekorvibe.com",
+                "link": "mailto:support@dekorvibe.com"
+              }
+            }
+          },
+          "block_order": ["contact_heading", "contact_track", "contact_whatsapp", "contact_email"]
         },
         "newsletter_group": {
           "type": "group",
@@ -59,10 +208,10 @@
             "social_links": {
               "type": "social-links",
               "settings": {
-                "facebook_url": "https://www.facebook.com/vibecrafts",
-                "instagram_url": "https://www.instagram.com/vibecrafts",
-                "youtube_url": "https://www.youtube.com/vibecrafts",
-                "pinterest_url": "https://www.pinterest.com/vibecrafts"
+                "facebook_url": "https://www.facebook.com/dekorvibe",
+                "instagram_url": "https://www.instagram.com/dekorvibe",
+                "youtube_url": "https://www.youtube.com/dekorvibe",
+                "pinterest_url": "https://www.pinterest.com/dekorvibe"
               }
             }
           },
@@ -80,6 +229,7 @@
         "section_width": "page-width",
         "gap": 20,
         "background_color": "#1a261c",
+        "overlay_opacity": 30,
         "padding-block-start": 30,
         "padding-block-end": 30
       }

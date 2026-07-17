@@ -1,0 +1,120 @@
+
+
+{% assign block_settings = block.settings %}
+
+<div class="trust-badges" {{ block.shopify_attributes }}>
+  {% if block_settings.heading != blank %}
+    <p class="trust-badges__heading">{{ block_settings.heading }}</p>
+  {% endif %}
+  {% if block_settings.subheading != blank %}
+    <p class="trust-badges__subheading">{{ block_settings.subheading }}</p>
+  {% endif %}
+  <ul class="trust-badges__list">
+    {% content_for 'blocks' %}
+  </ul>
+</div>
+
+{% stylesheet %}
+  .trust-badges {
+    border-radius: 12px;
+    padding: 20px 18px;
+    background: linear-gradient(180deg, #ffffff 0%, #ded6bd 100%);
+  }
+
+  .trust-badges__heading {
+    margin: 0 0 4px;
+    font-weight: 700;
+    font-size: 1.0625rem;
+    color: #7a2e2e;
+  }
+
+  .trust-badges__subheading {
+    margin: 0 0 16px;
+    font-size: 0.8125rem;
+    color: rgb(0 0 0 / 60%);
+  }
+
+  .trust-badges__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .trust-badge-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: rgb(0 0 0 / 85%);
+  }
+
+  .trust-badge-item__icon-wrap {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid rgb(0 0 0 / 45%);
+  }
+
+  .trust-badge-item__icon {
+    color: rgb(0 0 0 / 75%);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Trust Badges",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "_trust-badge-item"
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Dekorvibe Promise"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Gorgeous homes, trusted by many."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust Badges",
+      "category": "Product",
+      "blocks": {
+        "item-1": {
+          "type": "_trust-badge-item",
+          "settings": { "icon": "check_box", "text": "Quality Checked & Assured" }
+        },
+        "item-2": {
+          "type": "_trust-badge-item",
+          "settings": { "icon": "star", "text": "Curated for Your Style" }
+        },
+        "item-3": {
+          "type": "_trust-badge-item",
+          "settings": { "icon": "return", "text": "Hassle-Free Returns" }
+        },
+        "item-4": {
+          "type": "_trust-badge-item",
+          "settings": { "icon": "truck", "text": "Reliable shipping" }
+        }
+      },
+      "block_order": ["item-1", "item-2", "item-3", "item-4"]
+    }
+  ]
+}
+{% endschema %}

@@ -6,91 +6,19 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
-    "section": {
-      "type": "section",
-      "blocks": {
-        "text_tqQTNE": {
-          "type": "text",
-          "name": "Title",
-          "settings": {
-            "text": "<h1>{{ closest.collection.title }}</h1>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-primary--family)",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "text_twGGkJ": {
-          "type": "text",
-          "name": "Description",
-          "settings": {
-            "text": "{{ closest.collection.description }}",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "rte",
-            "font": "var(--font-primary--family)",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "text_tqQTNE",
-        "text_twGGkJ"
-      ],
-      "name": "Collection heading",
+    "hero_banner": {
+      "type": "collection-hero-banner",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
-        "gap": 12,
-        "section_width": "page-width",
-        "section_height_custom": 50,
-        "background_media": "none",
-        "background_color": "{{ settings.color_palette.background }}",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "image": "shopify://shop_images/Collection_Page_banner.webp",
+        "add_side_padding": false
       }
+    },
+    "cutouts": {
+      "type": "collection-cutouts",
+      "settings": {}
     },
     "main": {
       "type": "main-collection",
@@ -107,6 +35,8 @@
             "show_filter_label": false,
             "enable_sorting": true,
             "enable_grid_density": true,
+            "background_color": "",
+            "text_color": "",
             "padding-block-start": 8,
             "padding-block-end": 8,
             "padding-inline-start": 0,
@@ -121,9 +51,11 @@
           "static": true,
           "settings": {
             "product_card_gap": 4,
+            "background_color": "",
             "border": "none",
             "border_width": 1,
             "border_opacity": 100,
+            "border_color": "",
             "border_radius": 0,
             "padding-block-start": 0,
             "padding-block-end": 0,
@@ -138,6 +70,7 @@
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
+                "border_color": "",
                 "border_radius": 0,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
@@ -160,6 +93,7 @@
                 "letter_spacing": "normal",
                 "case": "none",
                 "wrap": "pretty",
+                "text_color": "",
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
@@ -174,6 +108,7 @@
               "type": "price",
               "settings": {
                 "show_sale_price_first": true,
+                "show_discount_badge": true,
                 "show_installments": false,
                 "show_tax_info": false,
                 "type_preset": "h6",
@@ -184,6 +119,7 @@
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
+                "text_color": "",
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -203,6 +139,8 @@
         "layout_type": "grid",
         "product_card_size": "medium",
         "mobile_product_card_size": "small",
+        "enable_infinite_scroll": true,
+        "products_per_page": 24,
         "product_grid_width": "centered",
         "full_width_on_mobile": true,
         "columns_gap_horizontal": 16,
@@ -213,10 +151,18 @@
         "padding-block-start": 0,
         "padding-block-end": 32
       }
+    },
+    "seo_text_expandable": {
+      "type": "seo-text-expandable",
+      "settings": {
+        "content": "<p><strong>Best Wall Decor & Home Decor Items, Delivered Across India - Dekorvibe</strong></p><p>Your home says a lot about you, and every piece of decor you choose adds a little personality to your space. At Dekorvibe, we offer a wide collection of <strong>home decor items</strong> that help you build a space that feels calm, creative, and completely yours. From wall art to furniture, we bring you pieces that look good and feel right at home.</p><p>Whether you're setting up a new house or simply changing a few corners, our carefully selected products can make a big difference. Browse through our unique range of <a href=\"#\">wall painting</a>, handcrafted <a href=\"#\">mandir</a>, soft lighting solutions like <a href=\"#\">lamp</a>, elegant <a href=\"#\">mirror</a>, or space-saving <a href=\"#\">tables</a> and <a href=\"#\">chairs</a>  each one designed to make your space more meaningful.</p><p>With easy online access and delivery across India, decorating your home is now just a few clicks away.</p><p><strong>Choose From a Wide Range of Home Decor Categories</strong></p><p>Dekorvibe makes it easy to shop for your entire home. Our categories are built to suit different tastes and needs, making it simple to find items that match your style and space.</p><p><strong>Wall Art and Paintings</strong></p><p>Browse our <a href=\"#\">Wall Paintings</a> collection to add color and expression to your rooms. From abstract and modern designs to traditional themes, we have pieces that speak to every mood. Looking for something spiritual? Our Radha Krishna Paintings are ideal for prayer areas or quiet corners.</p><p><strong>Mirrors</strong></p><p>Our <a href=\"#\">Mirrors</a> combine function with style. Use them to brighten up small rooms, reflect natural light, or simply add a designer touch to walls and entrances.</p><p><strong>Lamps and Lighting</strong></p><p>Set the mood with our <a href=\"#\">Lamps</a>. Choose from table lamps, wall lights, or decorative pieces to light up your space with warmth and comfort.</p><p><strong>Wooden Mandirs</strong></p><p>Create a peaceful space with our Mandirs. Perfect for pooja rooms or small home corners, these <a href=\"#\">wooden temples</a> are designed with detail and devotion.</p><p><strong>Tables and Chairs</strong></p><p>Explore <a href=\"#\">Tables</a> and <a href=\"#\">Chairs</a> that fit in anywhere  from living rooms and balconies to work-from-home setups. Crafted for daily use, our tables and chairs offer both comfort and lasting quality  perfect for any space in your home.</p><p><strong>Showpieces and Handmade Items</strong></p><p>Add final touches to your home with thoughtfully selected decor like vases, <a href=\"#\">clocks</a>, and <a href=\"#\">photo frames</a>  simple elements that bring out the charm in every room.</p><p><strong>Refresh Any Room with Smart Home Decor Ideas</strong></p><p>Not sure where to start? You don't need to change everything  even a few thoughtful updates can bring new life to your space.</p><ul>\n<li>Place a bold wall painting in the living room to set the tone.</li>\n<li>Add a sleek mirror in the hallway or above a console to open up the space.</li>\n<li>A soft-glow lamp on your nightstand adds warmth and makes bedtime feel relaxing.</li>\n<li>Use a corner chair and side table to create a small reading nook.</li>\n<li>Install a wooden mandir in your pooja space to bring peace and devotion.</li>\n<li>Add a <a href=\"#\">Radha Krishna Painting</a> to any room for a calm and spiritual touch.</li>\n</ul><p><strong>Why Dekorvibe is the Right Choice for Home Decor Items</strong></p><p>We know home decor isn't just about looks it's about how you feel in your space. That's why everything we offer is selected for its design, comfort, and long-term value.</p><ul>\n<li>A wide collection of decor options for living rooms, bedrooms, hallways, and more.</li>\n<li>Proudly crafted in India by skilled artisans, blending tradition with modern design.</li>\n<li>Affordable prices without compromising quality.</li>\n<li>Easy ordering and safe doorstep delivery.</li>\n<li>Loved by homeowners across the country for quality, style, and service.</li>\n</ul><p>No matter your budget or home size, you'll find pieces that fit perfectly  and last longer.</p><p><strong>Stay Updated with the Latest Home Decor Trends</strong></p><p>At Dekorvibe, we keep track of what's new and useful. Our collections are regularly updated with fresh arrivals, including trending designs in lighting, wall art, wooden furniture, and devotional decor. Whether your style is minimal or traditional, bold or soft , our team curates products that match what real people are looking for today.</p><p><strong>Want to stay inspired? Follow us for the latest in</strong></p><ul>\n<li>Canvas and crystal wall art</li>\n<li>Multi-use tables and chairs</li>\n<li>Wooden mandirs with storage</li>\n<li>Decorative mirrors in modern frames</li>\n<li>Lamps for every mood</li>\n</ul><p><strong>Shop Home Decor Items Online with Confidence</strong></p><p>We know your time matters  that's why we make decorating easy, quick, and worry-free. With Dekorvibe, shopping for home decor items online is simple, secure, and satisfying. No crowds, no guesswork  just clear options, detailed photos, and easy checkout.</p><p>Start by exploring our collections</p><p><a href=\"#\">Wall Painting</a> | <a href=\"#\">Lamp</a> | <a href=\"#\">Mirror</a> | <a href=\"#\">Chair</a> | <a href=\"#\">Table</a> | <a href=\"#\">Mandir</a> | <a href=\"#\">Radha Krishna Painting</a></p><p><strong>Frequently Asked Questions</strong></p><p><strong>What are the most popular home decor items available at Dekorvibe?</strong></p><p><strong>Answer -</strong> We offer a wide range of home decor items including wall paintings, mirrors, lamps, mandirs, chairs, and tables. All our products are carefully selected to suit Indian homes and modern lifestyles.</p><p><strong>Can I buy wall paintings and Radha Krishna paintings online?</strong></p><p><strong>Answer -</strong> Yes, at Dekorvibe you can explore a large collection of wall paintings including spiritual art like Radha Krishna paintings. They're available in different styles, sizes, and themes to suit every room.</p><p><strong>Are the wooden mandirs suitable for small homes or flats?</strong></p><p><strong>Answer -</strong> Absolutely. Our wooden mandirs are designed to fit comfortably in compact spaces while still offering a peaceful and spiritual atmosphere. Some mandirs also include shelves and built-in drawers, giving you extra space for keeping essentials.</p><p><strong>Do you offer mirrors that are decorative as well as functional?</strong></p><p><strong>Answer -</strong> Yes, our mirrors are both stylish and practical. You can use them in hallways, bedrooms, or living rooms to brighten up the space and add a decorative element to your wall.</p><p><strong>What types of lamps are available on Dekorvibe?</strong></p><p><strong>Answer -</strong> We have a curated collection of lamps including table lamps, floor lamps, and wall-mounted lights. These lamps add warm lighting and enhance the mood of any room.</p><p><strong>Are your chairs and tables good for daily use?</strong></p><p><strong>Answer -</strong> Yes. Our chairs and tables are built for regular use. Whether it's a side table, center table, or lounge chair, each piece is durable, functional, and fits into any corner of your home.</p><p><strong>Do you provide home delivery across India?</strong></p><p><strong>Answer -</strong> Yes, Dekorvibe offers safe and timely home delivery across India. Just place your order online, and well handle the rest  from packaging to doorstep delivery.</p><p><strong>Are all Dekorvibe products made in India?</strong></p><p><strong>Answer -</strong> Most of our home decor items are made by skilled Indian artisans. We proudly support local craftsmanship and traditional techniques blended with modern designs.</p>"
+      }
     }
   },
   "order": [
-    "section",
-    "main"
+    "hero_banner",
+    "cutouts",
+    "main",
+    "seo_text_expandable"
   ]
 }

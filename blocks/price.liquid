@@ -54,7 +54,8 @@
   {% render 'price',
     show_unit_price: true,
     product_resource: product_resource,
-    show_sale_price_first: block_settings.show_sale_price_first
+    show_sale_price_first: block_settings.show_sale_price_first,
+    show_discount_badge: block_settings.show_discount_badge
   %}
 
   {% if block_settings.show_tax_info %}
@@ -105,6 +106,12 @@
       "type": "checkbox",
       "id": "show_sale_price_first",
       "label": "t:settings.show_sale_price_first",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount_badge",
+      "label": "Show discount percentage badge",
       "default": true
     },
     {

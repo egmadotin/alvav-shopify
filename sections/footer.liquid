@@ -6,13 +6,22 @@
   endif
 %}
 
+{% liquid
+  assign overlay_alpha = section.settings.overlay_opacity | divided_by: 100.0
+%}
 <style>
   footer {
-    background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('{{ 'footerbg.webp' | asset_url }}');
+    {% if section.settings.background_image != blank %}
+      background-image: linear-gradient(rgba(0,0,0,{{ overlay_alpha }}), rgba(0,0,0,{{ overlay_alpha }})), url('{{ section.settings.background_image | img_url: '2000x' }}');
+    {% elsif section.settings.background_image_asset != blank %}
+      background-image: linear-gradient(rgba(0,0,0,{{ overlay_alpha }}), rgba(0,0,0,{{ overlay_alpha }})), url('{{ section.settings.background_image_asset | asset_url }}');
+    {% else %}
+      background-image: linear-gradient(rgba(0,0,0,{{ overlay_alpha }}), rgba(0,0,0,{{ overlay_alpha }})), url('{{ 'footerbg.webp' | asset_url }}');
+    {% endif %}
     background-position: center calc(100% + 35px);
     background-repeat: no-repeat;
     background-size: cover;
-    background-color: #1a261c;
+    background-color: {{ section.settings.background_color | default: '#1a261c' }};
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
   }
@@ -53,6 +62,7 @@
     display: block;
     line-height: 1.5;
   }
+  footer .footer-content a { text-decoration: none !important; }
   footer .contact-us-col p { display: flex !important; align-items: center; }
 </style>
 
@@ -243,6 +253,34 @@
       "id": "background_color",
       "label": "t:settings.background_color",
       "default": "{{ settings.color_palette.foreground }}"
+    },
+    {
+      "type": "header",
+      "content": "Background Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image (Upload)",
+      "info": "Upload a custom footer background image. Overrides the default."
+    },
+    {
+      "type": "text",
+      "id": "background_image_asset",
+      "label": "Background Image Asset Filename",
+      "info": "Enter asset filename (e.g. footerbg.webp) if not uploading above.",
+      "placeholder": "footerbg.webp"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Dark Overlay Opacity",
+      "info": "Controls how dark the overlay is on the background image.",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 30
     },
     {
       "type": "header",

@@ -40,7 +40,13 @@
     {%- endif -%}
   </div>
 
-  {% if settings.show_cart_note or settings.show_add_discount_code %}
+  {%- liquid
+    assign show_discount = false
+    if settings.show_add_discount_code and is_drawer != true
+      assign show_discount = true
+    endif
+  -%}
+  {% if settings.show_cart_note or show_discount %}
     <div class="cart-actions">
       {% if settings.show_cart_note %}
         <script
@@ -91,10 +97,10 @@
           %}
         </cart-note>
       {% endif %}
-      {% if settings.show_cart_note and settings.show_add_discount_code %}
+      {% if settings.show_cart_note and show_discount %}
         <div class="cart-actions__divider"></div>
       {% endif %}
-      {% if settings.show_add_discount_code %}
+      {% if show_discount %}
         {% liquid
           assign discount_codes = cart.cart_level_discount_applications | where: 'type', 'discount_code' | map: 'title'
           for item in cart.items
@@ -226,23 +232,62 @@
     endif
   -%}
 
-  <div class="cart-totals__container{% if settings.show_installments %} cart-totals__container--has-installments{% endif %}">
-    <span
+  {%- liquid
+    assign original_total = 0
+    for item in cart.items
+      if item.variant.compare_at_price > item.original_price
+        assign original_total_item = item.variant.compare_at_price | times: item.quantity
+        assign original_total = original_total | plus: original_total_item
+      else
+        assign original_total_item = item.original_price | times: item.quantity
+        assign original_total = original_total | plus: original_total_item
+      endif
+    endfor
+    assign total_savings = original_total | minus: cart.total_price
+  -%}
+
+  <div class="cart-totals__container{% if settings.show_installments %} cart-totals__container--has-installments{% endif %}" style="display: flex; flex-direction: column; width: 100%; gap: 6px;">
+    <div
       class="cart-totals__item cart-totals__total"
       role="status"
+      style="display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 16px;"
     >
-      <span class="cart-totals__total-label cart-primary-typography">{{ 'content.cart_estimated_total' | t }}</span>
-      <text-component
-        ref="cartTotal"
-        value="{{ total_price | strip_html }}"
-        class="cart-totals__total-value cart-secondary-typography"
-        {% comment %} Used by payment_terms web component {% endcomment %}
-        data-testid="cart-total-value"
-        data-cart-subtotal
-      >
-        {{ total_price }}
-      </text-component>
-    </span>
+      <span class="cart-totals__total-label cart-primary-typography" style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: #1a1a1a; font-size: 0.8125rem !important; white-space: nowrap !important; flex-shrink: 0 !important;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#718096" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="cart-totals__receipt-icon">
+          <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1Z"/>
+          <path d="M16 8H8"/>
+          <path d="M16 12H8"/>
+          <path d="M13 16H8"/>
+        </svg>
+        {{ 'content.cart_estimated_total' | t }}
+      </span>
+      <div class="cart-drawer__total-pricing-container" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0 !important;">
+        {% if is_drawer and original_total > cart.total_price %}
+          <s class="cart-drawer__compare-total-summary" style="color: #8c8c8c; font-size: 0.75rem !important; text-decoration: line-through; white-space: nowrap !important;">{{ original_total | money }}</s>
+        {% endif %}
+        <text-component
+          ref="cartTotal"
+          value="{{ total_price | strip_html }}"
+          class="cart-totals__total-value cart-secondary-typography"
+          style="font-size: 0.875rem !important; font-weight: 800; color: #1a1a1a; white-space: nowrap !important; display: inline-block !important;"
+          {% comment %} Used by payment_terms web component {% endcomment %}
+          data-testid="cart-total-value"
+          data-cart-subtotal
+        >
+          {{ total_price }}
+        </text-component>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 2px; flex-shrink: 0 !important;">
+          <path d="m18 15-6-6-6 6"/>
+        </svg>
+      </div>
+    </div>
+    {% if is_drawer and total_savings > 0 %}
+      <div class="cart-drawer__total-savings-row" style="display: flex; justify-content: flex-end; width: 100%; margin-top: -4px; padding-right: 18px;">
+        <span class="cart-drawer__total-savings-text" style="color: #166534; font-size: 0.8125rem; font-weight: 700;">
+          You saved {{ total_savings | money }}!
+        </span>
+      </div>
+    {% endif %}
     {% if settings.show_installments %}
       <span class="cart-totals__item cart-totals__installments">
         {% form 'cart', cart %}
@@ -250,37 +295,60 @@
         {% endform %}
       </span>
     {% endif %}
-    <div class="cart-totals__item cart-totals__tax-note cart-primary-typography">
+    <div class="cart-totals__item cart-totals__tax-note cart-primary-typography" style="margin-top: 2px;">
       {% render 'tax-info', has_discounts_enabled: settings.show_add_discount_code %}
     </div>
   </div>
 </div>
 
-<div class="cart__ctas">
-  <button
-    type="submit"
-    id="checkout"
-    class="cart__checkout-button button"
-    name="checkout"
-    {% if cart == empty %}
-      disabled
-    {% endif %}
-    form="cart-form"
-  >
-    <span class="button-text">
-      {{ 'content.checkout' | t }}
-    </span>
-  </button>
-
-  {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
-    <div
-      class="
-        additional-checkout-buttons
-        {% if accelerated_checkout_buttons_layout == 'vertical' %}additional-checkout-buttons--vertical{% endif %}
-      "
+<div class="cart__ctas" style="width: 100%;">
+  {% if is_drawer %}
+    
+    <button
+      type="submit"
+      id="checkout"
+      class="cart__checkout-button button cart-drawer__checkout-btn-custom"
+      name="checkout"
+      {% if cart == empty %}
+        disabled
+      {% endif %}
+      form="cart-form"
     >
-      {{ content_for_additional_checkout_buttons }}
-    </div>
+      <span class="button-text">Checkout</span>
+      <div class="checkout-payment-icons">
+        <img src="{{ 'paytm.webp' | asset_url }}" loading="lazy" class="checkout-payment-icon" alt="Paytm">
+        <img src="{{ 'phone-pay.webp' | asset_url }}" loading="lazy" class="checkout-payment-icon" alt="PhonePe">
+        <img src="{{ 'gpay.webp' | asset_url }}" loading="lazy" class="checkout-payment-icon" alt="GPAY">
+        <img src="{{ 'upi.webp' | asset_url }}" loading="lazy" class="checkout-payment-icon" alt="UPI">
+      </div>
+    </button>
+ 
+  {% else %}
+    <button
+      type="submit"
+      id="checkout"
+      class="cart__checkout-button button"
+      name="checkout"
+      {% if cart == empty %}
+        disabled
+      {% endif %}
+      form="cart-form"
+    >
+      <span class="button-text">
+        {{ 'content.checkout' | t }}
+      </span>
+    </button>
+
+    {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
+      <div
+        class="
+          additional-checkout-buttons
+          {% if accelerated_checkout_buttons_layout == 'vertical' %}additional-checkout-buttons--vertical{% endif %}
+        "
+      >
+        {{ content_for_additional_checkout_buttons }}
+      </div>
+    {% endif %}
   {% endif %}
 </div>
 

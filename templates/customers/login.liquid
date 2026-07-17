@@ -1,0 +1,126 @@
+<div class="customer-layout">
+  <!-- Password Recovery Form -->
+  <div id="recover" class="customer-auth-container" style="display: none;">
+    <h2 class="customer-auth-title">Reset your password</h2>
+    <p class="customer-auth-subtitle">We will send you an email to reset your password.</p>
+
+    {%- form 'recover_customer_password' -%}
+      {%- assign recover_success = form.posted_successfully? -%}
+      
+      {%- if form.errors -%}
+        <div class="form-errors">
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      <div class="customer-form-field">
+        <label for="RecoverEmail">Email</label>
+        <input
+          type="email"
+          name="email"
+          id="RecoverEmail"
+          autocomplete="email"
+          autocorrect="off"
+          autocapitalize="off"
+          required
+        >
+      </div>
+
+      <button type="submit" class="customer-form-btn">
+        Submit
+      </button>
+
+      <div class="customer-auth-footer">
+        <a href="#login" onclick="toggleRecoverForm(false); return false;">
+          Cancel
+        </a>
+      </div>
+    {%- endform -%}
+  </div>
+
+  <!-- Login Form -->
+  <div id="login" class="customer-auth-container">
+    <h2 class="customer-auth-title">Login</h2>
+    <p class="customer-auth-subtitle">Please enter your credentials to log in.</p>
+
+    {%- if recover_success == true -%}
+      <div class="customer-alert customer-alert--success">
+        We've sent you an email with a link to update your password.
+      </div>
+    {%- endif -%}
+
+    {%- form 'customer_login', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}
+        <div class="form-errors">
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      <div class="customer-form-field">
+        <label for="CustomerEmail">Email</label>
+        <input
+          type="email"
+          name="customer[email]"
+          id="CustomerEmail"
+          autocomplete="email"
+          autocorrect="off"
+          autocapitalize="off"
+          required
+        >
+      </div>
+
+      {%- if form.password_needed -%}
+        <div class="customer-form-field">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label for="CustomerPassword" style="margin-bottom: 0;">Password</label>
+            <a href="#recover" onclick="toggleRecoverForm(true); return false;" style="font-size: 0.85rem; color: #666666; text-decoration: underline;">
+              Forgot password?
+            </a>
+          </div>
+          <input
+            type="password"
+            value=""
+            name="customer[password]"
+            id="CustomerPassword"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+      {%- endif -%}
+
+      <button type="submit" class="customer-form-btn">
+        Sign In
+      </button>
+
+      <div class="customer-auth-footer">
+        Don't have an account? 
+        <a href="{{ routes.account_register_url }}">
+          Create account
+        </a>
+      </div>
+    {%- endform -%}
+  </div>
+</div>
+
+<script>
+  function toggleRecoverForm(showRecover) {
+    const loginDiv = document.getElementById('login');
+    const recoverDiv = document.getElementById('recover');
+    if (showRecover) {
+      loginDiv.style.display = 'none';
+      recoverDiv.style.display = 'block';
+      window.location.hash = '#recover';
+    } else {
+      loginDiv.style.display = 'block';
+      recoverDiv.style.display = 'none';
+      window.location.hash = '#login';
+    }
+  }
+
+  // Handle URL hash on initial load
+  window.addEventListener('DOMContentLoaded', () => {
+    if (window.location.hash === '#recover') {
+      toggleRecoverForm(true);
+    }
+  });
+</script>

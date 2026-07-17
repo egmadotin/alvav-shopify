@@ -1,0 +1,57 @@
+{%- liquid
+  assign judgeme_widget = product.metafields.judgeme.widget
+-%}
+
+<div
+  class="product-reviews-section"
+  style="background-color: {{ section.settings.background_color }};"
+>
+  <div class="product-reviews-section__inner">
+    {% if judgeme_widget != blank %}
+      {{ judgeme_widget }}
+    {% elsif request.design_mode %}
+      <p class="product-reviews-section__placeholder">
+        Customer reviews will appear here once the Judge.me app is installed and its "Enable auto-integration" /
+        widget metafield is active for this product. This placeholder only shows in the theme editor.
+      </p>
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .product-reviews-section__inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  .product-reviews-section__placeholder {
+    text-align: center;
+    color: rgb(0 0 0 / 55%);
+    font-size: 0.875rem;
+    padding: 40px 20px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product Reviews",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Renders the Judge.me review widget (rating summary, review list, and the 'Write a review' form) via product.metafields.judgeme.widget. Requires the Judge.me app installed on this product."
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Reviews"
+    }
+  ]
+}
+{% endschema %}

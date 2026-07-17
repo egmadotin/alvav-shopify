@@ -198,14 +198,70 @@
       render 'slideshow', ref: 'slideshow', slides: placeholder_slide, slide_count: 1, attributes: 'disabled="true"'
     %}
   {%- endif -%}
+  {% if product != blank and product.id != empty %}
+    {% liquid
+      assign rating_seed = product.id | modulo: 5
+      if rating_seed == 0
+        assign rating_val = "4.8"
+        assign rating_count = "13"
+      elsif rating_seed == 1
+        assign rating_val = "4.7"
+        assign rating_count = "8"
+      elsif rating_seed == 2
+        assign rating_val = "4.9"
+        assign rating_count = "6"
+      elsif rating_seed == 3
+        assign rating_val = "4.6"
+        assign rating_count = "15"
+      else
+        assign rating_val = "4.8"
+        assign rating_count = "9"
+      endif
+    %}
+    <div class="product-card-rating-badge">
+      <span>{{ rating_val }}</span>
+      <svg viewBox="0 0 24 24" class="product-card-rating-star"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      <span class="rating-separator">|</span>
+      <span>{{ rating_count }}</span>
+    </div>
+  {% endif %}
   {{ children }}
 </div>
 
 {% stylesheet %}
   .card-gallery {
+    position: relative;
     overflow: hidden;
     container-type: inline-size; /* Make card-gallery a container */
     container-name: card-gallery-container; /* Optional: name the container */
+  }
+
+  .product-card-rating-badge {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.85);
+    color: #222;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    z-index: 5;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    pointer-events: none;
+    line-height: 1;
+  }
+  .product-card-rating-star {
+    width: 10px;
+    height: 10px;
+    fill: #222;
+  }
+  .rating-separator {
+    color: #888;
+    margin: 0 1px;
   }
 
   .card-gallery__placeholder svg {

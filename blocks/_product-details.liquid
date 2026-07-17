@@ -46,6 +46,34 @@
     display: none;
   }
 
+  /* Pill-shaped CTA buttons on the product page */
+  .product-details .add-to-cart-button {
+    border-radius: 999px;
+  }
+
+  /* Make the sale price bold and stand out above the title */
+  .product-details product-price .price-item--sale,
+  .product-details product-price .price {
+    font-weight: 700;
+  }
+
+  /* Compare-at (struck-through) price reads smaller and lighter than the sale price */
+  .product-details product-price .compare-at-price {
+    font-size: 0.6em;
+    font-weight: 400;
+  }
+
+  /* Replaced by the custom Buy It Now button block */
+  .product-details .accelerated-checkout-block {
+    display: none;
+  }
+
+  /* Quantity stepper hidden per request */
+  .product-details .quantity-selector-wrapper,
+  .product-details .quantity-label {
+    display: none;
+  }
+
   /* Container styles */
   .product-details {
     display: flex;

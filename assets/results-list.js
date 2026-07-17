@@ -37,11 +37,13 @@ export default class ResultsList extends PaginatedList {
 
     if (!grid) return;
 
-    await startViewTransition(() => this.#setLayout(value), ['product-grid']);
+    const normalizedValue = value === 'zoom-out' ? 'list' : value;
+
+    await startViewTransition(() => this.#setLayout(normalizedValue), ['product-grid']);
 
     requestIdleCallback(() => {
       const viewport = mediaQueryLarge.matches ? 'desktop' : 'mobile';
-      sessionStorage.setItem(`product-grid-view-${viewport}`, value);
+      sessionStorage.setItem(`product-grid-view-${viewport}`, normalizedValue);
     });
   };
 

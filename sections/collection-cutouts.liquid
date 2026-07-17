@@ -1,0 +1,190 @@
+<style>
+  .collection-cutouts-section {
+    padding: 30px 4% 15px 4% !important;
+    background: linear-gradient(to bottom, #f7f7f7 0%, #ffffff 100%) !important;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .collection-cutouts-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .collection-cutouts-list {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 16px;
+    padding: 10px 5px 25px 5px !important;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+  }
+
+  .collection-cutouts-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  .collection-cutouts-list::after {
+    content: '';
+    width: 40px;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  .collection-cutout-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    flex: 0 0 auto;
+    width: 120px;
+    transition: transform 0.3s ease;
+  }
+
+  .collection-cutout-image-wrapper {
+    width: 110px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+
+  .collection-cutout-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain !important;
+    transition: transform 0.5s ease;
+  }
+
+  .collection-cutout-title {
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a4a4a;
+    text-align: center;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+    max-width: 110px !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+  }
+
+
+</style>
+
+<div class="collection-cutouts-section">
+  <div class="collection-cutouts-container">
+    <div class="collection-cutouts-list">
+      {% if section.blocks.size > 0 %}
+        {% for block in section.blocks %}
+          {% assign item_link = block.settings.link | default: '#' %}
+          <a href="{{ item_link }}" class="collection-cutout-item" {{ block.shopify_attributes }}>
+            <div class="collection-cutout-image-wrapper">
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 300 | image_tag: class: 'collection-cutout-image', loading: 'lazy' }}
+              {% else %}
+                {%- assign fallback_img = 'chairs.avif' -%}
+                {%- assign block_title_down = block.settings.title | downcase -%}
+                {%- if block_title_down contains 'temple' -%}
+                  {%- assign fallback_img = 'Temples.avif' -%}
+                {%- elsif block_title_down contains 'wooden' -%}
+                  {%- assign fallback_img = 'Wooden Side Table.avif' -%}
+                {%- elsif block_title_down contains 'table' -%}
+                  {%- assign fallback_img = 'Tables.avif' -%}
+                {%- elsif block_title_down contains 'lounge' -%}
+                  {%- assign fallback_img = 'Lounge Chairs.avif' -%}
+                {%- elsif block_title_down contains 'chair' -%}
+                  {%- assign fallback_img = 'chairs.avif' -%}
+                {%- elsif block_title_down contains 'lamp' -%}
+                  {%- assign fallback_img = 'Floor Lamps.avif' -%}
+                {%- elsif block_title_down contains 'mirror' -%}
+                  {%- assign fallback_img = 'Mirror.avif' -%}
+                {%- elsif block_title_down contains 'trolley' -%}
+                  {%- assign fallback_img = 'Bar Trolley.avif' -%}
+                {%- elsif block_title_down contains 'glass' -%}
+                  {%- assign fallback_img = 'Glass Painting.avif' -%}
+                {%- elsif block_title_down contains 'ottoman' -%}
+                  {%- assign fallback_img = 'Ottoman.avif' -%}
+                {%- endif -%}
+                <img src="{{ fallback_img | asset_url }}" alt="{{ block.settings.title }}" class="collection-cutout-image" loading="lazy">
+              {% endif %}
+            </div>
+            <span class="collection-cutout-title">{{ block.settings.title }}</span>
+          </a>
+        {% endfor %}
+      {% else %}
+        {% comment %} Fallback default layout showing 10 items from screenshot {% endcomment %}
+        {% liquid
+          assign names = "Chairs|Temples|Tables|Ottoman|Lounge Chairs|Floor Lamps|Mirror|Bar Trolley|Glass Painting|Wooden Side Table" | split: "|"
+          assign images = "chairs.avif|Temples.avif|Tables.avif|Ottoman.avif|Lounge Chairs.avif|Floor Lamps.avif|Mirror.avif|Bar Trolley.avif|Glass Painting.avif|Wooden Side Table.avif" | split: "|"
+        %}
+        
+        {% for name in names %}
+          {% assign img_name = images[forloop.index0] %}
+          <a href="#" class="collection-cutout-item">
+            <div class="collection-cutout-image-wrapper">
+              <img src="{{ img_name | asset_url }}" alt="{{ name }}" class="collection-cutout-image" loading="lazy">
+            </div>
+            <span class="collection-cutout-title">{{ name }}</span>
+          </a>
+        {% endfor %}
+      {% endif %}
+      <div class="collection-cutouts-scroll-spacer" style="width: 50px; flex: 0 0 50px; height: 1px; flex-shrink: 0; pointer-events: none;"></div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection Cutouts",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "cutout",
+      "name": "Cutout Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Category"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Cutouts",
+      "blocks": [
+        { "type": "cutout", "settings": { "title": "Chairs" } },
+        { "type": "cutout", "settings": { "title": "Temples" } },
+        { "type": "cutout", "settings": { "title": "Tables" } },
+        { "type": "cutout", "settings": { "title": "Ottoman" } },
+        { "type": "cutout", "settings": { "title": "Lounge Chairs" } },
+        { "type": "cutout", "settings": { "title": "Floor Lamps" } },
+        { "type": "cutout", "settings": { "title": "Mirror" } },
+        { "type": "cutout", "settings": { "title": "Bar Trolley" } },
+        { "type": "cutout", "settings": { "title": "Glass Painting" } },
+        { "type": "cutout", "settings": { "title": "Wooden Side Table" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

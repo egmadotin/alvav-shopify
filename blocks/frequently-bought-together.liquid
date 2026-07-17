@@ -1,0 +1,270 @@
+
+
+{%- liquid
+  assign block_settings = block.settings
+  assign product_a = product
+  assign product_b = block_settings.paired_product
+  assign variant_a = product_a.selected_or_first_available_variant
+  assign variant_b = product_b.selected_or_first_available_variant
+-%}
+
+{% if product_b != blank %}
+  <fbt-widget
+    class="fbt"
+    data-variant-a="{{ variant_a.id }}"
+    data-variant-b="{{ variant_b.id }}"
+    {{ block.shopify_attributes }}
+  >
+    {% if block_settings.heading != blank %}
+      <p class="fbt__heading">{{ block_settings.heading }}</p>
+    {% endif %}
+
+    <div class="fbt__items">
+      <div class="fbt__item">
+        {{
+          product_a.featured_image
+          | image_url: width: 120
+          | image_tag: loading: 'lazy', class: 'fbt__image', alt: product_a.title
+        }}
+        <div class="fbt__item-text">
+          <p class="fbt__item-title">{{ product_a.title }}</p>
+          <p class="fbt__item-price">
+            <span class="fbt__price-sale">{{ variant_a.price | money }}</span>
+            {% if variant_a.compare_at_price > variant_a.price %}
+              <span class="fbt__price-compare">{{ variant_a.compare_at_price | money }}</span>
+            {% endif %}
+          </p>
+        </div>
+      </div>
+
+      <div class="fbt__plus">+</div>
+
+      <div class="fbt__item">
+        {{
+          product_b.featured_image
+          | image_url: width: 120
+          | image_tag: loading: 'lazy', class: 'fbt__image', alt: product_b.title
+        }}
+        <div class="fbt__item-text">
+          <p class="fbt__item-title">{{ product_b.title }}</p>
+          <p class="fbt__item-price">
+            <span class="fbt__price-sale">{{ variant_b.price | money }}</span>
+            {% if variant_b.compare_at_price > variant_b.price %}
+              <span class="fbt__price-compare">{{ variant_b.compare_at_price | money }}</span>
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {%- assign total_price = variant_a.price | plus: variant_b.price -%}
+    <p class="fbt__total">Total price: <span>{{ total_price | money }}</span></p>
+
+    <button
+      type="button"
+      class="fbt__button"
+      style="
+        --fbt-button-bg: {{ block_settings.button_background | default: '#2f4a35' }};
+        --fbt-button-text: {{ block_settings.button_text_color | default: '#ffffff' }};
+      "
+    >
+      {{ block_settings.button_text | default: 'Add both to cart' }}
+    </button>
+    <p class="fbt__status" hidden></p>
+  </fbt-widget>
+
+  <script>
+    if (!customElements.get('fbt-widget')) {
+      customElements.define(
+        'fbt-widget',
+        class extends HTMLElement {
+          connectedCallback() {
+            const button = this.querySelector('.fbt__button');
+            const status = this.querySelector('.fbt__status');
+            button.addEventListener('click', async () => {
+              button.disabled = true;
+              const originalText = button.textContent;
+              button.textContent = 'Adding...';
+              try {
+                const response = await fetch('{{ routes.cart_add_url }}.js', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                  body: JSON.stringify({
+                    items: [
+                      { id: Number(this.dataset.variantA), quantity: 1 },
+                      { id: Number(this.dataset.variantB), quantity: 1 },
+                    ],
+                  }),
+                });
+                if (!response.ok) throw new Error('Add to cart failed');
+                window.location.href = '{{ routes.cart_url }}';
+              } catch (error) {
+                button.disabled = false;
+                button.textContent = originalText;
+                status.textContent = 'Something went wrong, please try again.';
+                status.hidden = false;
+              }
+            });
+          }
+        }
+      );
+    }
+  </script>
+
+{% endif %}
+
+{% stylesheet %}
+  .fbt {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .fbt__heading {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: rgb(0 0 0 / 90%);
+  }
+
+  .fbt__items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .fbt__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgb(0 0 0 / 10%);
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .fbt__image {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .fbt__item-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .fbt__item-title {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: rgb(0 0 0 / 85%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .fbt__item-price {
+    margin: 0;
+    font-size: 0.8125rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .fbt__price-sale {
+    font-weight: 700;
+    color: rgb(0 0 0 / 90%);
+  }
+
+  .fbt__price-compare {
+    color: rgb(0 0 0 / 45%);
+    text-decoration: line-through;
+    font-size: 0.75rem;
+  }
+
+  .fbt__plus {
+    text-align: center;
+    font-size: 1rem;
+    color: rgb(0 0 0 / 50%);
+  }
+
+  .fbt__total {
+    margin: 0;
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  .fbt__button {
+    width: 100%;
+    padding: 14px;
+    background: var(--fbt-button-bg);
+    color: var(--fbt-button-text);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+  }
+
+  .fbt__button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .fbt__status {
+    margin: 0;
+    font-size: 0.8125rem;
+    color: #b42318;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Frequently Bought",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Frequently bought together"
+    },
+    {
+      "type": "product",
+      "id": "paired_product",
+      "label": "Product to bundle with this one"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Add both to cart"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button background",
+      "default": "#2f4a35"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Frequently Bought",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

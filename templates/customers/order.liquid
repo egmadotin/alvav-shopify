@@ -1,0 +1,134 @@
+<div class="customer-layout">
+  <div class="customer-dashboard-header">
+    <div>
+      <h1>Order {{ order.name }}</h1>
+      <p style="margin: 4px 0 0 0;"><a href="{{ routes.account_url }}" style="color: #666; text-decoration: underline;">&larr; Back to Account</a></p>
+    </div>
+    <div style="font-size: 0.95rem; text-align: right; color: #666;">
+      <p style="margin: 0;">Placed on {{ order.created_at | date: "%B %d, %Y %I:%M %p" }}</p>
+      {% if order.cancelled %}
+        <p style="margin: 4px 0 0 0; color: #d32f2f; font-weight: bold;">
+          Cancelled on {{ order.cancelled_at | date: "%B %d, %Y" }} (Reason: {{ order.cancel_reason_label }})
+        </p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="customer-grid">
+    <!-- Order Summary Items Detail Section -->
+    <div class="customer-card">
+      <h2 class="customer-card-title">Items Ordered</h2>
+
+      <div class="customer-table-container">
+        <table class="customer-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>SKU</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th style="text-align: right;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for line_item in order.line_items %}
+              <tr>
+                <td>
+                  <div style="font-weight: 600; color: #111;">
+                    {{ line_item.title | link_to: line_item.product.url }}
+                  </div>
+                  {% if line_item.variant.title != blank %}
+                    <div style="font-size: 0.85rem; color: #666; margin-top: 4px;">
+                      Variant: {{ line_item.variant.title }}
+                    </div>
+                  {% endif %}
+                  {% if line_item.fulfillment %}
+                    <div style="font-size: 0.85rem; color: #2e7d32; margin-top: 4px; padding: 4px 8px; background: #e6f7ed; border-radius: 4px; display: inline-block;">
+                      Fulfilled {{ line_item.fulfillment.created_at | date: "%B %d, %Y" }}
+                      {% if line_item.fulfillment.tracking_number %}
+                        (Tracking: {{ line_item.fulfillment.tracking_number | link_to: line_item.fulfillment.tracking_url }})
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                </td>
+                <td>{{ line_item.sku }}</td>
+                <td>{{ line_item.original_price | money }}</td>
+                <td>{{ line_item.quantity }}</td>
+                <td style="text-align: right; font-weight: 600;">{{ line_item.final_line_price | money }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4" style="border: none; padding: 8px 16px; text-align: right; color: #666;">Subtotal</td>
+              <td style="border: none; padding: 8px 16px; text-align: right; font-weight: 600;">{{ order.line_items_subtotal_price | money }}</td>
+            </tr>
+            {% for shipping_method in order.shipping_methods %}
+              <tr>
+                <td colspan="4" style="border: none; padding: 8px 16px; text-align: right; color: #666;">Shipping ({{ shipping_method.title }})</td>
+                <td style="border: none; padding: 8px 16px; text-align: right; font-weight: 600;">{{ shipping_method.price | money }}</td>
+              </tr>
+            {% endfor %}
+            {% for tax_line in order.tax_lines %}
+              <tr>
+                <td colspan="4" style="border: none; padding: 8px 16px; text-align: right; color: #666;">Tax ({{ tax_line.title }} {{ tax_line.rate | percentage }})</td>
+                <td style="border: none; padding: 8px 16px; text-align: right; font-weight: 600;">{{ tax_line.price | money }}</td>
+              </tr>
+            {% endfor %}
+            <tr style="font-size: 1.15rem; font-weight: bold; border-top: 2px solid #eaeaea;">
+              <td colspan="4" style="padding: 16px; text-align: right; color: #111;">Total</td>
+              <td style="padding: 16px; text-align: right; color: #111;">{{ order.total_price | money_with_currency }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Billing & Shipping Details Section -->
+    <div style="display: flex; flex-direction: column; gap: 24px; height: fit-content;">
+      <!-- Billing Info -->
+      <div class="customer-card">
+        <h2 class="customer-card-title">Billing Address</h2>
+        <div style="font-size: 0.95rem; line-height: 1.6; color: #666; margin-bottom: 16px;">
+          {{ order.billing_address.name }}<br>
+          {{ order.billing_address.company }}<br>
+          {{ order.billing_address.address1 }}<br>
+          {% if order.billing_address.address2 != blank %}
+            {{ order.billing_address.address2 }}<br>
+          {% endif %}
+          {{ order.billing_address.city }}, {{ order.billing_address.province_code }} {{ order.billing_address.zip }}<br>
+          {{ order.billing_address.country }}<br>
+          Phone: {{ order.billing_address.phone }}
+        </div>
+        <div>
+          <strong>Payment Status:</strong> 
+          <span class="badge {% if order.financial_status == 'paid' %}badge--paid{% else %}badge--unpaid{% endif %}">
+            {{ order.financial_status_label }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Shipping Info -->
+      <div class="customer-card">
+        <h2 class="customer-card-title">Shipping Address</h2>
+        <div style="font-size: 0.95rem; line-height: 1.6; color: #666; margin-bottom: 16px;">
+          {{ order.shipping_address.name }}<br>
+          {{ order.shipping_address.company }}<br>
+          {{ order.shipping_address.address1 }}<br>
+          {% if order.shipping_address.address2 != blank %}
+            {{ order.shipping_address.address2 }}<br>
+          {% endif %}
+          {{ order.shipping_address.city }}, {{ order.shipping_address.province_code }} {{ order.shipping_address.zip }}<br>
+          {{ order.shipping_address.country }}<br>
+          Phone: {{ order.shipping_address.phone }}
+        </div>
+        <div>
+          <strong>Fulfillment Status:</strong>
+          <span class="badge {% if order.fulfillment_status == 'fulfilled' %}badge--fulfilled{% else %}badge--unfulfilled{% endif %}">
+            {{ order.fulfillment_status_label }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

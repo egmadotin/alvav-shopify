@@ -1,0 +1,64 @@
+
+
+{%- liquid
+  assign block_settings = block.settings
+  assign full_description = closest.product.description
+  assign excerpt = full_description
+  if full_description contains '</p>'
+    assign excerpt = full_description | split: '</p>' | first | append: '</p>'
+  endif
+-%}
+
+<div class="product-description-excerpt" {{ block.shopify_attributes }}>
+  {% if block_settings.heading != blank %}
+    <h2 class="product-description-excerpt__heading">{{ block_settings.heading }}</h2>
+  {% endif %}
+  <div class="product-description-excerpt__content rte">
+    {{ excerpt }}
+  </div>
+</div>
+
+{% stylesheet %}
+  .product-description-excerpt {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .product-description-excerpt__heading {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .product-description-excerpt__content {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: rgb(0 0 0 / 75%);
+  }
+
+  .product-description-excerpt__content p {
+    margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Description Excerpt",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Description"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Description Excerpt",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

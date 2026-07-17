@@ -1,6 +1,5 @@
 {% stylesheet %}
   .footer-trust-banner {
-    background-color: #555e4e;
     color: #ffffff;
     padding: 30px 20px;
     border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -20,7 +19,6 @@
   
   @media screen and (min-width: 750px) {
     .footer-trust-banner__inner {
-      grid-template-columns: repeat(4, 1fr);
       gap: 30px;
     }
   }
@@ -46,12 +44,6 @@
     object-fit: contain;
     filter: brightness(0) invert(1);
   }
-  
-  .trust-item__icon svg {
-    width: 40px;
-    height: 40px;
-    color: #fff;
-  }
 
   .trust-item__text h4 {
     margin: 0 0 5px 0;
@@ -69,48 +61,49 @@
   }
 {% endstylesheet %}
 
-<div class="footer-trust-banner" data-section-id="{{ section.id }}">
+{% liquid
+  assign block_count = section.blocks.size | at_most: 4
+%}
+
+<style>
+  #footer-trust-banner-{{ section.id }} {
+    background-color: {{ section.settings.background_color }};
+  }
+  #footer-trust-banner-{{ section.id }} .footer-trust-banner__inner {
+    grid-template-columns: repeat({{ block_count }}, 1fr);
+  }
+  @media screen and (max-width: 749px) {
+    #footer-trust-banner-{{ section.id }} .footer-trust-banner__inner {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+</style>
+
+<div id="footer-trust-banner-{{ section.id }}" class="footer-trust-banner" data-section-id="{{ section.id }}" {{ section.shopify_attributes }}>
   <div class="footer-trust-banner__inner">
     
-    <div class="trust-item">
-      <div class="trust-item__icon">
-        <img src="{{ 'hand-shake.png' | asset_url }}" alt="Trusted" loading="lazy" width="65" height="65">
-      </div>
-      <div class="trust-item__text">
-        <h4>Trusted By 700000+</h4>
-        <p>Customers</p>
-      </div>
-    </div>
-    
-    <div class="trust-item">
-      <div class="trust-item__icon">
-        <img src="{{ 'car.png' | asset_url }}" alt="Next Day Dispatch" loading="lazy" width="65" height="65">
-      </div>
-      <div class="trust-item__text">
-        <h4>Next Day Dispatch</h4>
-        <p>Fast shipping all over india</p>
-      </div>
-    </div>
-    
-    <div class="trust-item">
-      <div class="trust-item__icon">
-        <img src="{{ 'wheel.png' | asset_url }}" alt="Unique Designs" loading="lazy" width="65" height="65">
-      </div>
-      <div class="trust-item__text">
-        <h4>Unique Designs</h4>
-        <p>World class Quality and Design experience</p>
-      </div>
-    </div>
-    
-    <div class="trust-item">
-      <div class="trust-item__icon">
-        <img src="{{ 'rupee.png' | asset_url }}" alt="Secure Payment" loading="lazy" width="65" height="65">
-      </div>
-      <div class="trust-item__text">
-        <h4>100% Secure Payment</h4>
-        <p>Trusted & Secure Payment</p>
-      </div>
-    </div>
+    {% for block in section.blocks %}
+      {% case block.type %}
+        {% when 'trust_item' %}
+          <div class="trust-item" {{ block.shopify_attributes }}>
+            <div class="trust-item__icon">
+              {% if block.settings.icon != blank %}
+                <img src="{{ block.settings.icon | img_url: '65x65' }}" alt="{{ block.settings.heading }}" loading="lazy" width="65" height="65">
+              {% elsif block.settings.icon_url != blank %}
+                <img src="{{ block.settings.icon_url | asset_url }}" alt="{{ block.settings.heading }}" loading="lazy" width="65" height="65">
+              {% endif %}
+            </div>
+            <div class="trust-item__text">
+              {% if block.settings.heading != blank %}
+                <h4>{{ block.settings.heading }}</h4>
+              {% endif %}
+              {% if block.settings.subtext != blank %}
+                <p>{{ block.settings.subtext }}</p>
+              {% endif %}
+            </div>
+          </div>
+      {% endcase %}
+    {% endfor %}
     
   </div>
 </div>
@@ -118,10 +111,89 @@
 {% schema %}
 {
   "name": "Footer Trust Banner",
-  "settings": [],
+  "tag": "div",
+  "max_blocks": 4,
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#555e4e"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust_item",
+      "name": "Trust Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Trust Heading"
+        },
+        {
+          "type": "text",
+          "id": "subtext",
+          "label": "Subtext",
+          "default": "Trust subtext description"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon Image (Upload)"
+        },
+        {
+          "type": "text",
+          "id": "icon_url",
+          "label": "Icon Asset Filename (fallback)",
+          "info": "Enter the asset filename if not uploading above, e.g. hand-shake.png",
+          "placeholder": "hand-shake.png"
+        }
+      ]
+    }
+  ],
   "presets": [
     {
-      "name": "Footer Trust Banner"
+      "name": "Footer Trust Banner",
+      "blocks": {
+        "trust_1": {
+          "type": "trust_item",
+          "settings": {
+            "heading": "Trusted By 700000+",
+            "subtext": "Customers",
+            "icon_url": "hand-shake.png"
+          }
+        },
+        "trust_2": {
+          "type": "trust_item",
+          "settings": {
+            "heading": "Next Day Dispatch",
+            "subtext": "Fast shipping all over india",
+            "icon_url": "car.png"
+          }
+        },
+        "trust_3": {
+          "type": "trust_item",
+          "settings": {
+            "heading": "Unique Designs",
+            "subtext": "World class Quality and Design experience",
+            "icon_url": "wheel.png"
+          }
+        },
+        "trust_4": {
+          "type": "trust_item",
+          "settings": {
+            "heading": "100% Secure Payment",
+            "subtext": "Trusted & Secure Payment",
+            "icon_url": "rupee.png"
+          }
+        }
+      },
+      "block_order": ["trust_1", "trust_2", "trust_3", "trust_4"]
     }
   ]
 }

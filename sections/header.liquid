@@ -456,9 +456,10 @@
       %}
       {%- if row == 'top' -%}
         <a
-          href="{{ routes.account_url }}"
+          href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+          id="kp-profile-icon-btn"
           class="mobile-profile-icon header-actions__action"
-          aria-label="{{ 'accessibility.log_in' | t }}"
+          aria-label="{%- if customer -%}Account{%- else -%}{{ 'accessibility.log_in' | t }}{%- endif -%}"
           style="display: none;"
         >
           <img
@@ -469,8 +470,7 @@
             aria-hidden="true"
             class="mobile-profile-icon__img"
           >
-        </a>
-        <form action="{{ routes.search_url }}" method="get" role="search" class="sticky-mobile-search" style="display: none;">
+        </a><form action="{{ routes.search_url }}" method="get" role="search" class="sticky-mobile-search" style="display: none;">
           <span class="svg-wrapper search-icon">
             {{ 'icon-search.svg' | inline_asset_content }}
           </span>

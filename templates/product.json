@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "main": {
       "type": "product-information",
@@ -30,24 +31,106 @@
           },
           "blocks": {}
         },
+        "text_brAq4d": {
+          "type": "product-description-excerpt",
+          "name": "Product description",
+          "settings": {
+            "heading": "Description"
+          },
+          "blocks": {}
+        },
+        "feature_icon_row_1": {
+          "type": "feature-icon-row",
+          "settings": {},
+          "blocks": {
+            "item-1": {
+              "type": "_feature-icon-item",
+              "settings": {
+                "icon": "truck",
+                "label": "Free Delivery",
+                "badge_color": "#3f5b44",
+                "icon_color": "#ffffff"
+              },
+              "blocks": {}
+            },
+            "item-2": {
+              "type": "_feature-icon-item",
+              "settings": {
+                "icon": "box",
+                "label": "Classic Design",
+                "badge_color": "#3f5b44",
+                "icon_color": "#ffffff"
+              },
+              "blocks": {}
+            },
+            "item-3": {
+              "type": "_feature-icon-item",
+              "settings": {
+                "icon": "star",
+                "label": "Premium Quality",
+                "badge_color": "#3f5b44",
+                "icon_color": "#ffffff"
+              },
+              "blocks": {}
+            },
+            "item-4": {
+              "type": "_feature-icon-item",
+              "settings": {
+                "icon": "lightning_bolt",
+                "label": "Easy to Install",
+                "badge_color": "#3f5b44",
+                "icon_color": "#ffffff"
+              },
+              "blocks": {}
+            },
+            "item-5": {
+              "type": "_feature-icon-item",
+              "settings": {
+                "icon": "heart",
+                "label": "Best Gift",
+                "badge_color": "#3f5b44",
+                "icon_color": "#ffffff"
+              },
+              "blocks": {}
+            },
+            "item-6": {
+              "type": "_feature-icon-item",
+              "settings": {
+                "icon": "leaf",
+                "label": "Dusty Build Material",
+                "badge_color": "#3f5b44",
+                "icon_color": "#ffffff"
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "item-1",
+            "item-2",
+            "item-3",
+            "item-4",
+            "item-5",
+            "item-6"
+          ]
+        },
         "media-gallery": {
           "type": "_product-media-gallery",
           "static": true,
           "settings": {
-            "media_presentation": "grid",
-            "media_columns": "two",
-            "image_gap": 4,
+            "media_presentation": "carousel",
+            "media_columns": "one",
+            "image_gap": 8,
             "large_first_image": false,
-            "icons_style": "none",
-            "slideshow_controls_style": "counter",
-            "slideshow_mobile_controls_style": "dots",
-            "thumbnail_position": "right",
-            "thumbnail_width": 44,
-            "thumbnail_radius": 0,
+            "icons_style": "chevron",
+            "slideshow_controls_style": "thumbnails",
+            "slideshow_mobile_controls_style": "thumbnails",
+            "thumbnail_position": "left",
+            "thumbnail_width": 64,
+            "thumbnail_radius": 8,
             "aspect_ratio": "adapt",
-            "constrain_to_viewport": true,
-            "media_fit": "contain",
-            "media_radius": 0,
+            "constrain_to_viewport": false,
+            "media_fit": "cover",
+            "media_radius": 12,
             "extend_media": false,
             "zoom": true,
             "video_loop": false,
@@ -117,6 +200,7 @@
                 "border_opacity": 100,
                 "border_color": "",
                 "border_radius": 0,
+                "link": "",
                 "open_in_new_tab": false,
                 "placeholder": "",
                 "padding-block-start": 0,
@@ -131,16 +215,16 @@
                   "settings": {
                     "text": "<h1>{{ closest.product.title }}</h1>",
                     "width": "100%",
-                    "max_width": "normal",
+                    "max_width": "none",
                     "alignment": "left",
-                    "type_preset": "h3",
+                    "type_preset": "h4",
                     "font": "var(--font-primary--family)",
                     "font_size": "1rem",
                     "line_height": "normal",
                     "letter_spacing": "normal",
                     "case": "none",
                     "wrap": "pretty",
-                    "text_color": "",
+                    "text_color": "#000000",
                     "background": false,
                     "background_color": "#00000026",
                     "corner_radius": 0,
@@ -151,33 +235,114 @@
                   },
                   "blocks": {}
                 },
-                "price_tVjtKg": {
-                  "type": "price",
+                "review_1": {
+                  "type": "review",
                   "settings": {
-                    "show_sale_price_first": true,
-                    "show_installments": false,
-                    "show_tax_info": false,
-                    "type_preset": "paragraph",
-                    "width": "100%",
-                    "alignment": "left",
-                    "font": "var(--font-body--family)",
-                    "font_size": "1rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
+                    "stars_style": "shaded",
+                    "show_number": true,
                     "text_color": "",
-                    "padding-block-start": 4,
+                    "type_preset": "paragraph",
+                    "width": "fit-content",
+                    "alignment": "left"
+                  },
+                  "blocks": {}
+                },
+                "price_row_1": {
+                  "type": "group",
+                  "settings": {
+                    "content_direction": "row",
+                    "vertical_on_mobile": true,
+                    "horizontal_alignment": "space-between",
+                    "vertical_alignment": "center",
+                    "align_baseline": false,
+                    "horizontal_alignment_flex_direction_column": "flex-start",
+                    "vertical_alignment_flex_direction_column": "center",
+                    "gap": 12,
+                    "width": "fill",
+                    "custom_width": 100,
+                    "width_mobile": "fill",
+                    "custom_width_mobile": 100,
+                    "height": "fit",
+                    "custom_height": 100,
+                    "background_media": "none",
+                    "background_color": "",
+                    "video_position": "cover",
+                    "background_image_position": "cover",
+                    "toggle_overlay": false,
+                    "overlay_color": "#00000026",
+                    "overlay_style": "solid",
+                    "gradient_direction": "to top",
+                    "border": "none",
+                    "border_width": 1,
+                    "border_opacity": 100,
+                    "border_color": "",
+                    "border_radius": 0,
+                    "link": "",
+                    "open_in_new_tab": false,
+                    "placeholder": "",
+                    "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
                     "padding-inline-end": 0
                   },
-                  "blocks": {}
+                  "blocks": {
+                    "price_tVjtKg": {
+                      "type": "price",
+                      "settings": {
+                        "show_sale_price_first": true,
+                        "show_discount_badge": true,
+                        "show_installments": false,
+                        "show_tax_info": false,
+                        "type_preset": "custom",
+                        "width": "100%",
+                        "alignment": "left",
+                        "font": "var(--font-heading--family)",
+                        "font_size": "2rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "text_color": "",
+                        "padding-block-start": 4,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    },
+                    "share_button_1": {
+                      "type": "share-button",
+                      "settings": {
+                        "background_color": "#e7e5df",
+                        "icon_color": "#1a1a1a"
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "price_tVjtKg",
+                    "share_button_1"
+                  ]
                 }
               },
               "block_order": [
                 "text_xrnftG",
-                "price_tVjtKg"
+                "review_1",
+                "price_row_1"
               ]
+            },
+            "emi_banner_1": {
+              "type": "emi-banner",
+              "settings": {},
+              "blocks": {}
+            },
+            "delivery_pincode_checker_1": {
+              "type": "delivery-pincode-checker",
+              "settings": {
+                "heading": "Check delivery timeline",
+                "placeholder": "Enter PIN code",
+                "button_text": "Check"
+              },
+              "blocks": {}
             },
             "divider_VJhene": {
               "type": "_divider",
@@ -211,6 +376,75 @@
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "banner_image_1": {
+              "type": "image",
+              "settings": {
+                "image": "shopify://shop_images/Partial_payment.webp",
+                "link": "",
+                "image_ratio": "adapt",
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 12,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "banner_image_2": {
+              "type": "image",
+              "settings": {
+                "image": "shopify://shop_images/Mobile_Promotion_banner_2.webp",
+                "link": "",
+                "image_ratio": "adapt",
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 12,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "bulk_customise_links_1": {
+              "type": "bulk-customise-links",
+              "settings": {
+                "phone_number": "919999999999",
+                "bulk_prefix_text": "Extra Discount on",
+                "bulk_text": "Bulk Order",
+                "bulk_message_template": "Hi, I want extra discount on bulk order for [product_title] - [product_url]",
+                "customise_text": "Customise Order",
+                "customise_message_template": "Hi, I want to customise [product_title] - [product_url]"
+              },
+              "blocks": {}
+            },
+            "whatsapp_button_1": {
+              "type": "whatsapp-button",
+              "settings": {
+                "phone_number": "919999999999",
+                "button_text": "Order via WhatsApp",
+                "message_template": "Hi, I'm interested in [product_title] - [product_url]",
+                "background_color": "#0e6b57",
+                "text_color": "#ffffff"
               },
               "blocks": {}
             },
@@ -258,10 +492,10 @@
                   "type": "add-to-cart",
                   "static": true,
                   "settings": {
-                    "style_class": "button",
-                    "custom_button_background": "{{ settings.color_palette.foreground }}",
-                    "custom_button_text": "{{ settings.color_palette.background }}",
-                    "custom_button_border": "{{ settings.color_palette.background }}"
+                    "style_class": "button-custom",
+                    "custom_button_background": "#a39c86",
+                    "custom_button_text": "#ffffff",
+                    "custom_button_border": "#a39c86"
                   },
                   "blocks": {}
                 },
@@ -274,44 +508,289 @@
               },
               "block_order": []
             },
-            "text_aEtTtq": {
-              "type": "text",
-              "name": "Product description",
+            "buy_it_now_button_1": {
+              "type": "buy-it-now-button",
               "settings": {
-                "text": "{{ closest.product.description }}",
-                "width": "100%",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "rte",
-                "font": "var(--font-primary--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
+                "button_text": "Buy It Now",
+                "background_color": "#3f5b44",
+                "text_color": "#ffffff"
+              },
+              "blocks": {}
+            },
+            "trust_badges_1": {
+              "type": "trust-badges",
+              "settings": {
+                "heading": "Dekorvibe Promise",
+                "subheading": "Gorgeous homes, trusted by many."
+              },
+              "blocks": {
+                "item-1": {
+                  "type": "_trust-badge-item",
+                  "settings": {
+                    "icon": "check_box",
+                    "text": "Quality Checked & Assured"
+                  },
+                  "blocks": {}
+                },
+                "item-2": {
+                  "type": "_trust-badge-item",
+                  "settings": {
+                    "icon": "star",
+                    "text": "Curated for Your Style"
+                  },
+                  "blocks": {}
+                },
+                "item-3": {
+                  "type": "_trust-badge-item",
+                  "settings": {
+                    "icon": "return",
+                    "text": "Hassle-Free Returns"
+                  },
+                  "blocks": {}
+                },
+                "item-4": {
+                  "type": "_trust-badge-item",
+                  "settings": {
+                    "icon": "truck",
+                    "text": "Reliable shipping"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "item-1",
+                "item-2",
+                "item-3",
+                "item-4"
+              ]
+            },
+            "feature_icon_row_2": {
+              "type": "feature-icon-row",
+              "settings": {},
+              "blocks": {
+                "item-1": {
+                  "type": "_feature-icon-item",
+                  "settings": {
+                    "icon": "truck",
+                    "label": "Free Delivery",
+                    "badge_color": "#3f5b44",
+                    "icon_color": "#ffffff"
+                  },
+                  "blocks": {}
+                },
+                "item-2": {
+                  "type": "_feature-icon-item",
+                  "settings": {
+                    "icon": "return",
+                    "label": "Friendly Return Policy",
+                    "badge_color": "#3f5b44",
+                    "icon_color": "#ffffff"
+                  },
+                  "blocks": {}
+                },
+                "item-3": {
+                  "type": "_feature-icon-item",
+                  "settings": {
+                    "icon": "lock",
+                    "label": "100% Secure Payment",
+                    "badge_color": "#3f5b44",
+                    "icon_color": "#ffffff"
+                  },
+                  "blocks": {}
+                },
+                "item-4": {
+                  "type": "_feature-icon-item",
+                  "settings": {
+                    "icon": "price_tag",
+                    "label": "24/7 Support",
+                    "badge_color": "#3f5b44",
+                    "icon_color": "#ffffff"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "item-1",
+                "item-2",
+                "item-3",
+                "item-4"
+              ]
+            },
+            "accordion_1": {
+              "type": "accordion",
+              "settings": {
+                "icon": "plus",
+                "dividers": true,
+                "divider_color": "#00000014",
+                "type_preset": "h6",
+                "background_color": "",
                 "text_color": "",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
               },
-              "blocks": {}
+              "blocks": {
+                "row-1": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Feature And Details",
+                    "open_by_default": false,
+                    "icon": "clipboard",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text-1": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<ul><li><strong>Dial Size:</strong> 22\" X 22\" Inch</li><li>Uses 1 \"AA\" battery: not included (Note: Plus, side of your battery should be inserted first)</li><li><strong>Detailed Finish:</strong> The wall clock is made with attention to detail. Every fine detail brings out the beautiful intricacies in them. The clock complements your interiors and adds life to your living space</li><li><strong>Suitable For:</strong> These wall clocks modern is suitable for hanging in your office, home, bed room, living room, dorm, lobby, patio and other corners of your home.</li><li>Classic panel with Clearly visible Numbers. Self-design wall clock made to with stand years of use. The elegant dial flaunts bold numerals which make it easy to check the time even from a distance.</li><li>Made by Local Artisans of India #MADE IN INDIA #</li><li><strong>Easy to Clean:</strong> This wall clock is easy to clean and maintain. You can dust the dirt off it by just using a soft cloth.</li><li><strong>Packaging:</strong> Wrapped in soft paper and packed with bubble wrap and card board box for reaching you safely.</li><li>Model No: MLWC_06</li></ul>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "text_color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text-1"
+                  ]
+                },
+                "row-2": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Friendly Product Cancellation/Return Policy",
+                    "open_by_default": false,
+                    "icon": "return",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text-1": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>At Dekorvibe, we aim to make the returns and replacements process simple and transparent.</p><ul><li>Return and replacement requests are accepted within 24 hours of delivery. To ensure a smooth review process, please contact our Customer Support team within this timeframe.</li><li>Items should be unused, in their original packaging, and accompanied by all included accessories, parts, manuals, and inserts (where applicable)</li><li>All requests are reviewed with our return and replacement team to ensure the easy resolution.</li><li>For any questions regarding return, product concerns, or the return process, please contact our support team for assistance.</li></ul><p><strong>Email:</strong> support@dekorvibe.com<br><strong>Support Hours:</strong> Monday to Saturday, 10:00 AM – 6:00 PM.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "text_color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text-1"
+                  ]
+                },
+                "row-3": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Shipping & Returns",
+                    "open_by_default": false,
+                    "icon": "truck",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text-1": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<ul><li>Once our system processes your order, your products are inspected thoroughly to ensure they are in perfect condition.</li><li>After they pass through the final round of quality checks, they are packed and handed over to our trusted Delivery partner.</li><li>Our delivery partners then bring the package to you at the earliest possible. In case, they are unable to reach your provided address or at a suitable time, they will contact you to resolve the issue.</li><li><strong>Cancellation in case of a wrong product:</strong> If the product does not comply with the specifications as per your original order, raise the issue immediately &amp; report it to support.</li></ul><p>For more details, please get in touch with us on our customer care number or write to us at support@dekorvibe.com.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "text_color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text-1"
+                  ]
+                }
+              },
+              "block_order": [
+                "row-1",
+                "row-2",
+                "row-3"
+              ]
+            },
+            "frequently_bought_together_1": {
+              "type": "frequently-bought-together",
+              "settings": {
+                "heading": "Frequently bought together",
+                "button_text": "Add both to cart"
+              }
             }
           },
           "block_order": [
             "group_icgrde",
+            "emi_banner_1",
+            "delivery_pincode_checker_1",
             "divider_VJhene",
             "variant_picker_R3rGDr",
+            "banner_image_1",
+            "banner_image_2",
+            "bulk_customise_links_1",
+            "whatsapp_button_1",
             "buy_buttons_eYQEYi",
-            "text_aEtTtq"
+            "buy_it_now_button_1",
+            "trust_badges_1",
+            "frequently_bought_together_1",
+            "feature_icon_row_2",
+            "accordion_1"
           ]
         }
       },
       "block_order": [
-        "disclosures_g9mWze"
+        "disclosures_g9mWze",
+        "text_brAq4d",
+        "feature_icon_row_1"
       ],
       "settings": {
         "content_width": "content-center-aligned",
@@ -323,6 +802,13 @@
         "background_color": "{{ settings.color_palette.background }}",
         "padding-block-start": 0,
         "padding-block-end": 0
+      }
+    },
+    "collection_hero_banner_gNc74r": {
+      "type": "collection-hero-banner",
+      "name": "Collection Hero Banner",
+      "settings": {
+        "add_side_padding": true
       }
     },
     "product_recommendations_qggXJq": {
@@ -376,7 +862,7 @@
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
-                "image_ratio": "adapt",
+                "image_ratio": "square",
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
@@ -418,6 +904,7 @@
               "type": "price",
               "settings": {
                 "show_sale_price_first": true,
+                "show_discount_badge": true,
                 "show_installments": false,
                 "show_tax_info": false,
                 "type_preset": "h6",
@@ -466,10 +953,419 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "deal_of_the_day_T4WRhk": {
+      "type": "deal-of-the-day",
+      "blocks": {
+        "product_3pPpTg": {
+          "type": "product",
+          "settings": {
+            "title": "Yin Yang Style Decorative Wooden Vanity Mirror",
+            "price": "₹5,099",
+            "compare_price": "₹13,499",
+            "link": ""
+          }
+        },
+        "product_J7wVGc": {
+          "type": "product",
+          "settings": {
+            "title": "Islamic verse from the Quran Set of Five",
+            "price": "₹1,599",
+            "compare_price": "₹4,099",
+            "link": ""
+          }
+        },
+        "product_i7Hww6": {
+          "type": "product",
+          "settings": {
+            "title": "Luxury Blue Tufted Ottoman",
+            "price": "₹11,699",
+            "compare_price": "₹26,999",
+            "link": ""
+          }
+        },
+        "product_WEPDDp": {
+          "type": "product",
+          "settings": {
+            "title": "Edgy Shell Style Accent Chair",
+            "price": "₹11,699",
+            "compare_price": "₹25,999",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "product_3pPpTg",
+        "product_J7wVGc",
+        "product_i7Hww6",
+        "product_WEPDDp"
+      ],
+      "name": "Deal of the Day",
+      "settings": {
+        "end_date": "2026-12-31 23:59:59"
+      }
+    },
+    "178394319757d49588": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_0f8bdd1_QX6WUD": {
+          "type": "ai_gen_block_0f8bdd1",
+          "settings": {
+            "heading": "Recently viewed",
+            "heading_alignment": "left",
+            "max_products": 4,
+            "fallback_collection": "",
+            "products_per_row_desktop": 4,
+            "products_per_row_mobile": "2",
+            "gap": 16,
+            "section_padding": 40,
+            "background_color": "#ffffff",
+            "heading_color": "#000000",
+            "card_background": "#ffffff",
+            "product_title_color": "#000000",
+            "price_color": "#000000",
+            "nav_button_background": "#ffffff",
+            "nav_button_color": "#000000",
+            "heading_size": 32,
+            "product_title_size": 14,
+            "price_size": 16,
+            "card_border_radius": 8
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_0f8bdd1_QX6WUD"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "popular_picks_iwB9Gj": {
+      "type": "popular-picks",
+      "blocks": {
+        "category_xmnEAN": {
+          "type": "category",
+          "settings": {
+            "title": "Coffee Tables",
+            "price_text": "Starting At ₹ 10,679",
+            "link": ""
+          }
+        },
+        "category_gpycwj": {
+          "type": "category",
+          "settings": {
+            "title": "Table Lamps",
+            "price_text": "Starting At ₹ 2,699",
+            "link": ""
+          }
+        },
+        "category_nnq6x7": {
+          "type": "category",
+          "settings": {
+            "title": "Wooden Mirrors",
+            "price_text": "Starting At ₹ 2,669",
+            "link": ""
+          }
+        },
+        "category_W4nG8z": {
+          "type": "category",
+          "settings": {
+            "title": "Side Table",
+            "price_text": "Starting At ₹ 3,559",
+            "link": ""
+          }
+        },
+        "category_7wf367": {
+          "type": "category",
+          "settings": {
+            "title": "Floor Lamps",
+            "price_text": "Starting At ₹ 4,449",
+            "link": ""
+          }
+        },
+        "category_8A8xVK": {
+          "type": "category",
+          "settings": {
+            "title": "Office Chairs",
+            "price_text": "Starting At ₹ 12,999",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "category_xmnEAN",
+        "category_gpycwj",
+        "category_nnq6x7",
+        "category_W4nG8z",
+        "category_7wf367",
+        "category_8A8xVK"
+      ],
+      "name": "Popular Picks",
+      "settings": {
+        "title": "Popular Picks",
+        "subtitle": "Explore our most loved products"
+      }
+    },
+    "featured_in_marquee_Efdaf4": {
+      "type": "featured-in-marquee",
+      "name": "Featured In Marquee",
+      "settings": {}
+    },
+    "search_collections_PDV4gn": {
+      "type": "search-collections",
+      "blocks": {
+        "collection_pill_c9anHY": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_QfM7w7": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_YNCRTp": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_PCGAVX": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_QLxRh4": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_cCEA3d": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_fiCgrd": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_MDbGpd": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_BnBJH9": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_DTHnEx": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_Br8n6T": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_CExDe3": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_LXTGMj": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_X9JThp": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_d9CpQe": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_AJUEmG": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_PKezem": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_QbPgTQ": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "mirrors",
+            "title": ""
+          }
+        },
+        "collection_pill_UhKKh9": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "",
+            "title": ""
+          }
+        },
+        "collection_pill_d3kwCE": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "",
+            "title": ""
+          }
+        },
+        "collection_pill_qtR6Tw": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "",
+            "title": ""
+          }
+        },
+        "collection_pill_QDj6LF": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "",
+            "title": ""
+          }
+        },
+        "collection_pill_6kd9mi": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "",
+            "title": ""
+          }
+        },
+        "collection_pill_kWyxnf": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "",
+            "title": ""
+          }
+        },
+        "collection_pill_BKjiNr": {
+          "type": "collection_pill",
+          "settings": {
+            "collection": "",
+            "title": ""
+          }
+        }
+      },
+      "block_order": [
+        "collection_pill_c9anHY",
+        "collection_pill_QfM7w7",
+        "collection_pill_YNCRTp",
+        "collection_pill_PCGAVX",
+        "collection_pill_QLxRh4",
+        "collection_pill_cCEA3d",
+        "collection_pill_fiCgrd",
+        "collection_pill_MDbGpd",
+        "collection_pill_BnBJH9",
+        "collection_pill_DTHnEx",
+        "collection_pill_Br8n6T",
+        "collection_pill_CExDe3",
+        "collection_pill_LXTGMj",
+        "collection_pill_X9JThp",
+        "collection_pill_d9CpQe",
+        "collection_pill_AJUEmG",
+        "collection_pill_PKezem",
+        "collection_pill_QbPgTQ",
+        "collection_pill_UhKKh9",
+        "collection_pill_d3kwCE",
+        "collection_pill_qtR6Tw",
+        "collection_pill_QDj6LF",
+        "collection_pill_6kd9mi",
+        "collection_pill_kWyxnf",
+        "collection_pill_BKjiNr"
+      ],
+      "name": "Search & Collections",
+      "settings": {
+        "bg_color": "#f4eee8",
+        "typewriter_texts": "New Arrivals, Wall Paintings, Home Temples, Tables & Chairs, Decorative Mirrors, Floor Lamps"
+      }
+    },
+    "product_reviews_1": {
+      "type": "product-reviews",
+      "name": "Product Reviews",
+      "settings": {
+        "background_color": "#ffffff"
+      }
     }
   },
   "order": [
     "main",
-    "product_recommendations_qggXJq"
+    "collection_hero_banner_gNc74r",
+    "product_recommendations_qggXJq",
+    "deal_of_the_day_T4WRhk",
+    "178394319757d49588",
+    "popular_picks_iwB9Gj",
+    "featured_in_marquee_Efdaf4",
+    "search_collections_PDV4gn",
+    "product_reviews_1"
   ]
 }

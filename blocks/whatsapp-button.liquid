@@ -1,0 +1,106 @@
+
+
+{%- liquid
+  assign block_settings = block.settings
+  assign product_resource = closest.product
+  assign message = block_settings.message_template
+  assign message = message | replace: '[product_title]', product_resource.title
+  assign product_url = product_resource.url | prepend: request.origin
+  assign message = message | replace: '[product_url]', product_url
+  assign encoded_message = message | url_encode
+  assign phone_digits = block_settings.phone_number | remove: ' ' | remove: '+' | remove: '-'
+  assign wa_link = 'https://wa.me/' | append: phone_digits | append: '?text=' | append: encoded_message
+-%}
+
+<a
+  href="{{ wa_link }}"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="whatsapp-button"
+  style="
+    --whatsapp-button-bg: {{ block_settings.background_color | default: '#25D366' }};
+    --whatsapp-button-text: {{ block_settings.text_color | default: '#ffffff' }};
+  "
+  {{ block.shopify_attributes }}
+>
+  {% render 'icon-or-image',
+    icon: 'whatsapp',
+    image_upload: blank,
+    width: 20,
+    class_name: 'whatsapp-button__icon'
+  %}
+  <span>{{ block_settings.button_text | default: 'Order via WhatsApp' }}</span>
+</a>
+
+{% stylesheet %}
+  .whatsapp-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--whatsapp-button-bg);
+    color: var(--whatsapp-button-text);
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+
+  .whatsapp-button__icon {
+    flex-shrink: 0;
+    color: var(--whatsapp-button-text);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "WhatsApp Order Button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "phone_number",
+      "label": "WhatsApp number (with country code)",
+      "default": "919999999999",
+      "info": "Digits only, include country code, no + or spaces needed."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Order via WhatsApp"
+    },
+    {
+      "type": "textarea",
+      "id": "message_template",
+      "label": "Message template",
+      "default": "Hi, I'm interested in [product_title] - [product_url]",
+      "info": "Use [product_title] and [product_url] as placeholders."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#25D366"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "WhatsApp Order Button",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

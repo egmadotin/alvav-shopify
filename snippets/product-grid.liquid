@@ -67,6 +67,19 @@
       --product-grid-columns-desktop: repeat(auto-fill, minmax(6.25rem, 1fr));
     }
 
+    .product-grid--{{ section.id }}[product-grid-view='list'] {
+      grid-template-columns: 1fr !important;
+      --product-grid-columns-desktop: 1fr;
+    }
+
+    .product-grid--{{ section.id }}[product-grid-view='list'] .product-grid__item {
+      grid-column: 1 / -1;
+    }
+
+    .product-grid--{{ section.id }}[product-grid-view='list'] .product-grid__card {
+      row-gap: var(--padding-sm);
+    }
+
     .product-grid--{{ section.id }}[product-grid-view='zoom-out'] .product-grid-view-zoom-out--details {
       display: block;
     }
@@ -76,6 +89,13 @@
       padding-inline-end: var(--zoom-out-padding-inline-end, 0);
       padding-block-start: var(--zoom-out-padding-block-start, 0);
       padding-block-end: var(--zoom-out-padding-block-end, 0);
+    }
+
+    .product-grid--{{ section.id }}[product-grid-view='list'] .product-grid__card {
+      padding-inline-start: 0;
+      padding-inline-end: 0;
+      padding-block-start: 0;
+      padding-block-end: 0;
     }
   }
 {% endstyle %}
@@ -142,8 +162,10 @@
               const grid = document.querySelector('.product-grid');
               if (!grid) return;
 
-              const storedLayoutMobile = sessionStorage.getItem('product-grid-view-mobile') || 'default';
-              const storedLayoutDesktop = sessionStorage.getItem('product-grid-view-desktop') || 'default';
+              const normalizeLayout = (layout) => (layout === 'zoom-out' ? 'list' : layout);
+
+              const storedLayoutMobile = normalizeLayout(sessionStorage.getItem('product-grid-view-mobile') || 'default');
+              const storedLayoutDesktop = normalizeLayout(sessionStorage.getItem('product-grid-view-desktop') || 'default');
 
               // No need to read the window width if no custom layouts were saved.
               if (storedLayoutMobile === 'default' && storedLayoutDesktop === 'default') return;

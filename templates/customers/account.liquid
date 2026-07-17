@@ -1,0 +1,128 @@
+<div class="customer-layout">
+  <div class="customer-dashboard-header">
+    <div>
+      <h1>My Account</h1>
+      <p style="margin: 4px 0 0 0; color: #666666;">Welcome back, {{ customer.name }}!</p>
+    </div>
+    <a href="{{ routes.account_logout_url }}" class="customer-logout-link">
+      Logout
+    </a>
+  </div>
+
+  <div class="customer-grid">
+    <!-- Order History Section -->
+    <div class="customer-card">
+      <h2 class="customer-card-title">Order History</h2>
+
+      {% paginate customer.orders by 10 %}
+        {% if customer.orders.size > 0 %}
+          <div class="customer-table-container">
+            <table class="customer-table">
+              <thead>
+                <tr>
+                  <th>Order</th>
+                  <th>Date</th>
+                  <th>Payment</th>
+                  <th>Fulfillment</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in customer.orders %}
+                  <tr>
+                    <td>
+                      <a href="{{ order.customer_url }}" class="order-link">
+                        {{ order.name }}
+                      </a>
+                    </td>
+                    <td>{{ order.created_at | time_tag: format: 'date' }}</td>
+                    <td>
+                      {% if order.financial_status == 'paid' %}
+                        <span class="badge badge--paid">Paid</span>
+                      {% elsif order.financial_status == 'pending' %}
+                        <span class="badge badge--unpaid">Pending</span>
+                      {% else %}
+                        <span class="badge">{{ order.financial_status_label }}</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if order.fulfillment_status == 'fulfilled' %}
+                        <span class="badge badge--fulfilled">Fulfilled</span>
+                      {% elsif order.fulfillment_status == 'unfulfilled' %}
+                        <span class="badge badge--unfulfilled">Unfulfilled</span>
+                      {% else %}
+                        <span class="badge">{{ order.fulfillment_status_label }}</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ order.total_net_amount | money_with_currency }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          {% if paginate.pages > 1 %}
+            <div style="display: flex; justify-content: center; gap: 8px; margin-top: 24px;">
+              {% if paginate.previous %}
+                <a href="{{ paginate.previous.url }}" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #000; text-decoration: none;">&laquo; Previous</a>
+              {% endif %}
+              {% for part in paginate.parts %}
+                {% if part.is_link %}
+                  <a href="{{ part.url }}" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #000; text-decoration: none;">{{ part.title }}</a>
+                {% else %}
+                  <span style="padding: 8px 12px; background: #eee; border: 1px solid #ccc; border-radius: 4px; font-weight: bold;">{{ part.title }}</span>
+                {% endif %}
+              {% endfor %}
+              {% if paginate.next %}
+                <a href="{{ paginate.next.url }}" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; color: #000; text-decoration: none;">Next &raquo;</a>
+              {% endif %}
+            </div>
+          {% endif %}
+
+        {% else %}
+          <div style="text-align: center; padding: 40px 20px; color: #888;">
+            <p>You haven't placed any orders yet.</p>
+            <a href="{{ routes.all_products_collection_url }}" class="customer-form-btn" style="display: inline-block; width: auto; padding: 12px 24px; text-decoration: none; margin-top: 16px;">
+              Start Shopping
+            </a>
+          </div>
+        {% endif %}
+      {% endpaginate %}
+    </div>
+
+    <!-- Account Details Section -->
+    <div class="customer-card" style="height: fit-content;">
+      <h2 class="customer-card-title">Account Details</h2>
+      
+      <div style="font-size: 0.95rem; line-height: 1.6; color: #333;">
+        <p style="margin-top: 0;"><strong>Name:</strong> {{ customer.name }}</p>
+        <p><strong>Email:</strong> {{ customer.email }}</p>
+        
+        {% if customer.default_address %}
+          <div style="margin-top: 24px; border-top: 1px solid #f0f0f0; padding-top: 16px;">
+            <h3 style="font-size: 1rem; margin-top: 0; margin-bottom: 12px; font-weight: 700; color: #111;">Default Address</h3>
+            <div style="color: #666;">
+              {{ customer.default_address.first_name }} {{ customer.default_address.last_name }}<br>
+              {{ customer.default_address.address1 }}<br>
+              {% if customer.default_address.address2 != blank %}
+                {{ customer.default_address.address2 }}<br>
+              {% endif %}
+              {{ customer.default_address.city }}, {{ customer.default_address.province_code }} {{ customer.default_address.zip }}<br>
+              {{ customer.default_address.country }}
+              {% if customer.default_address.phone != blank %}
+                <br>Phone: {{ customer.default_address.phone }}
+              {% endif %}
+            </div>
+          </div>
+        {% else %}
+          <p style="color: #888; font-style: italic; margin-top: 24px;">No default address set.</p>
+        {% endif %}
+
+        <a href="{{ routes.account_addresses_url }}" class="customer-form-btn" style="display: block; text-align: center; text-decoration: none; margin-top: 24px; background: none; color: #000; border: 1px solid #000;">
+          Manage Addresses ({{ customer.addresses_count }})
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

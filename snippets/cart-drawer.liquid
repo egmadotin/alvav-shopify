@@ -42,6 +42,7 @@
 
   <theme-drawer
     id="cart-drawer"
+    force-modal
     data-skip-node-update
   >
     <dialog
@@ -77,29 +78,36 @@
               </button>
             </div>
           {%- else -%}
-            {% capture cart_badge_html %}
-              <span
-                class="theme-drawer__badge{% if cart.item_count == 0 %} visually-hidden{% endif %}"
-                aria-hidden="true"
-                {% if cart.item_count <= 99 %}
-                  data-maintain-ratio
-                {% endif %}
+            <div class="theme-drawer__header cart-drawer__header-custom">
+              <h2 class="theme-drawer__title cart-drawer__title-custom" id="cart-drawer-heading">
+                YOUR CART ({{ cart.item_count }})
+              </h2>
+              <button
+                class="theme-drawer__close-button"
+                on:click="#cart-drawer/close"
+                type="button"
+                aria-label="{{ 'actions.close' | t }}"
               >
-                {{- cart.item_count -}}
-              </span>
-              {% if cart.item_count > 0 %}
-                <span class="visually-hidden">
-                  {{ 'accessibility.cart_count' | t }}: {{ cart.item_count }}
+                <span class="svg-wrapper">
+                  {{- 'icon-close.svg' | inline_asset_content -}}
                 </span>
-              {% endif %}
-            {% endcapture %}
-            {% assign cart_drawer_title = 'content.cart_title' | t %}
-            {% render 'theme-drawer-header',
-              title: cart_drawer_title,
-              drawer_id: 'cart-drawer',
-              heading_id: 'cart-drawer-heading',
-              title_append: cart_badge_html
-            %}
+              </button>
+            </div>
+            
+            <div class="cart-drawer__free-gift-banner">
+              <div class="banner-ticker">
+                {% if settings.cart_free_gift_ticker_text_1 != blank %}
+                  <div class="banner-ticker__item">{{ settings.cart_free_gift_ticker_text_1 }}</div>
+                {% endif %}
+                {% if settings.cart_free_gift_ticker_text_2 != blank %}
+                  <div class="banner-ticker__item">{{ settings.cart_free_gift_ticker_text_2 }}</div>
+                {% endif %}
+                {% if settings.cart_free_gift_ticker_text_3 != blank %}
+                  <div class="banner-ticker__item">{{ settings.cart_free_gift_ticker_text_3 }}</div>
+                {% endif %}
+              </div>
+            </div>
+
           {%- endif -%}
 
           {% capture cart_items_children %}
@@ -115,8 +123,14 @@
                   {% render 'cart-products', context: 'drawer' %}
                 </scroll-hint>
 
+
+                {%- assign first_item = cart.items | first -%}
+                {%- if first_item -%}
+                  <cart-drawer-recommendations data-product-id="{{ first_item.product_id }}" data-section-id="cart-drawer-section"></cart-drawer-recommendations>
+                {%- endif -%}
+
                 <div class="cart-drawer__summary">
-                  {% render 'cart-summary', section_id: 'cart-drawer-section' %}
+                  {% render 'cart-summary', section_id: 'cart-drawer-section', is_drawer: true %}
                 </div>
               </scroll-hint>
             {%- endif -%}
@@ -130,6 +144,184 @@
       </cart-drawer-component>
     </dialog>
   </theme-drawer>
+
+  <script type="module">
+    import { CartLinesUpdateEvent, CartErrorEvent } from '@shopify/events';
+
+    class CartDrawerRecommendations extends HTMLElement {
+      async connectedCallback() {
+        const productId = this.dataset.productId;
+        if (!productId) return;
+        try {
+          let products = [];
+          try {
+            const response = await fetch(`/recommendations/products.json?product_id=${productId}&limit=6`);
+            if (response.ok) {
+              const data = await response.json();
+              products = data.products || [];
+            }
+          } catch (e) {
+            console.warn('Native recommendations fetch failed, falling back to collections/all', e);
+          }
+
+          if (products.length === 0) {
+            // Fallback to general store products if recommendation engine has no index generated yet
+            const fallbackResponse = await fetch('/products.json?limit=6');
+            if (fallbackResponse.ok) {
+              const data = await fallbackResponse.json();
+              products = data.products || [];
+            }
+          }
+
+          if (products.length === 0) return;
+          this.render(products);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      render(products) {
+        const sectionId = this.dataset.sectionId;
+        const itemsHtml = products.map(product => {
+          const variant = product.variants[0];
+          const priceValue = typeof variant.price === 'string' ? parseFloat(variant.price) * 100 : variant.price;
+          const priceFormatted = window.Shopify?.formatMoney ? window.Shopify.formatMoney(priceValue) : `₹${(priceValue / 100).toFixed(2)}`;
+          const imageSrc = product.featured_image || (product.images && product.images[0] ? product.images[0].src : '');
+          
+          return `
+            <div class="cart-recommendations__item">
+              <img src="${imageSrc}" alt="${product.title}" class="cart-recommendations__image" loading="lazy" width="80" height="80">
+              <div class="cart-recommendations__details">
+                <p class="cart-recommendations__title" title="${product.title}">${product.title}</p>
+                <p class="cart-recommendations__price">${priceFormatted}</p>
+              </div>
+              <button type="button" class="cart-recommendations__add-btn" onclick="addRecommendationToCart(event, ${variant.id}, '${sectionId}')">
+                + ADD
+              </button>
+            </div>
+          `;
+        }).join('');
+
+        this.innerHTML = `
+          <div class="cart-recommendations__wrapper">
+            <h3 class="cart-recommendations__heading">You might also like</h3>
+            <div class="cart-recommendations__slider-container">
+              <button class="cart-recommendations__nav-btn prev" onclick="this.nextElementSibling.scrollBy({left: -150, behavior: 'smooth'})">‹</button>
+              <div class="cart-recommendations__slider">
+                ${itemsHtml}
+              </div>
+              <button class="cart-recommendations__nav-btn next" onclick="this.previousElementSibling.scrollBy({left: 150, behavior: 'smooth'})">›</button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    if (!customElements.get('cart-drawer-recommendations')) {
+      customElements.define('cart-drawer-recommendations', CartDrawerRecommendations);
+    }
+
+    function initFreeGiftTicker() {
+      const ticker = document.querySelector('.banner-ticker');
+      if (!ticker || ticker.dataset.tickerInitialized) return;
+      ticker.dataset.tickerInitialized = 'true';
+      if (ticker.children.length <= 1) return;
+      
+      let currentIndex = 0;
+      setInterval(() => {
+        currentIndex = (currentIndex + 1) % ticker.children.length;
+        ticker.style.transform = `translateY(-${currentIndex * 30}px)`;
+      }, 3000);
+    }
+
+    initFreeGiftTicker();
+    
+    const cartObserver = new MutationObserver(() => {
+      initFreeGiftTicker();
+    });
+    const cartEl = document.querySelector('cart-drawer-component') || document.body;
+    cartObserver.observe(cartEl, { childList: true, subtree: true });
+
+    window.addRecommendationToCart = async function(event, variantId, sectionId) {
+      const btn = event.currentTarget;
+      btn.disabled = true;
+      const originalText = btn.innerText;
+      btn.innerText = 'Adding...';
+
+      const deferredEventPromise = CartLinesUpdateEvent.createPromise();
+
+      document.dispatchEvent(
+        new CartLinesUpdateEvent({
+          action: 'add',
+          context: 'product',
+          lines: [
+            {
+              merchandiseId: String(variantId),
+              quantity: 1,
+            },
+          ],
+          promise: deferredEventPromise.promise,
+        })
+      );
+
+      try {
+        const sectionsToUpdate = new Set([sectionId]);
+        const cartItemsComponents = document.querySelectorAll('cart-items-component');
+        cartItemsComponents.forEach((item) => {
+          if (item instanceof HTMLElement && item.dataset.sectionId) {
+            sectionsToUpdate.add(item.dataset.sectionId);
+          }
+        });
+
+        const body = JSON.stringify({
+          id: String(variantId),
+          quantity: 1,
+          sections: Array.from(sectionsToUpdate).join(','),
+          sections_url: window.location.pathname,
+        });
+
+        const response = await fetch(Theme.routes.cart_add_url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body
+        });
+
+        const data = await response.json();
+
+        if (data.errors || data.status === 'error') {
+          throw new Error(data.errors || data.description || 'Add to cart failed');
+        }
+
+        const cartResponse = await fetch(`${Theme.routes.cart_url}.json`);
+        const ajaxCart = await cartResponse.json();
+
+        deferredEventPromise.resolve({
+          cart: CartLinesUpdateEvent.createCartFromAjaxResponse(ajaxCart),
+          detail: {
+            didError: false,
+            items: ajaxCart.items,
+            source: 'cart-recommendations-component',
+            itemCount: 1,
+            sections: data.sections
+          }
+        });
+
+        const newHtml = data.sections[sectionId];
+        if (newHtml) {
+          const { morphSection } = await import('@theme/section-renderer');
+          morphSection(sectionId, newHtml, { mode: 'hydration' });
+        }
+      } catch (error) {
+        console.error(error);
+        deferredEventPromise.reject(error);
+        btn.disabled = false;
+        btn.innerText = originalText;
+      }
+    };
+  </script>
 
   {% if render_wrapper %}
     </div>
@@ -276,5 +468,727 @@
     .cart-drawer__content {
       background: transparent;
     }
+  }
+
+  /* Prevent shifting the page to the left when the drawer is open */
+  .page-wrapper--drawer-open {
+    margin-right: 0 !important;
+  }
+
+  @media (min-width: 990px) {
+    .page-wrapper--drawer-open {
+      margin-right: 0 !important;
+    }
+  }
+
+  /* Drawer Dialog Rounded Edge Override */
+  @media screen and (min-width: 750px) {
+    .theme-drawer__dialog {
+      --sidebar-width: 380px !important;
+      --theme-drawer-width: 380px !important;
+    }
+  }
+
+  .theme-drawer__dialog {
+    border-top-left-radius: 20px !important;
+    border-bottom-left-radius: 20px !important;
+    overflow: hidden !important;
+    z-index: 999999 !important;
+  }
+
+  /* Backdrop dark overlay overlay when open */
+  .theme-drawer__dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5) !important;
+  }
+
+  /* Layout overlay fixes to keep products in scrollable middle viewport */
+  .cart-drawer__content {
+    overflow-y: auto !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    scrollbar-width: none !important; /* Hide scrollbar Firefox */
+    -ms-overflow-style: none !important;  /* Hide scrollbar IE/Edge */
+  }
+
+  .cart-drawer__content::-webkit-scrollbar {
+    display: none !important; /* Hide scrollbar Chrome/Safari/Opera */
+  }
+
+  .cart-drawer__items {
+    flex: none !important;
+    overflow: visible !important;
+    min-height: 0 !important;
+  }
+
+  /* Redesigned Header */
+  .cart-drawer__header-custom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px var(--cart-drawer-padding) !important;
+    border-bottom: 1px solid #f1f1f1;
+  }
+  .cart-drawer__title-custom {
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    color: #1a1a1a;
+  }
+
+  /* Free Gift Banner with Vertical Ticker Animation */
+  .cart-drawer__free-gift-banner {
+    background-color: #3f5b44 !important;
+    height: 30px !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+  .banner-ticker {
+    display: flex !important;
+    flex-direction: column !important;
+    transition: transform 0.5s ease-in-out !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .banner-ticker__item {
+    height: 30px !important;
+    line-height: 30px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 0.75rem !important;
+    text-align: center !important;
+    letter-spacing: 0.02em !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .cart-drawer__free-gift-container {
+    padding: 8px var(--cart-drawer-padding);
+    background-color: #ffffff;
+    border-bottom: 1px solid #f1f1f1;
+  }
+  .cart-drawer__free-gift-milestone {
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .milestone-glow-text {
+    color: #2e7d32;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    text-shadow: 0 0 8px rgba(46, 125, 50, 0.1);
+  }
+  .milestone-text {
+    font-size: 0.75rem;
+    color: #4a5568;
+  }
+
+  /* Milestone Progress bar exact design */
+  .gift-progress-visual {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-top: 22px !important;
+    margin-bottom: 20px !important;
+    padding-right: 48px; /* Room for the milestone indicator on the right */
+  }
+  .gift-progress-line-bg {
+    width: 100%;
+    height: 6px;
+    background-color: #edf2f7;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .gift-progress-line-fill {
+    height: 100%;
+    background-color: #72be8a;
+    transition: width 0.3s ease;
+  }
+  .gift-progress-milestone-point {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60px;
+  }
+  .milestone-amount {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: #2e7d32;
+    position: absolute;
+    bottom: 16px !important;
+  }
+  .milestone-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 2px solid #cbd5e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 0.6875rem;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    z-index: 2;
+  }
+  .gift-progress-milestone-point.reached .milestone-circle {
+    background-color: #2e7d32;
+    border-color: #2e7d32;
+  }
+  .milestone-label {
+    font-size: 0.65rem;
+    color: #718096;
+    position: absolute;
+    top: 16px !important;
+    white-space: nowrap;
+  }
+
+  /* Custom Coupon/Savings Card Design */
+  .cart-drawer__coupon-section {
+    padding: 8px var(--cart-drawer-padding);
+    background-color: #ffffff;
+    border-bottom: 1px solid #f1f1f1;
+  }
+  .cart-drawer__coupon-card {
+    border: 1px solid #e2f5ea;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: #ffffff;
+  }
+  .coupon-card__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+  }
+  .coupon-card__row.active-discount-row {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2f5ea;
+    gap: 8px;
+  }
+  .coupon-card__row.extra-offers-row {
+    background-color: #f4fbf7; /* Subtle green/mint background */
+  }
+  .coupon-card__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .coupon-card__badge-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .coupon-card__details {
+    display: flex;
+    flex-direction: column;
+  }
+  .coupon-card__savings-title {
+    font-weight: 700;
+    font-size: 0.8125rem !important;
+    color: #15803d;
+    margin: 0 !important;
+  }
+  .coupon-card__savings-subtitle {
+    font-size: 0.75rem;
+    color: #4a5568;
+    margin: 0 !important;
+  }
+  .coupon-card__remove-action {
+    background: transparent;
+    border: none;
+    color: #15803d;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 0;
+  }
+  .coupon-card__remove-action:hover {
+    text-decoration: underline;
+  }
+  .coupon-card__apply-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .extra-offers__text {
+    font-weight: 700;
+    font-size: 0.8125rem;
+    color: #15803d;
+  }
+  .view-all-coupons {
+    font-size: 0.75rem;
+    color: #4a5568;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .view-all-coupons:hover {
+    text-decoration: underline;
+  }
+  .cart-drawer__discount-form {
+    display: flex;
+    gap: 8px;
+  }
+  .cart-drawer__discount-input {
+    flex: 1;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.875rem;
+    color: #1a1a1a;
+  }
+  .cart-drawer__discount-submit {
+    background-color: #3f5b44;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 0 16px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  .cart-drawer__coupon-suggestions {
+    margin-top: 8px;
+    font-size: 0.75rem;
+    color: #718096;
+  }
+  .suggested-coupon-code {
+    color: #2e7d32;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  /* Cart Recommendation Widget */
+  .cart-recommendations__wrapper {
+    background-color: #ffffff !important;
+    border: 1px solid #e5e5e5 !important;
+    border-radius: 16px !important;
+    margin-inline: var(--cart-drawer-padding) !important;
+    margin-bottom: 16px !important;
+    padding: 16px 0 !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+  .cart-recommendations__heading {
+    font-size: 0.9375rem !important;
+    font-weight: 800 !important;
+    color: #166534 !important;
+    margin: 0 16px 12px 16px !important;
+    text-transform: none !important;
+    display: inline-block !important;
+    position: relative !important;
+    padding-bottom: 4px !important;
+  }
+  .cart-recommendations__heading::after {
+    content: '' !important;
+    position: absolute !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 2px !important;
+    background-color: #166534 !important;
+  }
+  .cart-recommendations__slider-container {
+    display: flex !important;
+    align-items: center !important;
+    position: relative !important;
+    gap: 0 !important;
+    padding-inline: 4px !important;
+  }
+  .cart-recommendations__slider {
+    display: flex !important;
+    gap: 0 !important;
+    overflow-x: auto !important;
+    scroll-behavior: smooth !important;
+    padding-bottom: 4px !important;
+    scrollbar-width: none !important; /* Hide scrollbar Firefox */
+    width: 100% !important;
+  }
+  .cart-recommendations__slider::-webkit-scrollbar {
+    display: none !important; /* Webkit */
+  }
+  .cart-recommendations__item {
+    display: grid !important;
+    grid-template-columns: 80px 1fr !important;
+    grid-template-rows: auto auto !important;
+    column-gap: 12px !important;
+    row-gap: 8px !important;
+    align-items: center !important;
+    flex: 0 0 240px !important; /* Width of each item in slider */
+    background-color: #ffffff !important;
+    border: none !important;
+    border-right: 1px solid #e5e5e5 !important;
+    padding: 8px 16px !important;
+    border-radius: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .cart-recommendations__item:last-child {
+    border-right: none !important;
+  }
+  .cart-recommendations__image {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 80px !important;
+    height: 80px !important;
+    object-fit: cover !important;
+    border-radius: 12px !important;
+    margin-bottom: 0 !important;
+  }
+  .cart-recommendations__details {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    text-align: left !important;
+    margin-bottom: 0 !important;
+  }
+  .cart-recommendations__title {
+    font-size: 0.8125rem !important;
+    font-weight: 700 !important;
+    color: #1a1a1a !important;
+    margin: 0 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    white-space: normal !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.3 !important;
+  }
+  .cart-recommendations__price {
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    color: #1a1a1a !important;
+    margin: 0 !important;
+  }
+  .cart-recommendations__add-btn {
+    grid-column: 1 / span 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    background-color: #ffffff !important;
+    border: 1px solid #166534 !important;
+    color: #166534 !important;
+    border-radius: 8px !important;
+    padding: 6px 0 !important;
+    font-weight: 700 !important;
+    font-size: 0.8125rem !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .cart-recommendations__add-btn:hover {
+    background-color: #166534 !important;
+    color: #ffffff !important;
+  }
+  .cart-recommendations__nav-btn {
+    border: 1px solid #cbd5e0 !important;
+    background-color: #ffffff !important;
+    color: #4a5568 !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    position: absolute !important;
+    top: 40% !important;
+    transform: translateY(-50%) !important;
+    z-index: 2 !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    transition: all 0.2s ease !important;
+  }
+  .cart-recommendations__nav-btn.prev {
+    left: 4px !important;
+  }
+  .cart-recommendations__nav-btn.next {
+    right: 4px !important;
+  }
+  .cart-recommendations__nav-btn:hover {
+    background-color: #f7fafc !important;
+  }
+
+  /* Cart Footer Custom CTA */
+  .cart-drawer__summary {
+    padding: 8px var(--cart-drawer-padding) !important;
+    gap: 8px !important;
+    z-index: 20 !important;
+  }
+  .cart-drawer__footer-savings {
+    width: 100%;
+    padding: 0 12px;
+  }
+  .cart-drawer__savings-note {
+    background-color: #f0fdf4;
+    color: #166534;
+    border-radius: 6px;
+    padding: 6px 12px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    margin-bottom: 4px;
+  }
+  .cart-drawer__checkout-btn-custom {
+    background-color: #3f5b44 !important;
+    border-color: #3f5b44 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-radius: 12px !important;
+    padding: 0 20px !important;
+    height: 40px !important; /* Sleeker checkout button */
+    font-size: 0.875rem !important;
+  }
+  .checkout-payment-icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .checkout-payment-icon {
+    height: 18px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 3px;
+    background: #fff;
+    padding: 2px;
+  }
+  .cart-drawer__powered-by {
+    font-size: 0.75rem;
+    color: #a0aec0;
+    text-align: center;
+    margin-top: 12px;
+  }
+
+  /* Unified Container Cart Items Override */
+  .cart-drawer__items {
+    background-color: #f7f7f7 !important;
+    border-radius: 16px !important;
+    padding-inline: 16px !important;
+    margin-inline: var(--cart-drawer-padding) !important;
+    margin-top: 12px !important;
+    margin-bottom: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .cart-drawer__items .cart-items__table-row {
+    display: grid !important;
+    grid-template-columns: 64px 1fr auto !important;
+    grid-template-rows: auto auto !important;
+    grid-template-areas:
+      "media details price"
+      "media quantity quantity" !important;
+    background-color: transparent !important;
+    border-radius: 0 !important;
+    padding: 12px 0 !important;
+    margin-bottom: 0 !important;
+    border: none !important;
+    border-bottom: 1px solid #e5e5e5 !important;
+    column-gap: 12px !important;
+    row-gap: 8px !important;
+    align-items: start !important;
+  }
+
+  .cart-drawer__items .cart-items__table-row:last-child {
+    border-bottom: none !important;
+  }
+
+  .cart-drawer__items .cart-items__media {
+    grid-area: media;
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+  }
+
+  .cart-drawer__items .cart-items__media-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .cart-drawer__items .cart-items__media-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cart-drawer__items .cart-items__details {
+    grid-area: details !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+
+  .cart-drawer__items .cart-items__title {
+    font-size: 0.78rem !important;
+    font-weight: 700 !important;
+    color: #1a1a1a !important;
+    text-transform: none !important;
+    white-space: normal !important;
+    line-height: 1.3 !important;
+  }
+
+  .cart-drawer__items .cart-items__variants-wrapper {
+    font-size: 0.72rem !important;
+    color: #718096 !important;
+    margin-top: 2px !important;
+  }
+
+  .cart-drawer__items .cart-items__unit-price-wrapper {
+    display: none !important;
+  }
+
+  .cart-drawer__items .cart-items__variants {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+  }
+
+  .cart-drawer__items .cart-items__variant {
+    display: flex !important;
+    font-size: 0.72rem !important;
+    color: #718096 !important;
+  }
+
+  .cart-drawer__items .cart-items__variant dd {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #718096 !important;
+  }
+
+  .cart-drawer__items .cart-items__price {
+    grid-area: price !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    gap: 2px !important;
+    min-height: auto !important;
+    margin-top: 0 !important;
+    text-align: right !important;
+  }
+
+  .cart-drawer__items .cart-items__price-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+  }
+
+  .cart-drawer__items .cart-items__price text-component,
+  .cart-drawer__items .cart-items__price span,
+  .cart-drawer__items .cart-items__price {
+    font-size: 0.875rem !important;
+    font-weight: 800 !important;
+    color: #1a1a1a !important;
+    text-align: right !important;
+  }
+
+  .cart-drawer__items .cart-items__price s,
+  .cart-drawer__items .cart-items__price .compare-at-price {
+    color: #8c8c8c !important;
+    font-weight: 400 !important;
+    font-size: 0.7rem !important;
+    text-decoration: line-through !important;
+    text-align: right !important;
+    display: block !important;
+  }
+
+  .cart-drawer__items .cart-items__quantity {
+    grid-area: quantity !important;
+    margin-top: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: auto !important;
+  }
+
+  .cart-drawer__items .cart-items__quantity-controls {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: auto !important;
+  }
+
+  .cart-drawer__items .cart-items__remove {
+    order: 1 !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e0 !important;
+    border-radius: 6px !important;
+    width: 28px !important;
+    height: 28px !important;
+    padding: 5px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #4a5568 !important;
+    box-shadow: none !important;
+  }
+
+  .cart-drawer__items .cart-items__remove svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .cart-drawer__items .quantity-selector-wrapper {
+    order: 2 !important;
+  }
+
+  .cart-drawer__items .quantity-selector {
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e0 !important;
+    border-radius: 14px !important;
+    height: 28px !important;
+    padding: 0 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+
+  .cart-drawer__items .quantity-selector input {
+    width: 26px !important;
+    border: none !important;
+    text-align: center !important;
+    font-size: 0.8125rem !important;
+    padding: 0 !important;
+    background: transparent !important;
+    color: #1a1a1a !important;
+  }
+
+  .cart-drawer__items .quantity-selector button {
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.875rem !important;
+    color: #4a5568 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
   }
 {% endstylesheet %}

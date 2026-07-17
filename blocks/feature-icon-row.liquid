@@ -1,0 +1,104 @@
+
+
+<ul class="feature-icon-row" {{ block.shopify_attributes }}>
+  {% content_for 'blocks' %}
+</ul>
+
+{% stylesheet %}
+  .feature-icon-row {
+    list-style: none;
+    margin: 0;
+    padding: 24px 0 8px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px 12px;
+  }
+
+  .feature-icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .feature-icon-item__badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--feature-icon-badge-bg, #3f5b44);
+    flex-shrink: 0;
+  }
+
+  .feature-icon-item__icon {
+    color: var(--feature-icon-color, #ffffff);
+  }
+
+  .feature-icon-item__label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: rgb(0 0 0 / 85%);
+    line-height: 1.3;
+  }
+
+  @media screen and (min-width: 750px) {
+    .feature-icon-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .feature-icon-item {
+      flex: 1;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Feature Icon Row",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "_feature-icon-item"
+    }
+  ],
+  "settings": [],
+  "presets": [
+    {
+      "name": "Feature Icon Row",
+      "category": "Product",
+      "blocks": {
+        "item-1": {
+          "type": "_feature-icon-item",
+          "settings": { "icon": "heart", "label": "Well Crafted" }
+        },
+        "item-2": {
+          "type": "_feature-icon-item",
+          "settings": { "icon": "ruler", "label": "Classic Design" }
+        },
+        "item-3": {
+          "type": "_feature-icon-item",
+          "settings": { "icon": "star", "label": "Premium Quality" }
+        },
+        "item-4": {
+          "type": "_feature-icon-item",
+          "settings": { "icon": "box", "label": "Easy to Install" }
+        },
+        "item-5": {
+          "type": "_feature-icon-item",
+          "settings": { "icon": "price_tag", "label": "Best Gift" }
+        },
+        "item-6": {
+          "type": "_feature-icon-item",
+          "settings": { "icon": "check_box", "label": "Sturdy Build Material" }
+        }
+      },
+      "block_order": ["item-1", "item-2", "item-3", "item-4", "item-5", "item-6"]
+    }
+  ]
+}
+{% endschema %}
